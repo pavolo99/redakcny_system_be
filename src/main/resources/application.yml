@@ -12,3 +12,25 @@ micronaut:
       swagger-ui:
         paths: classpath:META-INF/swagger/views/swagger-ui
         mapping: /swagger-ui/**
+  server:
+    cors:
+      enabled: true
+      configurations:
+        web:
+          allowedOrigins:
+            - http://localhost:8080
+            - http://localhost:3000
+
+datasources:
+  default:
+    url: jdbc:mysql://sql11.freemysqlhosting.net:3306/sql11438820
+    username: sql11438820
+    password: VrjpfRiJEF
+jpa:
+  default:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: update
+        show_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
