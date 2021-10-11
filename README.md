@@ -16,3 +16,8 @@
 
 - [Micronaut HTTP Client documentation](https://docs.micronaut.io/latest/guide/index.html#httpClient)
 
+## Set up postgresql database locally using docker
+
+``````
+docker run -d --name local_postgres -v my_dbdata:/var/lib/postgresql/data -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=sa -e POSTGRES_DB=postgres -d postgres:latest
+``````

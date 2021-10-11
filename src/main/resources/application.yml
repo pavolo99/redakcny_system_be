@@ -23,9 +23,13 @@ micronaut:
 
 datasources:
   default:
-    url: jdbc:mysql://sql11.freemysqlhosting.net:3306/sql11438820
-    username: sql11438820
-    password: VrjpfRiJEF
+    url: jdbc:postgresql://localhost:5432/postgres
+    driverClassName: org.postgresql.Driver
+    username: postgres
+    password: 'sa'
+    schema-generate: CREATE_DROP
+    dialect: POSTGRES
+
 jpa:
   default:
     properties:
@@ -33,4 +37,3 @@ jpa:
         hbm2ddl:
           auto: update
         show_sql: true
-        dialect: org.hibernate.dialect.MySQL8Dialect
