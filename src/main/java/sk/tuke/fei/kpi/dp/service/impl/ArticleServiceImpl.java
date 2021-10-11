@@ -9,6 +9,7 @@ import sk.tuke.fei.kpi.dp.dto.CreateArticleDto;
 import sk.tuke.fei.kpi.dp.dto.UpdateArticleDto;
 import sk.tuke.fei.kpi.dp.mapper.ArticleMapper;
 import sk.tuke.fei.kpi.dp.model.entity.Article;
+import sk.tuke.fei.kpi.dp.model.entity.ArticleStatus;
 import sk.tuke.fei.kpi.dp.model.repository.ArticleRepository;
 import sk.tuke.fei.kpi.dp.service.ArticleService;
 
@@ -39,8 +40,10 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   public ArticleDto createArticle(CreateArticleDto createArticleDto) {
-    Article savedArticle = articleRepository.save(
-        articleMapper.createArticleDtoToArticle(createArticleDto));
+    Article article = articleMapper.createArticleDtoToArticle(createArticleDto);
+    article.setArticleStatus(ArticleStatus.WRITING);
+    article.setReviewNumber(0);
+    Article savedArticle = articleRepository.save(article);
     return articleMapper.articleToArticleDto(savedArticle);
   }
 
@@ -49,8 +52,10 @@ public class ArticleServiceImpl implements ArticleService {
     if (!id.equals(updateArticleDto.getId())) {
       // todo handle exceptions
     }
-    Article updatedArticle = articleRepository.update(
-        articleMapper.updateArticleDtoToArticle(updateArticleDto));
+    Article article = articleMapper.updateArticleDtoToArticle(updateArticleDto);
+    article.setArticleStatus(ArticleStatus.WRITING);
+    article.setReviewNumber(0);
+    Article updatedArticle = articleRepository.update(article);
     return articleMapper.articleToArticleDto(updatedArticle);
   }
 }
