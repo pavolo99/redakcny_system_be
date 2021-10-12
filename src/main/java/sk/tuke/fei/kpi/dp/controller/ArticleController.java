@@ -13,12 +13,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.List;
 import javax.validation.Valid;
+import sk.tuke.fei.kpi.dp.common.ArticleType;
 import sk.tuke.fei.kpi.dp.dto.ArticleDto;
 import sk.tuke.fei.kpi.dp.dto.CreateArticleDto;
 import sk.tuke.fei.kpi.dp.dto.UpdateArticleDto;
 import sk.tuke.fei.kpi.dp.service.ArticleService;
 
-@Controller("/")
+@Controller("article")
 public class ArticleController {
 
   private final ArticleService articleService;
@@ -31,7 +32,7 @@ public class ArticleController {
    * @param id The article's id
    * @return The article
    */
-  @Get(uri = "/article/{id}", produces = MediaType.APPLICATION_JSON)
+  @Get(uri = "/{id}", produces = MediaType.APPLICATION_JSON)
   @Operation(summary = "Gets an article",
       description = "Retrieving an article by its id"
   )
@@ -49,26 +50,18 @@ public class ArticleController {
     return HttpResponse.notFound();
   }
 
-  /**
-   * @return The list of all articles
-   */
-  @Get(uri = "/article", produces = MediaType.APPLICATION_JSON)
-  @Operation(summary = "Gets all articles",
-      description = "Retrieving list of all articles"
-  )
-  @ApiResponse(
-      content = @Content(mediaType = MediaType.APPLICATION_JSON),
-      description = "Ok"
-  )
-  public HttpResponse<List<ArticleDto>> getAllArticles() {
-    return HttpResponse.created(articleService.getAllArticles());
+
+  @Get(uri = "/list/{articleType}", produces = MediaType.APPLICATION_JSON)
+  public HttpResponse<List<ArticleDto>> getAllArticles(@PathVariable ArticleType articleType) {
+    System.out.println("articleType = " + articleType);
+    return HttpResponse.ok(articleService.getAllArticles(articleType));
   }
 
   /**
    * @param createArticleDto The article request body
    * @return The created article
    */
-  @Post(uri = "/article", produces = MediaType.APPLICATION_JSON)
+  @Post(uri = "/", produces = MediaType.APPLICATION_JSON)
   @Operation(summary = "Create an article",
       description = "Creates a new article"
   )
@@ -86,7 +79,7 @@ public class ArticleController {
    * @param updateArticleDto The article request body
    * @return The created article
    */
-  @Put(uri = "/article/{id}", produces = MediaType.APPLICATION_JSON)
+  @Put(uri = "/{id}", produces = MediaType.APPLICATION_JSON)
   @Operation(summary = "Updates an article",
       description = "Updates an existing article"
   )
@@ -98,5 +91,10 @@ public class ArticleController {
       @Parameter(description = "id of the article") @PathVariable Long id,
       @Parameter(description = "Update article dto") @Valid UpdateArticleDto updateArticleDto) {
     return HttpResponse.created(articleService.updateArticle(id, updateArticleDto));
+  }
+
+  @Put(uri = "/approved/{id}", produces = MediaType.APPLICATION_JSON)
+  public HttpResponse<ArticleDto> approveArticle(@PathVariable Long id) {
+    return HttpResponse.ok(articleService.approveArticle(id));
   }
 }

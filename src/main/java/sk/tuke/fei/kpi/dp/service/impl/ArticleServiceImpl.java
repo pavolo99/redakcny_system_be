@@ -4,9 +4,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.inject.Singleton;
+import sk.tuke.fei.kpi.dp.common.ArticleType;
 import sk.tuke.fei.kpi.dp.dto.ArticleDto;
 import sk.tuke.fei.kpi.dp.dto.CreateArticleDto;
 import sk.tuke.fei.kpi.dp.dto.UpdateArticleDto;
+import sk.tuke.fei.kpi.dp.exception.ApiException;
+import sk.tuke.fei.kpi.dp.exception.FaultType;
 import sk.tuke.fei.kpi.dp.mapper.ArticleMapper;
 import sk.tuke.fei.kpi.dp.model.entity.Article;
 import sk.tuke.fei.kpi.dp.model.entity.ArticleStatus;
@@ -31,8 +34,17 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public List<ArticleDto> getAllArticles() {
-    return articleRepository.getAllArticles()
+  public List<ArticleDto> getAllArticles(ArticleType articleType) {
+    List<Article> articles;
+    if (ArticleType.APPROVED.equals(articleType)) {
+      articles =articleRepository.getArticlesByStatus(List.of(ArticleStatus.APPROVED));
+    } else if (ArticleType.ARCHIVED.equals(articleType)) {
+      articles = articleRepository.getArticlesByStatus(List.of(ArticleStatus.ARCHIVED));
+    } else {
+      // TODO implement when auth will be ready
+      articles = articleRepository.getAllArticles();
+    }
+    return articles
         .stream()
         .map(articleMapper::articleToArticleDto)
         .collect(Collectors.toList());
@@ -55,6 +67,19 @@ public class ArticleServiceImpl implements ArticleService {
     Article article = articleMapper.updateArticleDtoToArticle(updateArticleDto);
     article.setArticleStatus(ArticleStatus.WRITING);
     article.setReviewNumber(0);
+    Article updatedArticle = articleRepository.update(article);
+    return articleMapper.articleToArticleDto(updatedArticle);
+  }
+
+  @Override
+  public ArticleDto approveArticle(Long id) {
+    Article article = articleRepository.findById(id).orElseThrow(
+        () -> new ApiException(FaultType.RECORD_NOT_FOUND, "Article was not found"));
+    if (!ArticleStatus.AFTER_REVIEW.equals(article.getArticleStatus())) {
+      throw new ApiException(FaultType.INVALID_PARAMS,
+          "Article must be after review to be approved");
+    }
+    article.setArticleStatus(ArticleStatus.APPROVED);
     Article updatedArticle = articleRepository.update(article);
     return articleMapper.articleToArticleDto(updatedArticle);
   }
