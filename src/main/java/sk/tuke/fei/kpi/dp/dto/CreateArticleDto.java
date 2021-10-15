@@ -9,7 +9,6 @@ public class CreateArticleDto {
   @NotBlank
   private String name;
 
-  @NotBlank
   private String text;
 
   @NotBlank

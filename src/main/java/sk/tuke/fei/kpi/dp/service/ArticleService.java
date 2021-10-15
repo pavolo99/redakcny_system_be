@@ -17,4 +17,16 @@ public interface ArticleService {
   ArticleDto updateArticle(Long id, UpdateArticleDto updateArticleDto);
 
   ArticleDto approveArticle(Long id);
+
+  ArticleDto archiveArticle(Long id);
+
+  ArticleDto sendArticleToReview(Long id);
+
+  ArticleDto sendArticleReview(Long id);
+
+  ArticleDto publishArticle(Long id);
+
+  ArticleDto denyArticle(Long id);
+
+  void removeArticle(Long id);
 }

@@ -3,14 +3,11 @@ package sk.tuke.fei.kpi.dp.controller;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
+import io.micronaut.http.annotation.Delete;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.http.annotation.Put;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.List;
 import javax.validation.Valid;
 import sk.tuke.fei.kpi.dp.common.ArticleType;
@@ -28,73 +25,55 @@ public class ArticleController {
     this.articleService = articleService;
   }
 
-  /**
-   * @param id The article's id
-   * @return The article
-   */
-  @Get(uri = "/{id}", produces = MediaType.APPLICATION_JSON)
-  @Operation(summary = "Gets an article",
-      description = "Retrieving an article by its id"
-  )
-  @ApiResponse(
-      content = @Content(mediaType = MediaType.APPLICATION_JSON),
-      description = "Ok"
-  )
-  @ApiResponse(responseCode = "404", description = "An article was not found")
-  public HttpResponse<ArticleDto> getArticle(
-      @Parameter(description = "The id of the article") @PathVariable Long id) {
-    ArticleDto articleDto = articleService.getArticle(id);
-    if (articleDto != null) {
-      return HttpResponse.created(articleDto);
-    }
-    return HttpResponse.notFound();
-  }
-
-
   @Get(uri = "/list/{articleType}", produces = MediaType.APPLICATION_JSON)
   public HttpResponse<List<ArticleDto>> getAllArticles(@PathVariable ArticleType articleType) {
-    System.out.println("articleType = " + articleType);
     return HttpResponse.ok(articleService.getAllArticles(articleType));
   }
 
-  /**
-   * @param createArticleDto The article request body
-   * @return The created article
-   */
-  @Post(uri = "/", produces = MediaType.APPLICATION_JSON)
-  @Operation(summary = "Create an article",
-      description = "Creates a new article"
-  )
-  @ApiResponse(
-      content = @Content(mediaType = MediaType.APPLICATION_JSON),
-      description = "Article created"
-  )
-  public HttpResponse<ArticleDto> createArticle(@Parameter(description = "Create article dto")
-  @Valid CreateArticleDto createArticleDto) {
+  @Post(produces = MediaType.APPLICATION_JSON)
+  public HttpResponse<ArticleDto> createArticle(@Valid CreateArticleDto createArticleDto) {
     return HttpResponse.created(articleService.createArticle(createArticleDto));
   }
 
-  /**
-   * @param id               The updating article id
-   * @param updateArticleDto The article request body
-   * @return The created article
-   */
   @Put(uri = "/{id}", produces = MediaType.APPLICATION_JSON)
-  @Operation(summary = "Updates an article",
-      description = "Updates an existing article"
-  )
-  @ApiResponse(
-      content = @Content(mediaType = MediaType.APPLICATION_JSON),
-      description = "Article created"
-  )
-  public HttpResponse<ArticleDto> updateArticle(
-      @Parameter(description = "id of the article") @PathVariable Long id,
-      @Parameter(description = "Update article dto") @Valid UpdateArticleDto updateArticleDto) {
+  public HttpResponse<ArticleDto> updateArticle(@PathVariable Long id,
+      @Valid UpdateArticleDto updateArticleDto) {
     return HttpResponse.created(articleService.updateArticle(id, updateArticleDto));
   }
 
   @Put(uri = "/approved/{id}", produces = MediaType.APPLICATION_JSON)
   public HttpResponse<ArticleDto> approveArticle(@PathVariable Long id) {
     return HttpResponse.ok(articleService.approveArticle(id));
+  }
+
+  @Put(uri = "/archived/{id}", produces = MediaType.APPLICATION_JSON)
+  public HttpResponse<ArticleDto> archiveArticle(@PathVariable Long id) {
+    return HttpResponse.ok(articleService.archiveArticle(id));
+  }
+
+  @Put(uri = "/sent-to-review/{id}", produces = MediaType.APPLICATION_JSON)
+  public HttpResponse<ArticleDto> sendArticleToReview(@PathVariable Long id) {
+    return HttpResponse.ok(articleService.sendArticleToReview(id));
+  }
+
+  @Put(uri = "/sent-review/{id}", produces = MediaType.APPLICATION_JSON)
+  public HttpResponse<ArticleDto> sendArticleReview(@PathVariable Long id) {
+    return HttpResponse.ok(articleService.sendArticleReview(id));
+  }
+
+  @Put(uri = "/published/{id}", produces = MediaType.APPLICATION_JSON)
+  public HttpResponse<ArticleDto> publishArticle(@PathVariable Long id) {
+    return HttpResponse.ok(articleService.publishArticle(id));
+  }
+
+  @Put(uri = "/denied/{id}", produces = MediaType.APPLICATION_JSON)
+  public HttpResponse<ArticleDto> denyArticle(@PathVariable Long id) {
+    return HttpResponse.ok(articleService.denyArticle(id));
+  }
+
+  @Delete(uri = "/deleted/{id}")
+  public HttpResponse<Void> removeArticle(@PathVariable Long id) {
+    articleService.removeArticle(id);
+    return HttpResponse.ok();
   }
 }

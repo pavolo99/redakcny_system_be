@@ -23,10 +23,8 @@ public class ArticleStatusConverter implements AttributeConverter<ArticleStatus,
       case 2:
         return ArticleStatus.IN_REVIEW;
       case 3:
-        return ArticleStatus.AFTER_REVIEW;
-      case 4:
         return ArticleStatus.APPROVED;
-      case 5:
+      case 4:
         return ArticleStatus.ARCHIVED;
       default:
         throw new IllegalArgumentException(orderStatusId + " does not exist");
