@@ -42,17 +42,14 @@ public class ArticleServiceImpl implements ArticleService {
   public List<ArticleDto> getAllArticles(ArticleType articleType) {
     List<Article> articles;
     if (ArticleType.APPROVED.equals(articleType)) {
-      articles =articleRepository.getArticlesByStatus(List.of(APPROVED));
+      articles = articleRepository.getArticlesByStatus(List.of(APPROVED));
     } else if (ArticleType.ARCHIVED.equals(articleType)) {
       articles = articleRepository.getArticlesByStatus(List.of(ARCHIVED));
     } else {
       // TODO implement when auth will be ready
       articles = articleRepository.getAllArticles();
     }
-    return articles
-        .stream()
-        .map(articleMapper::articleToArticleDto)
-        .collect(Collectors.toList());
+    return articles.stream().map(articleMapper::articleToArticleDto).collect(Collectors.toList());
   }
 
   @Override
@@ -90,7 +87,8 @@ public class ArticleServiceImpl implements ArticleService {
   public ArticleDto archiveArticle(Long id) {
     Article article = findArticleById(id);
     // TODO append condition for denied and published articles
-    if (!IN_REVIEW.equals(article.getArticleStatus()) && !APPROVED.equals(article.getArticleStatus())) {
+    if (!IN_REVIEW.equals(article.getArticleStatus()) && !APPROVED.equals(
+        article.getArticleStatus())) {
       throw new ApiException(INVALID_PARAMS, "Article must be first reviewed or approved");
     }
     article.setArticleStatus(ArticleStatus.ARCHIVED);
@@ -148,8 +146,10 @@ public class ArticleServiceImpl implements ArticleService {
   @Override
   public void removeArticle(Long id) {
     Article article = findArticleById(id);
-    if (!ArticleStatus.WRITING.equals(article.getArticleStatus()) || article.getReviewNumber() > 0) {
-      throw new ApiException(INVALID_PARAMS, "Article must be in writing state and cannot be after any review");
+    if (!ArticleStatus.WRITING.equals(article.getArticleStatus())
+        || article.getReviewNumber() > 0) {
+      throw new ApiException(INVALID_PARAMS,
+          "Article must be in writing state and cannot be after any review");
     }
     articleRepository.delete(article);
   }
