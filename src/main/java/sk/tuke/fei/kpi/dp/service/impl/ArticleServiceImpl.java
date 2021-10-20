@@ -5,12 +5,14 @@ import static sk.tuke.fei.kpi.dp.exception.FaultType.RECORD_NOT_FOUND;
 import static sk.tuke.fei.kpi.dp.model.entity.ArticleStatus.APPROVED;
 import static sk.tuke.fei.kpi.dp.model.entity.ArticleStatus.ARCHIVED;
 import static sk.tuke.fei.kpi.dp.model.entity.ArticleStatus.IN_REVIEW;
+import static sk.tuke.fei.kpi.dp.model.entity.ArticleStatus.WRITING;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.inject.Singleton;
-import sk.tuke.fei.kpi.dp.common.ArticleType;
+import sk.tuke.fei.kpi.dp.common.QueryArticleStatus;
+import sk.tuke.fei.kpi.dp.common.QueryArticleType;
 import sk.tuke.fei.kpi.dp.dto.ArticleDto;
 import sk.tuke.fei.kpi.dp.dto.CreateArticleDto;
 import sk.tuke.fei.kpi.dp.dto.UpdateArticleDto;
@@ -39,17 +41,27 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public List<ArticleDto> getAllArticles(ArticleType articleType) {
+  public List<ArticleDto> getAllArticles(QueryArticleType queryArticleType,
+      QueryArticleStatus queryArticleStatus) {
     List<Article> articles;
-    if (ArticleType.APPROVED.equals(articleType)) {
+    // TODO remake after auth implementation
+    if (QueryArticleType.APPROVED.equals(queryArticleType)) {
       articles = articleRepository.getArticlesByStatus(List.of(APPROVED));
-    } else if (ArticleType.ARCHIVED.equals(articleType)) {
+    } else if (QueryArticleType.ARCHIVED.equals(queryArticleType)) {
       articles = articleRepository.getArticlesByStatus(List.of(ARCHIVED));
+    } else if (QueryArticleStatus.WRITING.equals(queryArticleStatus)) {
+      articles = articleRepository.getArticlesByStatus(List.of(WRITING));
+    } else if (QueryArticleStatus.IN_REVIEW.equals(queryArticleStatus)) {
+      articles = articleRepository.getArticlesByStatus(List.of(IN_REVIEW));
+    } else if (QueryArticleStatus.AFTER_REVIEW.equals(queryArticleStatus)) {
+      articles = articleRepository.getArticlesAfterReview(WRITING);
     } else {
-      // TODO implement when auth will be ready
       articles = articleRepository.getAllArticles();
     }
-    return articles.stream().map(articleMapper::articleToArticleDto).collect(Collectors.toList());
+    return articles
+        .stream()
+        .map(articleMapper::articleToArticleDto)
+        .collect(Collectors.toList());
   }
 
   @Override

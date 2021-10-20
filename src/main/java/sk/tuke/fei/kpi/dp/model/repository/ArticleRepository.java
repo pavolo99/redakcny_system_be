@@ -10,9 +10,12 @@ import sk.tuke.fei.kpi.dp.model.entity.ArticleStatus;
 @Repository
 public interface ArticleRepository extends CrudRepository<Article, Long> {
 
-  @Query("select o from Article as o")
+  @Query("select o from Article o")
   List<Article> getAllArticles();
 
-  @Query("select o from Article as o where o.articleStatus in :articleStatuses")
+  @Query("select o from Article o where o.articleStatus in :articleStatuses")
   List<Article> getArticlesByStatus(List<ArticleStatus> articleStatuses);
+
+  @Query("select o from Article o where o.articleStatus = :writingArticleStatus and o.reviewNumber > 0")
+  List<Article> getArticlesAfterReview(ArticleStatus writingArticleStatus);
 }

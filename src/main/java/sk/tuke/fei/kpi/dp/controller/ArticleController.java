@@ -8,9 +8,11 @@ import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.http.annotation.Put;
+import io.micronaut.http.annotation.QueryValue;
 import java.util.List;
 import javax.validation.Valid;
-import sk.tuke.fei.kpi.dp.common.ArticleType;
+import sk.tuke.fei.kpi.dp.common.QueryArticleStatus;
+import sk.tuke.fei.kpi.dp.common.QueryArticleType;
 import sk.tuke.fei.kpi.dp.dto.ArticleDto;
 import sk.tuke.fei.kpi.dp.dto.CreateArticleDto;
 import sk.tuke.fei.kpi.dp.dto.UpdateArticleDto;
@@ -25,9 +27,10 @@ public class ArticleController {
     this.articleService = articleService;
   }
 
-  @Get(uri = "/list/{articleType}", produces = MediaType.APPLICATION_JSON)
-  public HttpResponse<List<ArticleDto>> getAllArticles(@PathVariable ArticleType articleType) {
-    return HttpResponse.ok(articleService.getAllArticles(articleType));
+  @Get(uri = "/list", produces = MediaType.APPLICATION_JSON)
+  public HttpResponse<List<ArticleDto>> getAllArticles(@QueryValue QueryArticleType queryArticleType,
+      @QueryValue QueryArticleStatus queryArticleStatus) {
+    return HttpResponse.ok(articleService.getAllArticles(queryArticleType, queryArticleStatus));
   }
 
   @Post(produces = MediaType.APPLICATION_JSON)

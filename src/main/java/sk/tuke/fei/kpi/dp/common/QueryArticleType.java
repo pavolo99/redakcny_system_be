@@ -1,6 +1,6 @@
 package sk.tuke.fei.kpi.dp.common;
 
-public enum ArticleType {
+public enum QueryArticleType {
   MINE,
   SHARED_WITH_ME,
   ARCHIVED,
