@@ -4,7 +4,7 @@ import javax.inject.Singleton;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import sk.tuke.fei.kpi.dp.dto.ArticleDto;
-import sk.tuke.fei.kpi.dp.dto.CreateArticleDto;
+import sk.tuke.fei.kpi.dp.dto.ArticleViewDto;
 import sk.tuke.fei.kpi.dp.dto.UpdateArticleDto;
 import sk.tuke.fei.kpi.dp.model.entity.Article;
 
@@ -12,9 +12,9 @@ import sk.tuke.fei.kpi.dp.model.entity.Article;
 @Singleton
 public interface ArticleMapper {
 
-  ArticleDto articleToArticleDto(Article article);
+  ArticleViewDto articleToArticleViewDto(Article article);
 
-  Article createArticleDtoToArticle(CreateArticleDto createArticleDto);
+  ArticleDto articleToArticleDto(Article article);
 
   void updateArticleFromArticleUpdateDto(UpdateArticleDto updateArticleDto, @MappingTarget Article article);
 }

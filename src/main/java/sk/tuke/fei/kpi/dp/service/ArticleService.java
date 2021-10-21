@@ -4,16 +4,16 @@ import java.util.List;
 import sk.tuke.fei.kpi.dp.common.QueryArticleStatus;
 import sk.tuke.fei.kpi.dp.common.QueryArticleType;
 import sk.tuke.fei.kpi.dp.dto.ArticleDto;
-import sk.tuke.fei.kpi.dp.dto.CreateArticleDto;
+import sk.tuke.fei.kpi.dp.dto.ArticleViewDto;
 import sk.tuke.fei.kpi.dp.dto.UpdateArticleDto;
 
 public interface ArticleService {
 
   ArticleDto getArticle(Long id);
 
-  List<ArticleDto> getAllArticles(QueryArticleType queryArticleType, QueryArticleStatus queryArticleStatus);
+  List<ArticleViewDto> getAllArticles(QueryArticleType queryArticleType, QueryArticleStatus queryArticleStatus);
 
-  ArticleDto createArticle(CreateArticleDto createArticleDto);
+  ArticleDto createArticle();
 
   ArticleDto updateArticle(Long id, UpdateArticleDto updateArticleDto);
 

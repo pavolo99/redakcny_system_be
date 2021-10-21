@@ -14,7 +14,7 @@ import javax.validation.Valid;
 import sk.tuke.fei.kpi.dp.common.QueryArticleStatus;
 import sk.tuke.fei.kpi.dp.common.QueryArticleType;
 import sk.tuke.fei.kpi.dp.dto.ArticleDto;
-import sk.tuke.fei.kpi.dp.dto.CreateArticleDto;
+import sk.tuke.fei.kpi.dp.dto.ArticleViewDto;
 import sk.tuke.fei.kpi.dp.dto.UpdateArticleDto;
 import sk.tuke.fei.kpi.dp.service.ArticleService;
 
@@ -27,21 +27,26 @@ public class ArticleController {
     this.articleService = articleService;
   }
 
+  @Get(uri = "/{articleId}", produces = MediaType.APPLICATION_JSON)
+  public HttpResponse<ArticleDto> getArticle(@PathVariable Long articleId) {
+    return HttpResponse.ok(articleService.getArticle(articleId));
+  }
+
   @Get(uri = "/list", produces = MediaType.APPLICATION_JSON)
-  public HttpResponse<List<ArticleDto>> getAllArticles(@QueryValue QueryArticleType queryArticleType,
+  public HttpResponse<List<ArticleViewDto>> getAllArticles(@QueryValue QueryArticleType queryArticleType,
       @QueryValue QueryArticleStatus queryArticleStatus) {
     return HttpResponse.ok(articleService.getAllArticles(queryArticleType, queryArticleStatus));
   }
 
   @Post(produces = MediaType.APPLICATION_JSON)
-  public HttpResponse<ArticleDto> createArticle(@Valid CreateArticleDto createArticleDto) {
-    return HttpResponse.created(articleService.createArticle(createArticleDto));
+  public HttpResponse<ArticleDto> createArticle() {
+    return HttpResponse.created(articleService.createArticle());
   }
 
   @Put(uri = "/{id}", produces = MediaType.APPLICATION_JSON)
   public HttpResponse<ArticleDto> updateArticle(@PathVariable Long id,
       @Valid UpdateArticleDto updateArticleDto) {
-    return HttpResponse.created(articleService.updateArticle(id, updateArticleDto));
+    return HttpResponse.ok(articleService.updateArticle(id, updateArticleDto));
   }
 
   @Put(uri = "/approved/{id}", produces = MediaType.APPLICATION_JSON)

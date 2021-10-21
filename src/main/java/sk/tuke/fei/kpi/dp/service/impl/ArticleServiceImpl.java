@@ -8,13 +8,12 @@ import static sk.tuke.fei.kpi.dp.model.entity.ArticleStatus.IN_REVIEW;
 import static sk.tuke.fei.kpi.dp.model.entity.ArticleStatus.WRITING;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.inject.Singleton;
 import sk.tuke.fei.kpi.dp.common.QueryArticleStatus;
 import sk.tuke.fei.kpi.dp.common.QueryArticleType;
 import sk.tuke.fei.kpi.dp.dto.ArticleDto;
-import sk.tuke.fei.kpi.dp.dto.CreateArticleDto;
+import sk.tuke.fei.kpi.dp.dto.ArticleViewDto;
 import sk.tuke.fei.kpi.dp.dto.UpdateArticleDto;
 import sk.tuke.fei.kpi.dp.exception.ApiException;
 import sk.tuke.fei.kpi.dp.mapper.ArticleMapper;
@@ -36,12 +35,11 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   public ArticleDto getArticle(Long id) {
-    Optional<Article> optionalArticle = articleRepository.findById(id);
-    return optionalArticle.map(articleMapper::articleToArticleDto).orElse(null);
+    return articleMapper.articleToArticleDto(findArticleById(id));
   }
 
   @Override
-  public List<ArticleDto> getAllArticles(QueryArticleType queryArticleType,
+  public List<ArticleViewDto> getAllArticles(QueryArticleType queryArticleType,
       QueryArticleStatus queryArticleStatus) {
     List<Article> articles;
     // TODO remake after auth implementation
@@ -60,15 +58,13 @@ public class ArticleServiceImpl implements ArticleService {
     }
     return articles
         .stream()
-        .map(articleMapper::articleToArticleDto)
+        .map(articleMapper::articleToArticleViewDto)
         .collect(Collectors.toList());
   }
 
   @Override
-  public ArticleDto createArticle(CreateArticleDto createArticleDto) {
-    Article article = articleMapper.createArticleDtoToArticle(createArticleDto);
-    article.setArticleStatus(ArticleStatus.WRITING);
-    article.setReviewNumber(0);
+  public ArticleDto createArticle() {
+    Article article = new Article("Nazov članku", "Text članku", 0, WRITING);
     Article savedArticle = articleRepository.save(article);
     return articleMapper.articleToArticleDto(savedArticle);
   }

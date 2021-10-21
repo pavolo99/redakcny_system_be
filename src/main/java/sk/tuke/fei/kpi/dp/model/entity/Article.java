@@ -42,6 +42,15 @@ public class Article {
   @Column(name = "ARTICLE_STATUS_ID")
   private ArticleStatus articleStatus;
 
+  public Article(String name, String text, Integer reviewNumber, ArticleStatus articleStatus) {
+    this.name = name;
+    this.text = text;
+    this.reviewNumber = reviewNumber;
+    this.articleStatus = articleStatus;
+  }
+
+  public Article() {}
+
   public Long getId() {
     return id;
   }
