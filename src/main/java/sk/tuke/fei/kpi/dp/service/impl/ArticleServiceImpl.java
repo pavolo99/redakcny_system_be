@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import javax.inject.Singleton;
 import sk.tuke.fei.kpi.dp.common.QueryArticleStatus;
 import sk.tuke.fei.kpi.dp.common.QueryArticleType;
-import sk.tuke.fei.kpi.dp.dto.ArticleDto;
+import sk.tuke.fei.kpi.dp.dto.ArticleEditDto;
 import sk.tuke.fei.kpi.dp.dto.ArticleViewDto;
 import sk.tuke.fei.kpi.dp.dto.UpdateArticleDto;
 import sk.tuke.fei.kpi.dp.exception.ApiException;
@@ -34,7 +34,7 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public ArticleDto getArticle(Long id) {
+  public ArticleEditDto getArticle(Long id) {
     return articleMapper.articleToArticleDto(findArticleById(id));
   }
 
@@ -63,14 +63,14 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public ArticleDto createArticle() {
+  public ArticleEditDto createArticle() {
     Article article = new Article("Nazov članku", "Text članku", 0, WRITING);
     Article savedArticle = articleRepository.save(article);
     return articleMapper.articleToArticleDto(savedArticle);
   }
 
   @Override
-  public ArticleDto updateArticle(Long id, UpdateArticleDto updateArticleDto) {
+  public ArticleEditDto updateArticle(Long id, UpdateArticleDto updateArticleDto) {
     if (!id.equals(updateArticleDto.getId())) {
       throw new ApiException(INVALID_PARAMS, "Id is not equal with update article dto id");
     }
@@ -81,7 +81,7 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public ArticleDto approveArticle(Long id) {
+  public ArticleEditDto approveArticle(Long id) {
     Article article = findArticleById(id);
     if (!IN_REVIEW.equals(article.getArticleStatus())) {
       throw new ApiException(INVALID_PARAMS, "Article must be first reviewed");
@@ -92,7 +92,7 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public ArticleDto archiveArticle(Long id) {
+  public ArticleEditDto archiveArticle(Long id) {
     Article article = findArticleById(id);
     // TODO append condition for denied and published articles
     if (!IN_REVIEW.equals(article.getArticleStatus()) && !APPROVED.equals(
@@ -105,7 +105,7 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public ArticleDto sendArticleToReview(Long id) {
+  public ArticleEditDto sendArticleToReview(Long id) {
     Article article = findArticleById(id);
     if (!ArticleStatus.WRITING.equals(article.getArticleStatus())) {
       throw new ApiException(INVALID_PARAMS, "Article must be in the writing process");
@@ -117,7 +117,7 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public ArticleDto sendArticleReview(Long id) {
+  public ArticleEditDto sendArticleReview(Long id) {
     Article article = findArticleById(id);
     if (!IN_REVIEW.equals(article.getArticleStatus())) {
       throw new ApiException(INVALID_PARAMS, "Article must be in the review");
@@ -128,7 +128,7 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public ArticleDto publishArticle(Long id) {
+  public ArticleEditDto publishArticle(Long id) {
     Article article = findArticleById(id);
     if (!APPROVED.equals(article.getArticleStatus())) {
       throw new ApiException(INVALID_PARAMS, "Article must be approved");
@@ -140,7 +140,7 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public ArticleDto denyArticle(Long id) {
+  public ArticleEditDto denyArticle(Long id) {
     Article article = findArticleById(id);
     if (!IN_REVIEW.equals(article.getArticleStatus())) {
       throw new ApiException(INVALID_PARAMS, "Article must be after review");

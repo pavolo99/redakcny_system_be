@@ -4,7 +4,7 @@ import io.micronaut.core.annotation.Introspected;
 import sk.tuke.fei.kpi.dp.model.entity.ArticleStatus;
 
 @Introspected
-public class ArticleDto {
+public class ArticleEditDto {
 
   private Long id;
   private String name;
