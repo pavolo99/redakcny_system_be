@@ -1,4 +1,43 @@
 micronaut:
+  http:
+    services:
+      githubv3:
+        url: "https://api.github.com"
+  security:
+    authentication: cookie
+    token:
+      jwt:
+        signatures:
+          secret:
+            generator:
+              secret: '"${JWT_GENERATOR_SIGNATURE_SECRET:pleaseChangeThisSecretForANewOne}"'
+    oauth2:
+      clients:
+        github:
+          client-id: '${OAUTH_CLIENT_ID:Iv1.7f311c1dd843f6fb}'
+          client-secret: '${OAUTH_CLIENT_SECRET:02c2e04b9e24f1a65794db909597dfe67d165f53}'
+          scopes:
+            - read:user
+          authorization:
+            url: 'https://github.com/login/oauth/authorize'
+          token:
+            url: 'https://github.com/login/oauth/access_token'
+            auth-method: CLIENT_SECRET_POST
+
+        gitlab:
+          client-id: '${OAUTH_CLIENT_ID:afef94df75f368edbb735303e7b8fa5c7141131aed8239126055dabba80acc8c}'
+          client-secret: '${OAUTH_CLIENT_SECRET:be993a6796915485219d444ad470d35cb3447463e4e8a57c9dc4979b1340bed3}'
+          scopes:
+            - read_user
+          authorization:
+            url: 'https://git.kpi.fei.tuke.sk/oauth/authorize'
+          token:
+            url: 'https://git.kpi.fei.tuke.sk/oauth/token'
+            auth-method: CLIENT_SECRET_POST
+    endpoints:
+      logout:
+        get-allowed: true
+
   application:
     name: redakcny_system_be
   router:
