@@ -16,6 +16,6 @@ import sk.tuke.fei.kpi.dp.dto.GithubUserDto;
 public interface GithubApiClient {
 
   @Get("/user")
-  Publisher<GithubUserDto> getUser(@Header(HttpHeaders.AUTHORIZATION) String authorization);
+  Publisher<GithubUserDto> getLoggedGithubUser(@Header(HttpHeaders.AUTHORIZATION) String authorization);
 
 }

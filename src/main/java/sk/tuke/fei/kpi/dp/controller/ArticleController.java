@@ -9,6 +9,8 @@ import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.http.annotation.Put;
 import io.micronaut.http.annotation.QueryValue;
+import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.rules.SecurityRule;
 import java.util.List;
 import javax.validation.Valid;
 import sk.tuke.fei.kpi.dp.common.QueryArticleStatus;
@@ -19,6 +21,7 @@ import sk.tuke.fei.kpi.dp.dto.UpdateArticleDto;
 import sk.tuke.fei.kpi.dp.service.ArticleService;
 
 @Controller("article")
+@Secured(SecurityRule.IS_AUTHENTICATED)
 public class ArticleController {
 
   private final ArticleService articleService;
