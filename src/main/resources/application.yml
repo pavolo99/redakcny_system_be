@@ -36,7 +36,7 @@ micronaut:
       logout:
         get-allowed: true
     redirect:
-      login-success: 'http://localhost:3000/dashboard'
+      login-success: 'http://localhost:3000/login-callback'
 
   application:
     name: redakcny_system_be
