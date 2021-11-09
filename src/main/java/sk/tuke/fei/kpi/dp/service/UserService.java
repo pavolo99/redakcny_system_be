@@ -8,5 +8,5 @@ public interface UserService {
 
   Optional<User> findByUsernameAndAuthProvider(String username, AuthProvider authProvider);
 
-  void saveUser(User loggedUser);
+  User saveUser(User loggedUser);
 }

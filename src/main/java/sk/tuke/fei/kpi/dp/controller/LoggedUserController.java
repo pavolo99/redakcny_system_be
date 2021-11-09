@@ -9,7 +9,6 @@ import sk.tuke.fei.kpi.dp.dto.LoggedUserDto;
 import sk.tuke.fei.kpi.dp.service.LoggedUserService;
 
 @Controller("loggedUser")
-@Secured(SecurityRule.IS_ANONYMOUS)
 public class LoggedUserController {
 
   private final LoggedUserService loggedUserService;
@@ -19,19 +18,8 @@ public class LoggedUserController {
   }
 
   @Get
+  @Secured(SecurityRule.IS_ANONYMOUS)
   public HttpResponse<LoggedUserDto> getLoggedUser() {
-    LoggedUserDto savedLoggedUser = loggedUserService.getLoggedUser();
-    if (savedLoggedUser == null) {
-      return HttpResponse.notFound();
-    }
-    LoggedUserDto loggedUser = new LoggedUserDto();
-    loggedUser.setId(savedLoggedUser.getId());
-    loggedUser.setUsername(savedLoggedUser.getUsername());
-    loggedUser.setRole(savedLoggedUser.getRole());
-    loggedUser.setAccessToken(savedLoggedUser.getAccessToken());
-    loggedUser.setAuthProvider(savedLoggedUser.getAuthProvider());
-    loggedUserService.setLoggedUser(null);
-    return HttpResponse.ok(loggedUser);
+    return HttpResponse.ok(loggedUserService.getLoggedUser());
   }
-
 }

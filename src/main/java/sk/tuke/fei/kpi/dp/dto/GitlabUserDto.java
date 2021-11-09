@@ -1,9 +1,10 @@
 package sk.tuke.fei.kpi.dp.dto;
 
 import io.micronaut.core.annotation.Introspected;
+import sk.tuke.fei.kpi.dp.auth.ProviderUser;
 
 @Introspected
-public class GitlabUserDto {
+public class GitlabUserDto implements ProviderUser {
 
   private final String username;
   private final String name;

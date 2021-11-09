@@ -1,9 +1,10 @@
 package sk.tuke.fei.kpi.dp.dto;
 
 import io.micronaut.core.annotation.Introspected;
+import sk.tuke.fei.kpi.dp.auth.ProviderUser;
 
 @Introspected
-public class GithubUserDto {
+public class GithubUserDto implements ProviderUser {
 
   private final String login;
   private final String name;
@@ -25,5 +26,10 @@ public class GithubUserDto {
 
   public String getEmail() {
     return email;
+  }
+
+  @Override
+  public String getUsername() {
+    return login;
   }
 }

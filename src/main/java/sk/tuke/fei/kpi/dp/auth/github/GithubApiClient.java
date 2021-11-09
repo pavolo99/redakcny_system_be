@@ -10,9 +10,9 @@ import io.micronaut.http.client.annotation.Client;
 import org.reactivestreams.Publisher;
 import sk.tuke.fei.kpi.dp.dto.GithubUserDto;
 
-@Header(name = USER_AGENT, value = "Micronaut HTTP Client")
+@Header(name = USER_AGENT, value = "Github HTTP Client")
 @Header(name = ACCEPT, value = "application/vnd.github.v3+json, application/json")
-@Client(id = "githubv3")
+@Client(id = "https://api.github.com")
 public interface GithubApiClient {
 
   @Get("/user")

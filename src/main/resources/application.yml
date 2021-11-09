@@ -1,8 +1,4 @@
 micronaut:
-  http:
-    services:
-      githubv3:
-        url: "https://api.github.com"
   security:
     authentication: cookie
     token:
@@ -40,7 +36,7 @@ micronaut:
       logout:
         get-allowed: true
     redirect:
-      login-success: 'http://localhost:3000'
+      login-success: 'http://localhost:3000/dashboard'
 
   application:
     name: redakcny_system_be

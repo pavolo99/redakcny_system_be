@@ -9,7 +9,7 @@ import io.micronaut.http.client.annotation.Client;
 import org.reactivestreams.Publisher;
 import sk.tuke.fei.kpi.dp.dto.GitlabUserDto;
 
-@Header(name = USER_AGENT, value = "Micronaut HTTP Client")
+@Header(name = USER_AGENT, value = "Gitlab HTTP client")
 @Header(name = ACCEPT, value = "application/json, application/json")
 @Client("https://git.kpi.fei.tuke.sk/api/v4")
 public interface GitlabApiClient {
