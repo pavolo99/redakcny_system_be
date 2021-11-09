@@ -9,11 +9,14 @@ import io.micronaut.http.annotation.Part;
 import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.http.multipart.CompletedFileUpload;
+import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.rules.SecurityRule;
 import java.util.List;
 import sk.tuke.fei.kpi.dp.dto.ImageInfoDto;
 import sk.tuke.fei.kpi.dp.service.ImageService;
 
 @Controller("image")
+@Secured(SecurityRule.IS_AUTHENTICATED)
 public class ImageController {
 
   private final ImageService imageService;
