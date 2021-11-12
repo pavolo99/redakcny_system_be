@@ -3,6 +3,7 @@ package sk.tuke.fei.kpi.dp.auth.gitlab;
 import static io.micronaut.http.HttpHeaders.ACCEPT;
 import static io.micronaut.http.HttpHeaders.USER_AGENT;
 
+import io.micronaut.http.HttpHeaders;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Header;
 import io.micronaut.http.client.annotation.Client;
@@ -15,6 +16,6 @@ import sk.tuke.fei.kpi.dp.dto.GitlabUserDto;
 public interface GitlabApiClient {
 
   @Get("/user")
-  Publisher<GitlabUserDto> getLoggedGitlabUser(@Header("Authorization") String authorization);
+  Publisher<GitlabUserDto> getLoggedGitlabUser(@Header(HttpHeaders.AUTHORIZATION) String authorization);
 }
 
