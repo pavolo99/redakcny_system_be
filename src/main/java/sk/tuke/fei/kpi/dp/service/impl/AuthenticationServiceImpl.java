@@ -27,6 +27,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     this.jwtTokenGenerator = jwtTokenGenerator;
   }
 
+  /**
+   * Handler for mapping provider user to system user in the database
+   * Generates jwt token which is sent to frontEndCallbackUrl later on
+   * If logged user´s username and auth provider does not match record in database, then is saved
+   * @param loggedProviderUserDto interface for github and gitlab entity
+   * @param authProvider gitlab/github
+   * @return auth response with logged user id, roles and other props
+   * */
   @Override
   public AuthenticationResponse handleAuthenticationResponse(ProviderUser loggedProviderUserDto,
       AuthProvider authProvider) {

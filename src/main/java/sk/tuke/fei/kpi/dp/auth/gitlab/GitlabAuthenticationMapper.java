@@ -28,6 +28,12 @@ public class GitlabAuthenticationMapper implements OauthAuthenticationMapper {
     this.authenticationService = authenticationService;
   }
 
+  /**
+   * Gitlab auth response from gitlab.authorization.url and gitlab.token.url properties
+   * @param tokenResponse contains data about provided gitlab access and refresh token
+   * @param state
+   * @return publisher of auth response
+   * */
   @Override
   public Publisher<AuthenticationResponse> createAuthenticationResponse(TokenResponse tokenResponse,
       @Nullable State state) {

@@ -27,6 +27,12 @@ public class GithubAuthenticationMapper implements OauthAuthenticationMapper {
     this.authenticationService = authenticationService;
   }
 
+  /**
+   * Github auth response from github.authorization.url and github.token.url properties
+   * @param tokenResponse data about provided github access and refresh token
+   * @param state
+   * @return publisher of auth response
+   * */
   @Override
   public Publisher<AuthenticationResponse> createAuthenticationResponse(TokenResponse tokenResponse,
       @Nullable State state) {

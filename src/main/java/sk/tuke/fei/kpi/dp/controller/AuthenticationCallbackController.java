@@ -19,6 +19,12 @@ public class AuthenticationCallbackController {
     this.authenticationCallbackService = authenticationCallbackService;
   }
 
+  /**
+   * Rest service for catching success login from auth (gitlab/github) provider
+   * Generate URI location with frontEndUrl route and access token
+   * @param authentication contains logged user info which was saved in authentication service
+   * @return http response of redirect URI
+   * */
   @Get(produces = MediaType.APPLICATION_JSON)
   public HttpResponse<Object> redirectToFrontEndUrlCallbackRouteWithAccessToken(Authentication authentication) {
     return HttpResponse.redirect(authenticationCallbackService.generateFrontEndCallbackURIWithAccessToken(authentication));
