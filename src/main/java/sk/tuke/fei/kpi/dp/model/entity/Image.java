@@ -1,5 +1,6 @@
 package sk.tuke.fei.kpi.dp.model.entity;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -63,5 +64,22 @@ public class Image {
 
   public void setArticle(Article article) {
     this.article = article;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Image)) {
+      return false;
+    }
+    Image image = (Image) o;
+    return id.equals(image.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
   }
 }

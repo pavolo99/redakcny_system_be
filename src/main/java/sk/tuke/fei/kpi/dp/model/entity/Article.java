@@ -1,5 +1,6 @@
 package sk.tuke.fei.kpi.dp.model.entity;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -121,5 +122,22 @@ public class Article {
 
   public void setArticleStatus(ArticleStatus articleStatus) {
     this.articleStatus = articleStatus;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Article)) {
+      return false;
+    }
+    Article article = (Article) o;
+    return id.equals(article.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
   }
 }
