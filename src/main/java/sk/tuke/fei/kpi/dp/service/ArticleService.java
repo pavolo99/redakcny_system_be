@@ -1,5 +1,6 @@
 package sk.tuke.fei.kpi.dp.service;
 
+import io.micronaut.security.authentication.Authentication;
 import java.util.List;
 import sk.tuke.fei.kpi.dp.common.QueryArticleStatus;
 import sk.tuke.fei.kpi.dp.common.QueryArticleType;
@@ -11,23 +12,24 @@ public interface ArticleService {
 
   ArticleEditDto getArticle(Long id);
 
-  List<ArticleViewDto> getAllArticles(QueryArticleType queryArticleType, QueryArticleStatus queryArticleStatus);
+  List<ArticleViewDto> getAllArticles(Authentication authentication,
+      QueryArticleType queryArticleType, QueryArticleStatus queryArticleStatus);
 
-  ArticleEditDto createArticle();
+  ArticleEditDto createArticle(Authentication authentication);
 
-  ArticleEditDto updateArticle(Long id, UpdateArticleDto updateArticleDto);
+  ArticleEditDto updateArticle(Authentication authentication, Long id, UpdateArticleDto updateArticleDto);
 
-  ArticleEditDto approveArticle(Long id);
+  ArticleEditDto approveArticle(Authentication authentication, Long id);
 
-  ArticleEditDto archiveArticle(Long id);
+  ArticleEditDto archiveArticle(Authentication authentication, Long id);
 
-  ArticleEditDto sendArticleToReview(Long id);
+  ArticleEditDto sendArticleToReview(Authentication authentication, Long id);
 
-  ArticleEditDto sendArticleReview(Long id);
+  ArticleEditDto sendArticleReview(Authentication authentication, Long id);
 
-  ArticleEditDto publishArticle(Long id);
+  ArticleEditDto publishArticle(Authentication authentication, Long id);
 
-  ArticleEditDto denyArticle(Long id);
+  ArticleEditDto denyArticle(Authentication authentication, Long id);
 
-  void removeArticle(Long id);
+  void removeArticle(Authentication authentication, Long id);
 }

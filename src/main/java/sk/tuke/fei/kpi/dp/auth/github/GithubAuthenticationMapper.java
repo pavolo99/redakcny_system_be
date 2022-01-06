@@ -30,7 +30,7 @@ public class GithubAuthenticationMapper implements OauthAuthenticationMapper {
   /**
    * Github auth response from github.authorization.url and github.token.url properties
    * @param tokenResponse data about provided github access and refresh token
-   * @param state
+   * @param state nullable state information
    * @return publisher of auth response
    * */
   @Override

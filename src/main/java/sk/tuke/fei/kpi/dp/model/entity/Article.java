@@ -1,11 +1,16 @@
 package sk.tuke.fei.kpi.dp.model.entity;
 
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import sk.tuke.fei.kpi.dp.common.ArticleStatusConverter;
 
@@ -39,18 +44,39 @@ public class Article {
   @Column(name = "REVIEW_NUMBER")
   private Integer reviewNumber;
 
+  @Column(name = "CREATED_AT")
+  private Date createdAt;
+
+  @Column(name = "UPDATED_AT")
+  private Date updatedAt;
+
+  @ManyToOne
+  private User createdBy;
+
+  @ManyToOne
+  private User updatedBy;
+
   @Convert(converter = ArticleStatusConverter.class)
   @Column(name = "ARTICLE_STATUS_ID")
   private ArticleStatus articleStatus;
 
-  public Article(String name, String text, Integer reviewNumber, ArticleStatus articleStatus) {
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "article")
+  List<ArticleCollaborator> articleCollaborators = new ArrayList<>();
+
+  public Article() {}
+
+  public Article(String name, String text, Integer reviewNumber, ArticleStatus articleStatus, User createdBy) {
     this.name = name;
     this.text = text;
     this.reviewNumber = reviewNumber;
     this.articleStatus = articleStatus;
-  }
 
-  public Article() {}
+    Date now = new Date();
+    this.createdAt = now;
+    this.updatedAt = now;
+    this.createdBy = createdBy;
+    this.updatedBy = createdBy;
+  }
 
   public Long getId() {
     return id;
@@ -116,6 +142,38 @@ public class Article {
     this.reviewNumber = reviewNumber;
   }
 
+  public Date getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(Date createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public Date getUpdatedAt() {
+    return updatedAt;
+  }
+
+  public void setUpdatedAt(Date updatedAt) {
+    this.updatedAt = updatedAt;
+  }
+
+  public User getCreatedBy() {
+    return createdBy;
+  }
+
+  public void setCreatedBy(User createdBy) {
+    this.createdBy = createdBy;
+  }
+
+  public User getUpdatedBy() {
+    return updatedBy;
+  }
+
+  public void setUpdatedBy(User updatedBy) {
+    this.updatedBy = updatedBy;
+  }
+
   public ArticleStatus getArticleStatus() {
     return articleStatus;
   }
@@ -124,20 +182,12 @@ public class Article {
     this.articleStatus = articleStatus;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof Article)) {
-      return false;
-    }
-    Article article = (Article) o;
-    return id.equals(article.id);
+  public List<ArticleCollaborator> getArticleCollaborators() {
+    return articleCollaborators;
   }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(id);
+  public void setArticleCollaborators(
+      List<ArticleCollaborator> articleCollaborators) {
+    this.articleCollaborators = articleCollaborators;
   }
 }

@@ -22,7 +22,7 @@ public class ApiExceptionHandler implements ExceptionHandler<ApiException, HttpR
         return HttpResponse.badRequest(errorDto);
       case FORBIDDEN:
         errorDto.setErrorCode(403);
-        return HttpResponse.ok(errorDto);
+        return HttpResponse.badRequest(errorDto);
       case UNAUTHORIZED:
         return HttpResponse.unauthorized();
       case RECORD_NOT_FOUND:

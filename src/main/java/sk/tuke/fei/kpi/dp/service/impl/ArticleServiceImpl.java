@@ -1,5 +1,6 @@
 package sk.tuke.fei.kpi.dp.service.impl;
 
+import static sk.tuke.fei.kpi.dp.exception.FaultType.FORBIDDEN;
 import static sk.tuke.fei.kpi.dp.exception.FaultType.INVALID_PARAMS;
 import static sk.tuke.fei.kpi.dp.exception.FaultType.RECORD_NOT_FOUND;
 import static sk.tuke.fei.kpi.dp.model.entity.ArticleStatus.APPROVED;
@@ -7,6 +8,8 @@ import static sk.tuke.fei.kpi.dp.model.entity.ArticleStatus.ARCHIVED;
 import static sk.tuke.fei.kpi.dp.model.entity.ArticleStatus.IN_REVIEW;
 import static sk.tuke.fei.kpi.dp.model.entity.ArticleStatus.WRITING;
 
+import io.micronaut.security.authentication.Authentication;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.inject.Singleton;
@@ -18,7 +21,9 @@ import sk.tuke.fei.kpi.dp.dto.UpdateArticleDto;
 import sk.tuke.fei.kpi.dp.exception.ApiException;
 import sk.tuke.fei.kpi.dp.mapper.ArticleMapper;
 import sk.tuke.fei.kpi.dp.model.entity.Article;
+import sk.tuke.fei.kpi.dp.model.entity.ArticleCollaborator;
 import sk.tuke.fei.kpi.dp.model.entity.ArticleStatus;
+import sk.tuke.fei.kpi.dp.model.entity.User;
 import sk.tuke.fei.kpi.dp.model.repository.ArticleRepository;
 import sk.tuke.fei.kpi.dp.service.ArticleService;
 
@@ -39,8 +44,8 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public List<ArticleViewDto> getAllArticles(QueryArticleType queryArticleType,
-      QueryArticleStatus queryArticleStatus) {
+  public List<ArticleViewDto> getAllArticles(Authentication authentication,
+      QueryArticleType queryArticleType, QueryArticleStatus queryArticleStatus) {
     List<Article> articles;
     // TODO remake after auth implementation
     if (QueryArticleType.APPROVED.equals(queryArticleType)) {
@@ -63,36 +68,53 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public ArticleEditDto createArticle() {
-    Article article = new Article("Nazov članku", "Text članku", 0, WRITING);
+  public ArticleEditDto createArticle(Authentication authentication) {
+    User createdBy = new User(Long.parseLong(authentication.getName()));
+    Article article = new Article("Nazov članku", "Text članku", 0, WRITING, createdBy);
+    ArticleCollaborator articleCollaborator = new ArticleCollaborator(true, true, true, article, createdBy);
+    article.getArticleCollaborators().add(articleCollaborator);
     Article savedArticle = articleRepository.save(article);
     return articleMapper.articleToArticleDto(savedArticle);
   }
 
   @Override
-  public ArticleEditDto updateArticle(Long id, UpdateArticleDto updateArticleDto) {
+  public ArticleEditDto updateArticle(Authentication authentication, Long id, UpdateArticleDto updateArticleDto) {
     if (!id.equals(updateArticleDto.getId())) {
       throw new ApiException(INVALID_PARAMS, "Id is not equal with update article dto id");
     }
     Article article = findArticleById(id);
+    long loggedUserId = Long.parseLong(authentication.getName());
+    // TODO resolve users which are allowed to update article
+//    if (loggedUserId != article.getCreatedBy().getId() && !authentication.getRoles().contains("Editor")) {
+//      throw new ApiException(FORBIDDEN, "You are not allowed to update this article");
+//    }
     articleMapper.updateArticleFromArticleUpdateDto(updateArticleDto, article);
+    article.setUpdatedAt(new Date());
+    article.setUpdatedBy(new User(loggedUserId));
     Article updatedArticle = articleRepository.update(article);
     return articleMapper.articleToArticleDto(updatedArticle);
   }
 
   @Override
-  public ArticleEditDto approveArticle(Long id) {
+  public ArticleEditDto approveArticle(Authentication authentication, Long id) {
     Article article = findArticleById(id);
     if (!IN_REVIEW.equals(article.getArticleStatus())) {
       throw new ApiException(INVALID_PARAMS, "Article must be first reviewed");
     }
+    authentication.getRoles().forEach(System.out::println);
+    if (!authentication.getRoles().contains("EDITOR")) {
+      throw new ApiException(FORBIDDEN, "Article can be approved only by editor");
+    }
+    long loggedUserId = Long.parseLong(authentication.getName());
+    article.setUpdatedAt(new Date());
+    article.setUpdatedBy(new User(loggedUserId));
     article.setArticleStatus(APPROVED);
     Article updatedArticle = articleRepository.update(article);
     return articleMapper.articleToArticleDto(updatedArticle);
   }
 
   @Override
-  public ArticleEditDto archiveArticle(Long id) {
+  public ArticleEditDto archiveArticle(Authentication authentication, Long id) {
     Article article = findArticleById(id);
     // TODO append condition for denied and published articles
     if (!IN_REVIEW.equals(article.getArticleStatus()) && !APPROVED.equals(
@@ -105,7 +127,7 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public ArticleEditDto sendArticleToReview(Long id) {
+  public ArticleEditDto sendArticleToReview(Authentication authentication, Long id) {
     Article article = findArticleById(id);
     if (!ArticleStatus.WRITING.equals(article.getArticleStatus())) {
       throw new ApiException(INVALID_PARAMS, "Article must be in the writing process");
@@ -117,7 +139,7 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public ArticleEditDto sendArticleReview(Long id) {
+  public ArticleEditDto sendArticleReview(Authentication authentication, Long id) {
     Article article = findArticleById(id);
     if (!IN_REVIEW.equals(article.getArticleStatus())) {
       throw new ApiException(INVALID_PARAMS, "Article must be in the review");
@@ -128,7 +150,7 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public ArticleEditDto publishArticle(Long id) {
+  public ArticleEditDto publishArticle(Authentication authentication, Long id) {
     Article article = findArticleById(id);
     if (!APPROVED.equals(article.getArticleStatus())) {
       throw new ApiException(INVALID_PARAMS, "Article must be approved");
@@ -140,7 +162,7 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public ArticleEditDto denyArticle(Long id) {
+  public ArticleEditDto denyArticle(Authentication authentication, Long id) {
     Article article = findArticleById(id);
     if (!IN_REVIEW.equals(article.getArticleStatus())) {
       throw new ApiException(INVALID_PARAMS, "Article must be after review");
@@ -152,7 +174,7 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public void removeArticle(Long id) {
+  public void removeArticle(Authentication authentication, Long id) {
     Article article = findArticleById(id);
     if (!ArticleStatus.WRITING.equals(article.getArticleStatus())
         || article.getReviewNumber() > 0) {

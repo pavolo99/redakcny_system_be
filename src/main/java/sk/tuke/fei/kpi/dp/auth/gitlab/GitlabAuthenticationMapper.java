@@ -17,7 +17,6 @@ import sk.tuke.fei.kpi.dp.service.AuthenticationService;
 @Singleton
 public class GitlabAuthenticationMapper implements OauthAuthenticationMapper {
 
-
   private static final String GITLAB_TOKEN_PREFIX = "Bearer ";
   private final GitlabApiClient gitlabApiClient;
   private final AuthenticationService authenticationService;
@@ -31,7 +30,7 @@ public class GitlabAuthenticationMapper implements OauthAuthenticationMapper {
   /**
    * Gitlab auth response from gitlab.authorization.url and gitlab.token.url properties
    * @param tokenResponse contains data about provided gitlab access and refresh token
-   * @param state
+   * @param state nullable state information
    * @return publisher of auth response
    * */
   @Override

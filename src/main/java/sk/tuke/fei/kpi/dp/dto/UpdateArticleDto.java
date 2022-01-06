@@ -15,16 +15,12 @@ public class UpdateArticleDto {
   @NotBlank
   private String text;
 
-  @NotBlank
   private String keyWords;
 
-  @NotBlank
   private String articleAbstract;
 
-  @NotBlank
   private String publicFileName;
 
-  @NotBlank
   private String publicationDecision;
 
   public Long getId() {

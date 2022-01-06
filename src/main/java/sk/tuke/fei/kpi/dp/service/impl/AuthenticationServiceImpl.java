@@ -59,6 +59,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     loggedUserDataDtoMap.put("lastName", loggedSystemUser.getLastName());
     loggedUserDataDtoMap.put("authProvider", loggedSystemUser.getAuthProvider().toString());
     loggedUserDataDtoMap.put("accessToken", jwtAccessToken);
+    // unique username is generated ID - name field in authentication class
     return AuthenticationResponse.success(String.valueOf(loggedSystemUser.getId()),
         Collections.singletonList(loggedSystemUser.getRole()), loggedUserDataDtoMap);
   }

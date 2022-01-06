@@ -40,6 +40,10 @@ public class User {
 
   public User() {}
 
+  public User(Long id) {
+    this.id = id;
+  }
+
   public User(String username, String firstName, String lastName, String email,
       AuthProvider authProvider, String role) {
     this.username = username;

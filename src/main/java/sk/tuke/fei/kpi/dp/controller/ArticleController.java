@@ -10,6 +10,7 @@ import io.micronaut.http.annotation.Post;
 import io.micronaut.http.annotation.Put;
 import io.micronaut.http.annotation.QueryValue;
 import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.rules.SecurityRule;
 import java.util.List;
 import javax.validation.Valid;
@@ -36,55 +37,56 @@ public class ArticleController {
   }
 
   @Get(uri = "/list", produces = MediaType.APPLICATION_JSON)
-  public HttpResponse<List<ArticleViewDto>> getAllArticles(@QueryValue QueryArticleType queryArticleType,
+  public HttpResponse<List<ArticleViewDto>> getAllArticles(Authentication authentication,
+      @QueryValue QueryArticleType queryArticleType,
       @QueryValue QueryArticleStatus queryArticleStatus) {
-    return HttpResponse.ok(articleService.getAllArticles(queryArticleType, queryArticleStatus));
+    return HttpResponse.ok(articleService.getAllArticles(authentication, queryArticleType, queryArticleStatus));
   }
 
   @Post(produces = MediaType.APPLICATION_JSON)
-  public HttpResponse<ArticleEditDto> createArticle() {
-    return HttpResponse.created(articleService.createArticle());
+  public HttpResponse<ArticleEditDto> createArticle(Authentication authentication) {
+    return HttpResponse.created(articleService.createArticle(authentication));
   }
 
   @Put(uri = "/{id}", produces = MediaType.APPLICATION_JSON)
-  public HttpResponse<ArticleEditDto> updateArticle(@PathVariable Long id,
+  public HttpResponse<ArticleEditDto> updateArticle(Authentication authentication, @PathVariable Long id,
       @Valid UpdateArticleDto updateArticleDto) {
-    return HttpResponse.ok(articleService.updateArticle(id, updateArticleDto));
+    return HttpResponse.ok(articleService.updateArticle(authentication, id, updateArticleDto));
   }
 
   @Put(uri = "/approved/{id}", produces = MediaType.APPLICATION_JSON)
-  public HttpResponse<ArticleEditDto> approveArticle(@PathVariable Long id) {
-    return HttpResponse.ok(articleService.approveArticle(id));
+  public HttpResponse<ArticleEditDto> approveArticle(Authentication authentication, @PathVariable Long id) {
+    return HttpResponse.ok(articleService.approveArticle(authentication, id));
   }
 
   @Put(uri = "/archived/{id}", produces = MediaType.APPLICATION_JSON)
-  public HttpResponse<ArticleEditDto> archiveArticle(@PathVariable Long id) {
-    return HttpResponse.ok(articleService.archiveArticle(id));
+  public HttpResponse<ArticleEditDto> archiveArticle(Authentication authentication, @PathVariable Long id) {
+    return HttpResponse.ok(articleService.archiveArticle(authentication, id));
   }
 
   @Put(uri = "/sent-to-review/{id}", produces = MediaType.APPLICATION_JSON)
-  public HttpResponse<ArticleEditDto> sendArticleToReview(@PathVariable Long id) {
-    return HttpResponse.ok(articleService.sendArticleToReview(id));
+  public HttpResponse<ArticleEditDto> sendArticleToReview(Authentication authentication, @PathVariable Long id) {
+    return HttpResponse.ok(articleService.sendArticleToReview(authentication, id));
   }
 
   @Put(uri = "/sent-review/{id}", produces = MediaType.APPLICATION_JSON)
-  public HttpResponse<ArticleEditDto> sendArticleReview(@PathVariable Long id) {
-    return HttpResponse.ok(articleService.sendArticleReview(id));
+  public HttpResponse<ArticleEditDto> sendArticleReview(Authentication authentication, @PathVariable Long id) {
+    return HttpResponse.ok(articleService.sendArticleReview(authentication, id));
   }
 
   @Put(uri = "/published/{id}", produces = MediaType.APPLICATION_JSON)
-  public HttpResponse<ArticleEditDto> publishArticle(@PathVariable Long id) {
-    return HttpResponse.ok(articleService.publishArticle(id));
+  public HttpResponse<ArticleEditDto> publishArticle(Authentication authentication, @PathVariable Long id) {
+    return HttpResponse.ok(articleService.publishArticle(authentication, id));
   }
 
   @Put(uri = "/denied/{id}", produces = MediaType.APPLICATION_JSON)
-  public HttpResponse<ArticleEditDto> denyArticle(@PathVariable Long id) {
-    return HttpResponse.ok(articleService.denyArticle(id));
+  public HttpResponse<ArticleEditDto> denyArticle(Authentication authentication, @PathVariable Long id) {
+    return HttpResponse.ok(articleService.denyArticle(authentication, id));
   }
 
   @Delete(uri = "/deleted/{id}")
-  public HttpResponse<Void> removeArticle(@PathVariable Long id) {
-    articleService.removeArticle(id);
+  public HttpResponse<Void> removeArticle(Authentication authentication, @PathVariable Long id) {
+    articleService.removeArticle(authentication, id);
     return HttpResponse.ok();
   }
 }
