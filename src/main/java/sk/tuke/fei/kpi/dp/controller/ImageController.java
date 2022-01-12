@@ -31,6 +31,7 @@ public class ImageController {
   }
 
   @Get(uri = "/content/{imageId}", produces = MediaType.MULTIPART_FORM_DATA)
+  @Secured(SecurityRule.IS_ANONYMOUS)
   public HttpResponse<byte[]> getImageContent(@PathVariable Long imageId) {
     return HttpResponse.ok(imageService.getImageContent(imageId));
   }

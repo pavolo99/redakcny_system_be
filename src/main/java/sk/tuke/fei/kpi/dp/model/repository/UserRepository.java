@@ -1,7 +1,9 @@
 package sk.tuke.fei.kpi.dp.model.repository;
 
+import io.micronaut.data.annotation.Query;
 import io.micronaut.data.annotation.Repository;
 import io.micronaut.data.repository.CrudRepository;
+import java.util.List;
 import java.util.Optional;
 import sk.tuke.fei.kpi.dp.common.AuthProvider;
 import sk.tuke.fei.kpi.dp.model.entity.User;
@@ -10,4 +12,14 @@ import sk.tuke.fei.kpi.dp.model.entity.User;
 public interface UserRepository extends CrudRepository<User, Long> {
 
   Optional<User> findByUsernameAndAuthProvider(String username, AuthProvider authProvider);
+
+  @Query("select u "
+      + "from User u "
+      + "where (lower(u.firstName) like :searchValue "
+      + "or lower(u.lastName) like :searchValue "
+      + "or lower(u.username) like :searchValue "
+      + "or lower(u.email) like :searchValue) "
+      + "and u.id != :loggedUserId")
+  List<User> getPotentialCollaboratorsForArticle(String searchValue, Long loggedUserId);
+
 }

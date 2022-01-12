@@ -10,12 +10,13 @@ import sk.tuke.fei.kpi.dp.model.entity.ArticleStatus;
 @Repository
 public interface ArticleRepository extends CrudRepository<Article, Long> {
 
-  @Query("select o from Article o")
-  List<Article> getAllArticles();
-
-  @Query("select o from Article o where o.articleStatus in :articleStatuses")
+  @Query("select a from Article a left join fetch a.updatedBy u where a.articleStatus in :articleStatuses")
   List<Article> getArticlesByStatus(List<ArticleStatus> articleStatuses);
 
-  @Query("select o from Article o where o.articleStatus = :writingArticleStatus and o.reviewNumber > 0")
-  List<Article> getArticlesAfterReview(ArticleStatus writingArticleStatus);
+  @Query("select a from Article a left join fetch a.updatedBy u where a.createdBy.id = :loggedUserId")
+  List<Article> getAllArticlesCreatedByLoggedUser(long loggedUserId);
+
+  @Query(value = "select a from Article a left join fetch a.updatedBy u where a.id in (select c.article.id from ArticleCollaborator c where c.user.id = :loggedUserId and c.isOwner = false)")
+  List<Article> getSharedArticlesOfLoggedUser(long loggedUserId);
+
 }

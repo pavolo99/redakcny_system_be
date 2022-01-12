@@ -2,6 +2,7 @@ package sk.tuke.fei.kpi.dp.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -25,10 +26,10 @@ public class ArticleCollaborator {
   @Column(name = "IS_AUTHOR")
   private Boolean isAuthor = false;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   private Article article;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   private User user;
 
   public ArticleCollaborator() {

@@ -9,6 +9,7 @@ import static sk.tuke.fei.kpi.dp.model.entity.ArticleStatus.IN_REVIEW;
 import static sk.tuke.fei.kpi.dp.model.entity.ArticleStatus.WRITING;
 
 import io.micronaut.security.authentication.Authentication;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,20 +47,23 @@ public class ArticleServiceImpl implements ArticleService {
   @Override
   public List<ArticleViewDto> getAllArticles(Authentication authentication,
       QueryArticleType queryArticleType, QueryArticleStatus queryArticleStatus) {
-    List<Article> articles;
-    // TODO remake after auth implementation
-    if (QueryArticleType.APPROVED.equals(queryArticleType)) {
+    List<Article> articles = new ArrayList<>();
+    long loggedUserId = Long.parseLong(authentication.getName());
+    if (QueryArticleType.MINE.equals(queryArticleType)) {
+      articles = articleRepository.getAllArticlesCreatedByLoggedUser(loggedUserId);
+    } else if (QueryArticleType.APPROVED.equals(queryArticleType)) {
       articles = articleRepository.getArticlesByStatus(List.of(APPROVED));
     } else if (QueryArticleType.ARCHIVED.equals(queryArticleType)) {
       articles = articleRepository.getArticlesByStatus(List.of(ARCHIVED));
-    } else if (QueryArticleStatus.WRITING.equals(queryArticleStatus)) {
-      articles = articleRepository.getArticlesByStatus(List.of(WRITING));
+    } else if (QueryArticleType.SHARED_WITH_ME.equals(queryArticleType)) {
+      articles = articleRepository.getSharedArticlesOfLoggedUser(loggedUserId);
+    }
+    if (QueryArticleStatus.WRITING.equals(queryArticleStatus)) {
+      articles = articles.stream().filter(article -> article.getArticleStatus().equals(WRITING)).collect(Collectors.toList());
     } else if (QueryArticleStatus.IN_REVIEW.equals(queryArticleStatus)) {
-      articles = articleRepository.getArticlesByStatus(List.of(IN_REVIEW));
+      articles = articles.stream().filter(article -> article.getArticleStatus().equals(IN_REVIEW)).collect(Collectors.toList());
     } else if (QueryArticleStatus.AFTER_REVIEW.equals(queryArticleStatus)) {
-      articles = articleRepository.getArticlesAfterReview(WRITING);
-    } else {
-      articles = articleRepository.getAllArticles();
+      articles = articles.stream().filter(article -> article.getArticleStatus().equals(WRITING) && article.getReviewNumber() > 0).collect(Collectors.toList());
     }
     return articles
         .stream()
@@ -184,7 +188,8 @@ public class ArticleServiceImpl implements ArticleService {
     articleRepository.delete(article);
   }
 
-  private Article findArticleById(Long id) {
+  @Override
+  public Article findArticleById(Long id) {
     return articleRepository.findById(id).orElseThrow(
         () -> new ApiException(RECORD_NOT_FOUND, "Article was not found"));
   }

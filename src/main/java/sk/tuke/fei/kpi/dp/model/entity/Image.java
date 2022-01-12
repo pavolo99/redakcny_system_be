@@ -24,6 +24,7 @@ public class Image {
   private byte[] imageContent;
 
   @ManyToOne
+//  @ManyToOne(fetch = FetchType.LAZY)
   private Article article;
 
   public Image() {}

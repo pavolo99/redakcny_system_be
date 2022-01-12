@@ -7,6 +7,7 @@ import sk.tuke.fei.kpi.dp.common.QueryArticleType;
 import sk.tuke.fei.kpi.dp.dto.ArticleEditDto;
 import sk.tuke.fei.kpi.dp.dto.ArticleViewDto;
 import sk.tuke.fei.kpi.dp.dto.UpdateArticleDto;
+import sk.tuke.fei.kpi.dp.model.entity.Article;
 
 public interface ArticleService {
 
@@ -32,4 +33,6 @@ public interface ArticleService {
   ArticleEditDto denyArticle(Authentication authentication, Long id);
 
   void removeArticle(Authentication authentication, Long id);
+
+  Article findArticleById(Long id);
 }
