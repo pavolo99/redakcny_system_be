@@ -185,7 +185,11 @@ public class ArticleServiceImpl implements ArticleService {
       throw new ApiException(INVALID_PARAMS,
           "Article must be in writing state and cannot be after any review");
     }
-    articleRepository.delete(article);
+    try {
+      articleRepository.delete(article);
+    } catch (Exception e) {
+      System.out.println("Error while saving article " + article.getId() + " " + e.getMessage());
+    }
   }
 
   @Override
