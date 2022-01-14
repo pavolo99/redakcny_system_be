@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.inject.Singleton;
+import javax.transaction.Transactional;
 import sk.tuke.fei.kpi.dp.common.QueryArticleStatus;
 import sk.tuke.fei.kpi.dp.common.QueryArticleType;
 import sk.tuke.fei.kpi.dp.dto.ArticleEditDto;
@@ -40,8 +41,16 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public ArticleEditDto getArticle(Long id) {
-    return articleMapper.articleToArticleDto(findArticleById(id));
+  @Transactional
+  public ArticleEditDto getArticle(Authentication authentication, Long id) {
+    Article article = findArticleById(id);
+    boolean canLoggedUserEdit = article.getArticleCollaborators()
+        .stream()
+        .anyMatch(collaborator -> collaborator.getCanEdit()
+            && collaborator.getId().equals(Long.parseLong(authentication.getName())));
+    ArticleEditDto articleEditDto = articleMapper.articleToArticleDto(article);
+    articleEditDto.setCanLoggedUserEdit(canLoggedUserEdit);
+    return articleEditDto;
   }
 
   @Override

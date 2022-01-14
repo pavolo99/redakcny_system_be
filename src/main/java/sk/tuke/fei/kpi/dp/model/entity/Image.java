@@ -3,6 +3,7 @@ package sk.tuke.fei.kpi.dp.model.entity;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -23,8 +24,7 @@ public class Image {
   @Column(name = "IMAGE_CONTENT")
   private byte[] imageContent;
 
-  @ManyToOne
-//  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.LAZY)
   private Article article;
 
   public Image() {}

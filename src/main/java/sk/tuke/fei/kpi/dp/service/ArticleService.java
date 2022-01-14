@@ -11,7 +11,7 @@ import sk.tuke.fei.kpi.dp.model.entity.Article;
 
 public interface ArticleService {
 
-  ArticleEditDto getArticle(Long id);
+  ArticleEditDto getArticle(Authentication authentication, Long id);
 
   List<ArticleViewDto> getAllArticles(Authentication authentication,
       QueryArticleType queryArticleType, QueryArticleStatus queryArticleStatus);

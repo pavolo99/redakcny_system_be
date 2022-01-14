@@ -2,7 +2,6 @@ package sk.tuke.fei.kpi.dp.dto;
 
 import java.util.Date;
 import sk.tuke.fei.kpi.dp.model.entity.ArticleStatus;
-import sk.tuke.fei.kpi.dp.model.entity.User;
 
 public class ArticleViewDto {
 
@@ -11,7 +10,7 @@ public class ArticleViewDto {
   private ArticleStatus articleStatus;
   private Integer reviewNumber;
   private Date updatedAt;
-  private User updatedBy;
+  private UserDto updatedBy;
 
   public Long getId() {
     return id;
@@ -53,11 +52,12 @@ public class ArticleViewDto {
     this.updatedAt = updatedAt;
   }
 
-  public User getUpdatedBy() {
+  public UserDto getUpdatedBy() {
     return updatedBy;
   }
 
-  public void setUpdatedBy(User updatedBy) {
+  public void setUpdatedBy(UserDto updatedBy) {
     this.updatedBy = updatedBy;
   }
+
 }

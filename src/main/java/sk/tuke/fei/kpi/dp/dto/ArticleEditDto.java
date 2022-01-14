@@ -15,6 +15,7 @@ public class ArticleEditDto {
   private String publicationDecision;
   private Integer reviewNumber;
   private ArticleStatus articleStatus;
+  private boolean canLoggedUserEdit;
 
   public Long getId() {
     return id;
@@ -86,5 +87,13 @@ public class ArticleEditDto {
 
   public void setArticleStatus(ArticleStatus articleStatus) {
     this.articleStatus = articleStatus;
+  }
+
+  public boolean isCanLoggedUserEdit() {
+    return canLoggedUserEdit;
+  }
+
+  public void setCanLoggedUserEdit(boolean canLoggedUserEdit) {
+    this.canLoggedUserEdit = canLoggedUserEdit;
   }
 }
