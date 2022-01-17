@@ -47,7 +47,7 @@ public class ArticleServiceImpl implements ArticleService {
     boolean canLoggedUserEdit = article.getArticleCollaborators()
         .stream()
         .anyMatch(collaborator -> collaborator.getCanEdit()
-            && collaborator.getId().equals(Long.parseLong(authentication.getName())));
+            && collaborator.getUser().getId().equals(Long.parseLong(authentication.getName())));
     ArticleEditDto articleEditDto = articleMapper.articleToArticleDto(article);
     articleEditDto.setCanLoggedUserEdit(canLoggedUserEdit);
     return articleEditDto;
@@ -114,7 +114,6 @@ public class ArticleServiceImpl implements ArticleService {
     if (!IN_REVIEW.equals(article.getArticleStatus())) {
       throw new ApiException(INVALID_PARAMS, "Article must be first reviewed");
     }
-    authentication.getRoles().forEach(System.out::println);
     if (!authentication.getRoles().contains("EDITOR")) {
       throw new ApiException(FORBIDDEN, "Article can be approved only by editor");
     }
