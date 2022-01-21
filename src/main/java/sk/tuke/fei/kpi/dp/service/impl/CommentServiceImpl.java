@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.inject.Singleton;
-import javax.transaction.Transactional;
 import sk.tuke.fei.kpi.dp.dto.CommentCreateDto;
 import sk.tuke.fei.kpi.dp.dto.CommentDto;
 import sk.tuke.fei.kpi.dp.dto.CommentReplyDto;
@@ -14,7 +13,9 @@ import sk.tuke.fei.kpi.dp.exception.FaultType;
 import sk.tuke.fei.kpi.dp.mapper.CommentMapper;
 import sk.tuke.fei.kpi.dp.model.entity.Article;
 import sk.tuke.fei.kpi.dp.model.entity.Comment;
+import sk.tuke.fei.kpi.dp.model.entity.CommentReply;
 import sk.tuke.fei.kpi.dp.model.entity.User;
+import sk.tuke.fei.kpi.dp.model.repository.CommentReplyRepository;
 import sk.tuke.fei.kpi.dp.model.repository.CommentRepository;
 import sk.tuke.fei.kpi.dp.service.ArticleService;
 import sk.tuke.fei.kpi.dp.service.CommentService;
@@ -27,14 +28,17 @@ public class CommentServiceImpl implements CommentService {
   private final UserService userService;
   private final CommentRepository commentRepository;
   private final CommentMapper commentMapper;
+  private final CommentReplyRepository commentReplyRepository;
 
   public CommentServiceImpl(ArticleService articleService,
       UserService userService, CommentRepository commentRepository,
-      CommentMapper commentMapper) {
+      CommentMapper commentMapper,
+      CommentReplyRepository commentReplyRepository) {
     this.articleService = articleService;
     this.userService = userService;
     this.commentRepository = commentRepository;
     this.commentMapper = commentMapper;
+    this.commentReplyRepository = commentReplyRepository;
   }
 
   @Override
@@ -76,32 +80,35 @@ public class CommentServiceImpl implements CommentService {
   }
 
   @Override
-  @Transactional
   public List<CommentDto> getComments(Authentication authentication, Long articleId,
       boolean allComments) {
 
     List<Comment> comments = allComments ? commentRepository.getAllCommentsByArticleId(articleId)
         : commentRepository.getUnResolvedCommentsByArticleId(articleId);
-    return mapCommentsToCommentsDtoList(comments);
+
+    List<CommentReply> commentReplies =
+        allComments ? commentReplyRepository.getAllCommentsByArticleId(articleId)
+            : commentReplyRepository.getUnResolvedCommentsByArticleId(articleId);
+
+    return comments.stream()
+        .map(comment -> {
+          List<CommentReply> commentRepliesForComment = commentReplies
+              .stream()
+              .filter(commentReply -> commentReply.getComment().equals(comment))
+              .collect(Collectors.toList());
+
+          List<CommentReplyDto> commentRepliesDto = commentMapper
+              .commentRepliesToCommentRepliesDtoList(commentRepliesForComment);
+          CommentDto commentDto = commentMapper.commentToCommentDto(comment);
+          commentDto.setCommentReplyDtoList(commentRepliesDto);
+          return commentDto;
+        })
+        .collect(Collectors.toList());
   }
 
   @Override
   public Comment findByCommentId(Long id) {
     return commentRepository.findById(id)
         .orElseThrow(() -> new ApiException(FaultType.RECORD_NOT_FOUND, "Comment was not found"));
-  }
-
-  private List<CommentDto> mapCommentsToCommentsDtoList(List<Comment> comments) {
-    return comments
-        .stream()
-        .map(comment -> {
-          List<CommentReplyDto> commentRepliesDto = commentMapper
-              .commentRepliesToCommentRepliesDtoList(comment.getCommentReplies());
-          CommentDto commentDto = commentMapper.commentToCommentDto(comment);
-          commentDto.setCommentReplyDtoList(commentRepliesDto);
-
-          return commentDto;
-        })
-        .collect(Collectors.toList());
   }
 }

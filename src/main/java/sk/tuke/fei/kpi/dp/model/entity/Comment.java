@@ -1,16 +1,13 @@
 package sk.tuke.fei.kpi.dp.model.entity;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import javax.persistence.CascadeType;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -45,9 +42,6 @@ public class Comment {
 
   @ManyToOne(fetch = FetchType.LAZY)
   private Article article;
-
-  @OneToMany(cascade = CascadeType.ALL, mappedBy = "comment")
-  List<CommentReply> commentReplies = new ArrayList<>();
 
   public Comment() {}
 
@@ -129,12 +123,20 @@ public class Comment {
     this.article = article;
   }
 
-  public List<CommentReply> getCommentReplies() {
-    return commentReplies;
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Comment)) {
+      return false;
+    }
+    Comment comment = (Comment) o;
+    return id.equals(comment.id);
   }
 
-  public void setCommentReplies(
-      List<CommentReply> commentReplies) {
-    this.commentReplies = commentReplies;
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
   }
 }
