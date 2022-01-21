@@ -44,7 +44,7 @@ public class ArticleController {
   }
 
   @Post(produces = MediaType.APPLICATION_JSON)
-  public HttpResponse<ArticleEditDto> createArticle(Authentication authentication) {
+  public HttpResponse<Long> createArticle(Authentication authentication) {
     return HttpResponse.created(articleService.createArticle(authentication));
   }
 

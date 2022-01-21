@@ -16,7 +16,7 @@ public interface ArticleService {
   List<ArticleViewDto> getAllArticles(Authentication authentication,
       QueryArticleType queryArticleType, QueryArticleStatus queryArticleStatus);
 
-  ArticleEditDto createArticle(Authentication authentication);
+  Long createArticle(Authentication authentication);
 
   ArticleEditDto updateArticle(Authentication authentication, Long id, UpdateArticleDto updateArticleDto);
 

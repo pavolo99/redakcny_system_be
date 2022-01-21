@@ -81,13 +81,13 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public ArticleEditDto createArticle(Authentication authentication) {
+  public Long createArticle(Authentication authentication) {
     User createdBy = new User(Long.parseLong(authentication.getName()));
     Article article = new Article("Nazov članku", "Text članku", 0, WRITING, createdBy);
     ArticleCollaborator articleCollaborator = new ArticleCollaborator(true, true, true, article, createdBy);
     article.getArticleCollaborators().add(articleCollaborator);
     Article savedArticle = articleRepository.save(article);
-    return articleMapper.articleToArticleDto(savedArticle);
+    return savedArticle.getId();
   }
 
   @Override

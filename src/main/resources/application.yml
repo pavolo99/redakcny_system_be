@@ -37,10 +37,12 @@ micronaut:
         get-allowed: true
     redirect:
       login-success: 'http://localhost:8080/login-callback'
+#      login-success: 'http://192.168.0.59:8080/login-callback'
 
   application:
     name: redakcny_system_be
     front-end-url: 'http://localhost:3000'
+#    front-end-url: 'http://192.168.0.59:3000'
   router:
     static-resources:
       swagger:
@@ -60,6 +62,8 @@ micronaut:
           allowedOrigins:
             - http://localhost:8080
             - http://localhost:3000
+            - http://192.168.0.59:3000
+            - http://192.168.0.59:3000
 
 datasources:
   default:
