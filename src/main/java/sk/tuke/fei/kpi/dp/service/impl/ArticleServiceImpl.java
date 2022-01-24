@@ -26,18 +26,26 @@ import sk.tuke.fei.kpi.dp.model.entity.Article;
 import sk.tuke.fei.kpi.dp.model.entity.ArticleCollaborator;
 import sk.tuke.fei.kpi.dp.model.entity.ArticleStatus;
 import sk.tuke.fei.kpi.dp.model.entity.User;
+import sk.tuke.fei.kpi.dp.model.entity.Version;
 import sk.tuke.fei.kpi.dp.model.repository.ArticleRepository;
+import sk.tuke.fei.kpi.dp.model.repository.VersionRepository;
 import sk.tuke.fei.kpi.dp.service.ArticleService;
+import sk.tuke.fei.kpi.dp.service.UserService;
 
 @Singleton
 public class ArticleServiceImpl implements ArticleService {
 
   private final ArticleRepository articleRepository;
   private final ArticleMapper articleMapper;
+  private final UserService userService;
+  private final VersionRepository versionRepository;
 
-  public ArticleServiceImpl(ArticleRepository articleRepository, ArticleMapper articleMapper) {
+  public ArticleServiceImpl(ArticleRepository articleRepository, ArticleMapper articleMapper,
+      UserService userService, VersionRepository versionRepository) {
     this.articleRepository = articleRepository;
     this.articleMapper = articleMapper;
+    this.userService = userService;
+    this.versionRepository = versionRepository;
   }
 
   @Override
@@ -82,11 +90,13 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   public Long createArticle(Authentication authentication) {
-    User createdBy = new User(Long.parseLong(authentication.getName()));
+    User createdBy = userService.findUserById(Long.parseLong(authentication.getName()));
     Article article = new Article("Nazov članku", "Text članku", 0, WRITING, createdBy);
     ArticleCollaborator articleCollaborator = new ArticleCollaborator(true, true, true, article, createdBy);
     article.getArticleCollaborators().add(articleCollaborator);
+    Version firstVersion = new Version(article.getText(), createdBy, article);
     Article savedArticle = articleRepository.save(article);
+    versionRepository.save(firstVersion);
     return savedArticle.getId();
   }
 
@@ -96,15 +106,17 @@ public class ArticleServiceImpl implements ArticleService {
       throw new ApiException(INVALID_PARAMS, "Id is not equal with update article dto id");
     }
     Article article = findArticleById(id);
-    long loggedUserId = Long.parseLong(authentication.getName());
     // TODO resolve users which are allowed to update article
 //    if (loggedUserId != article.getCreatedBy().getId() && !authentication.getRoles().contains("Editor")) {
 //      throw new ApiException(FORBIDDEN, "You are not allowed to update this article");
 //    }
     articleMapper.updateArticleFromArticleUpdateDto(updateArticleDto, article);
     article.setUpdatedAt(new Date());
-    article.setUpdatedBy(new User(loggedUserId));
+    User updatedBy = userService.findUserById(Long.parseLong(authentication.getName()));
+    article.setUpdatedBy(updatedBy);
     Article updatedArticle = articleRepository.update(article);
+    Version newVersion = new Version(article.getText(), updatedBy, article);
+    versionRepository.save(newVersion);
     return articleMapper.articleToArticleDto(updatedArticle);
   }
 
