@@ -11,6 +11,7 @@ import sk.tuke.fei.kpi.dp.mapper.ImageMapper;
 import sk.tuke.fei.kpi.dp.model.entity.Article;
 import sk.tuke.fei.kpi.dp.model.entity.Image;
 import sk.tuke.fei.kpi.dp.model.repository.ImageRepository;
+import sk.tuke.fei.kpi.dp.service.ArticleService;
 import sk.tuke.fei.kpi.dp.service.ImageService;
 
 @Singleton
@@ -18,22 +19,24 @@ public class ImageServiceImpl implements ImageService {
 
   private final ImageRepository imageRepository;
   private final ImageMapper imageMapper;
+  private final ArticleService articleService;
 
-  public ImageServiceImpl(ImageRepository imageRepository, ImageMapper imageMapper) {
+  public ImageServiceImpl(ImageRepository imageRepository, ImageMapper imageMapper,
+      ArticleService articleService) {
     this.imageRepository = imageRepository;
     this.imageMapper = imageMapper;
+    this.articleService = articleService;
   }
 
   @Override
-  public Long uploadImage(Long articleId, CompletedFileUpload file) {
+  public Long uploadImage(Long articleId, CompletedFileUpload uploadedFile) {
     try {
-      Article article = new Article();
-      article.setId(articleId);
-      Image image = new Image(file.getFilename(), file.getBytes(), article);
+      Article article = articleService.findArticleById(articleId);
+      Image image = new Image(uploadedFile.getFilename(), uploadedFile.getBytes(), article);
       Image savedImage = imageRepository.save(image);
       return savedImage.getId();
     } catch (Exception e) {
-      throw new ApiException(FaultType.GENERAL_ERROR, e.getMessage());
+      throw new ApiException(FaultType.GENERAL_ERROR, "Unexpected error occurred while uploading image");
     }
   }
 

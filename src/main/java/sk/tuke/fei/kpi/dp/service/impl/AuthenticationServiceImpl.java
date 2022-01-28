@@ -77,7 +77,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     tokenPayloadData.put("nbf", currentUnixTime + (60 * 10)); // not valid before - 10 minutes
     tokenPayloadData.put("roles", Collections.singletonList(loggedSystemUser.getRole())); // user role
     tokenPayloadData.put("iss", ISSUER_APP_NAME); // issuer
-    tokenPayloadData.put("exp", currentUnixTime + (60 * 180)); // token expiration - 3 hours
+    tokenPayloadData.put("exp", currentUnixTime + (60 * 360)); // token expiration - 6 hours
     tokenPayloadData.put("iat", currentUnixTime); // issued at
     return jwtTokenGenerator
         .generateToken(tokenPayloadData)
