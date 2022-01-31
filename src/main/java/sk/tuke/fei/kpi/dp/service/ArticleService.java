@@ -4,6 +4,7 @@ import io.micronaut.security.authentication.Authentication;
 import java.util.List;
 import sk.tuke.fei.kpi.dp.common.QueryArticleStatus;
 import sk.tuke.fei.kpi.dp.common.QueryArticleType;
+import sk.tuke.fei.kpi.dp.dto.ArchivedArticleDto;
 import sk.tuke.fei.kpi.dp.dto.ArticleEditDto;
 import sk.tuke.fei.kpi.dp.dto.ArticleViewDto;
 import sk.tuke.fei.kpi.dp.dto.UpdateArticleDto;
@@ -35,4 +36,8 @@ public interface ArticleService {
   void removeArticle(Authentication authentication, Long id);
 
   Article findArticleById(Long id);
+
+  ArchivedArticleDto getArchivedArticle(Authentication authentication, Long id);
+
+  void restoreArticle(Authentication authentication, Long id);
 }

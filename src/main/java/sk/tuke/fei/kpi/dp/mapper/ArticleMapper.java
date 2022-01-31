@@ -3,6 +3,7 @@ package sk.tuke.fei.kpi.dp.mapper;
 import javax.inject.Singleton;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
+import sk.tuke.fei.kpi.dp.dto.ArchivedArticleDto;
 import sk.tuke.fei.kpi.dp.dto.ArticleEditDto;
 import sk.tuke.fei.kpi.dp.dto.ArticleViewDto;
 import sk.tuke.fei.kpi.dp.dto.UpdateArticleDto;
@@ -17,4 +18,6 @@ public interface ArticleMapper {
   ArticleEditDto articleToArticleDto(Article article);
 
   void updateArticleFromArticleUpdateDto(UpdateArticleDto updateArticleDto, @MappingTarget Article article);
+
+  ArchivedArticleDto articleToArchivedArticleDto(Article article);
 }

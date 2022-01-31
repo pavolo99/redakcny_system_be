@@ -16,6 +16,7 @@ import java.util.List;
 import javax.validation.Valid;
 import sk.tuke.fei.kpi.dp.common.QueryArticleStatus;
 import sk.tuke.fei.kpi.dp.common.QueryArticleType;
+import sk.tuke.fei.kpi.dp.dto.ArchivedArticleDto;
 import sk.tuke.fei.kpi.dp.dto.ArticleEditDto;
 import sk.tuke.fei.kpi.dp.dto.ArticleViewDto;
 import sk.tuke.fei.kpi.dp.dto.UpdateArticleDto;
@@ -87,6 +88,17 @@ public class ArticleController {
   @Delete(uri = "/deleted/{id}")
   public HttpResponse<Void> removeArticle(Authentication authentication, @PathVariable Long id) {
     articleService.removeArticle(authentication, id);
+    return HttpResponse.ok();
+  }
+
+  @Get(uri = "/archived/{id}")
+  public HttpResponse<ArchivedArticleDto> getArchivedArticle(Authentication authentication, @PathVariable Long id) {
+    return HttpResponse.ok(articleService.getArchivedArticle(authentication, id));
+  }
+
+  @Put(uri = "/restore/{id}")
+  public HttpResponse<Void> restoreArticle(Authentication authentication, @PathVariable Long id) {
+    articleService.restoreArticle(authentication, id);
     return HttpResponse.ok();
   }
 }

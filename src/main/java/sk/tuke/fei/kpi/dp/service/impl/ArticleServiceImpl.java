@@ -17,6 +17,7 @@ import javax.inject.Singleton;
 import javax.transaction.Transactional;
 import sk.tuke.fei.kpi.dp.common.QueryArticleStatus;
 import sk.tuke.fei.kpi.dp.common.QueryArticleType;
+import sk.tuke.fei.kpi.dp.dto.ArchivedArticleDto;
 import sk.tuke.fei.kpi.dp.dto.ArticleEditDto;
 import sk.tuke.fei.kpi.dp.dto.ArticleViewDto;
 import sk.tuke.fei.kpi.dp.dto.UpdateArticleDto;
@@ -221,5 +222,26 @@ public class ArticleServiceImpl implements ArticleService {
   public Article findArticleById(Long id) {
     return articleRepository.findById(id).orElseThrow(
         () -> new ApiException(RECORD_NOT_FOUND, "Article was not found"));
+  }
+
+  @Override
+  public ArchivedArticleDto getArchivedArticle(Authentication authentication, Long id) {
+    Article archivedArticle = getArchivedArticle(id);
+    return articleMapper.articleToArchivedArticleDto(archivedArticle);
+  }
+
+  @Override
+  public void restoreArticle(Authentication authentication, Long id) {
+    Article archivedArticle = getArchivedArticle(id);
+    archivedArticle.setArticleStatus(WRITING);
+    articleRepository.update(archivedArticle);
+  }
+
+  private Article getArchivedArticle(Long id) {
+    Article article = findArticleById(id);
+    if (!article.getArticleStatus().equals(ARCHIVED)) {
+      throw new ApiException(INVALID_PARAMS, "Article must be archived");
+    }
+    return article;
   }
 }
