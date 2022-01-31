@@ -23,4 +23,8 @@ public interface ArticleRepository extends CrudRepository<Article, Long> {
       + "order by a.updatedAt desc")
   List<Article> getSharedArticlesOfLoggedUser(long loggedUserId);
 
+  @Query(value = "select a from Article a left join fetch a.updatedBy u where a.id in "
+      + "(select c.article.id from ArticleCollaborator c where c.user.id = :loggedUserId) "
+      + "order by a.updatedAt desc")
+  List<Article> getReviewedArticlesForEditor(long loggedUserId);
 }

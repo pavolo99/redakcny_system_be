@@ -74,6 +74,11 @@ public class ArticleServiceImpl implements ArticleService {
       articles = articleRepository.getArticlesByStatus(List.of(ARCHIVED));
     } else if (QueryArticleType.SHARED_WITH_ME.equals(queryArticleType)) {
       articles = articleRepository.getSharedArticlesOfLoggedUser(loggedUserId);
+    } else if (QueryArticleType.REVIEWED_BY_ME.equals(queryArticleType)) {
+      if (!authentication.getRoles().contains("EDITOR")) {
+        throw new ApiException(FORBIDDEN, "Articles are determined only for editor");
+      }
+      articles = articleRepository.getReviewedArticlesForEditor(loggedUserId);
     }
     if (QueryArticleStatus.WRITING.equals(queryArticleStatus)) {
       articles = articles.stream().filter(article -> article.getArticleStatus().equals(WRITING)).collect(Collectors.toList());

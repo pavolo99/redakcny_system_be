@@ -7,6 +7,7 @@ public class ArticleViewDto {
 
   private Long id;
   private String name;
+  private String publicationDecision;
   private ArticleStatus articleStatus;
   private Integer reviewNumber;
   private Date updatedAt;
@@ -60,4 +61,11 @@ public class ArticleViewDto {
     this.updatedBy = updatedBy;
   }
 
+  public String getPublicationDecision() {
+    return publicationDecision;
+  }
+
+  public void setPublicationDecision(String publicationDecision) {
+    this.publicationDecision = publicationDecision;
+  }
 }
