@@ -50,7 +50,7 @@ public class CommentReplyServiceImpl implements CommentReplyService {
     try {
       commentReplyRepository.delete(commentReply);
     } catch (Exception e) {
-      e.printStackTrace();
+      throw new ApiException(FaultType.INVALID_PARAMS, "Article cannot be removed");
     }
   }
 

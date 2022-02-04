@@ -35,6 +35,9 @@ public class User {
   @Enumerated(EnumType.STRING)
   private AuthProvider authProvider;
 
+  @Column(name = "IS_ADMINISTRATOR")
+  private boolean isAdministrator;
+
   @Column(name = "ROLE")
   private String role;
 
@@ -108,6 +111,14 @@ public class User {
 
   public void setRole(String role) {
     this.role = role;
+  }
+
+  public boolean isAdministrator() {
+    return isAdministrator;
+  }
+
+  public void setAdministrator(boolean administrator) {
+    isAdministrator = administrator;
   }
 
   @Override

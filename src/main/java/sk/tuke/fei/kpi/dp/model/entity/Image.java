@@ -18,7 +18,7 @@ public class Image {
   @Column(name = "ID")
   private Long id;
 
-  @Column(name = "NAME")
+  @Column(name = "NAME", unique = true)
   private String name;
 
   @Column(name = "IMAGE_CONTENT")

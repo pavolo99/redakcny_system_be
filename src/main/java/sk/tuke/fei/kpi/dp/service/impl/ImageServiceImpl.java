@@ -36,6 +36,9 @@ public class ImageServiceImpl implements ImageService {
       Image savedImage = imageRepository.save(image);
       return savedImage.getId();
     } catch (Exception e) {
+      if (e.getMessage().contains("org.hibernate.exception.ConstraintViolationException")) {
+        throw new ApiException(FaultType.INVALID_PARAMS, "Image with the same name already exists");
+      }
       throw new ApiException(FaultType.GENERAL_ERROR, "Unexpected error occurred while uploading image");
     }
   }
