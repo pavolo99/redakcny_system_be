@@ -1,7 +1,7 @@
 package sk.tuke.fei.kpi.dp.service;
 
 import io.micronaut.security.authentication.Authentication;
-import sk.tuke.fei.kpi.dp.dto.CommentReplyCreateDto;
+import sk.tuke.fei.kpi.dp.dto.create.CommentReplyCreateDto;
 
 public interface CommentReplyService {
 

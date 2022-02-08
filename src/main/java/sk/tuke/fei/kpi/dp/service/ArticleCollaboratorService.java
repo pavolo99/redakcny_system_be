@@ -3,7 +3,7 @@ package sk.tuke.fei.kpi.dp.service;
 import io.micronaut.security.authentication.Authentication;
 import java.util.List;
 import sk.tuke.fei.kpi.dp.dto.ArticleCollaboratorDto;
-import sk.tuke.fei.kpi.dp.dto.UpdateArticleCollaboratorDto;
+import sk.tuke.fei.kpi.dp.dto.update.UpdateArticleCollaboratorDto;
 
 public interface ArticleCollaboratorService {
 

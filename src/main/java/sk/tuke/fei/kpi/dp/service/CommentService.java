@@ -2,8 +2,8 @@ package sk.tuke.fei.kpi.dp.service;
 
 import io.micronaut.security.authentication.Authentication;
 import java.util.List;
-import sk.tuke.fei.kpi.dp.dto.CommentCreateDto;
 import sk.tuke.fei.kpi.dp.dto.CommentDto;
+import sk.tuke.fei.kpi.dp.dto.create.CommentCreateDto;
 import sk.tuke.fei.kpi.dp.model.entity.Comment;
 
 public interface CommentService {

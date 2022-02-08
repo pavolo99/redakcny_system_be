@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.inject.Singleton;
 import sk.tuke.fei.kpi.dp.dto.ArticleCollaboratorDto;
-import sk.tuke.fei.kpi.dp.dto.UpdateArticleCollaboratorDto;
+import sk.tuke.fei.kpi.dp.dto.update.UpdateArticleCollaboratorDto;
 import sk.tuke.fei.kpi.dp.exception.ApiException;
 import sk.tuke.fei.kpi.dp.exception.FaultType;
 import sk.tuke.fei.kpi.dp.mapper.ArticleCollaboratorMapper;

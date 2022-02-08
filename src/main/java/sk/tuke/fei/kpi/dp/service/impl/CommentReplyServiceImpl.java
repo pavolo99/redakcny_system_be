@@ -3,7 +3,7 @@ package sk.tuke.fei.kpi.dp.service.impl;
 import io.micronaut.security.authentication.Authentication;
 import java.util.Date;
 import javax.inject.Singleton;
-import sk.tuke.fei.kpi.dp.dto.CommentReplyCreateDto;
+import sk.tuke.fei.kpi.dp.dto.create.CommentReplyCreateDto;
 import sk.tuke.fei.kpi.dp.exception.ApiException;
 import sk.tuke.fei.kpi.dp.exception.FaultType;
 import sk.tuke.fei.kpi.dp.model.entity.Comment;

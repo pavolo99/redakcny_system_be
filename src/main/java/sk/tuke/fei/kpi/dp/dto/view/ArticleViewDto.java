@@ -1,6 +1,7 @@
-package sk.tuke.fei.kpi.dp.dto;
+package sk.tuke.fei.kpi.dp.dto.view;
 
 import java.util.Date;
+import sk.tuke.fei.kpi.dp.dto.UserDto;
 import sk.tuke.fei.kpi.dp.model.entity.ArticleStatus;
 
 public class ArticleViewDto {

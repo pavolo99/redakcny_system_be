@@ -2,6 +2,7 @@ package sk.tuke.fei.kpi.dp.dto;
 
 import io.micronaut.core.annotation.Introspected;
 import java.util.Date;
+import sk.tuke.fei.kpi.dp.dto.simple.SimpleUserDto;
 
 @Introspected
 public class VersionDto {

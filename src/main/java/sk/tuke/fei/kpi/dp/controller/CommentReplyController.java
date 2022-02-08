@@ -9,7 +9,7 @@ import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.rules.SecurityRule;
 import javax.validation.Valid;
-import sk.tuke.fei.kpi.dp.dto.CommentReplyCreateDto;
+import sk.tuke.fei.kpi.dp.dto.create.CommentReplyCreateDto;
 import sk.tuke.fei.kpi.dp.service.CommentReplyService;
 
 @Controller("comment-reply")

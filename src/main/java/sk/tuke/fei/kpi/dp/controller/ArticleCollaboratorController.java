@@ -13,7 +13,7 @@ import io.micronaut.security.rules.SecurityRule;
 import java.util.List;
 import javax.validation.Valid;
 import sk.tuke.fei.kpi.dp.dto.ArticleCollaboratorDto;
-import sk.tuke.fei.kpi.dp.dto.UpdateArticleCollaboratorDto;
+import sk.tuke.fei.kpi.dp.dto.update.UpdateArticleCollaboratorDto;
 import sk.tuke.fei.kpi.dp.service.ArticleCollaboratorService;
 
 @Secured(SecurityRule.IS_AUTHENTICATED)

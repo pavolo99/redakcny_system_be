@@ -1,4 +1,4 @@
-package sk.tuke.fei.kpi.dp.dto;
+package sk.tuke.fei.kpi.dp.dto.simple;
 
 import io.micronaut.core.annotation.Introspected;
 import java.util.Date;

@@ -6,7 +6,7 @@ import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.Produces;
 import io.micronaut.http.server.exceptions.ExceptionHandler;
 import jakarta.inject.Singleton;
-import sk.tuke.fei.kpi.dp.dto.ErrorDto;
+import sk.tuke.fei.kpi.dp.dto.error.ErrorDto;
 
 @Produces
 @Singleton

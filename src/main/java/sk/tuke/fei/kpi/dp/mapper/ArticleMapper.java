@@ -5,8 +5,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import sk.tuke.fei.kpi.dp.dto.ArchivedArticleDto;
 import sk.tuke.fei.kpi.dp.dto.ArticleEditDto;
-import sk.tuke.fei.kpi.dp.dto.ArticleViewDto;
-import sk.tuke.fei.kpi.dp.dto.UpdateArticleDto;
+import sk.tuke.fei.kpi.dp.dto.update.UpdateArticleDto;
+import sk.tuke.fei.kpi.dp.dto.view.ArticleViewDto;
 import sk.tuke.fei.kpi.dp.model.entity.Article;
 
 @Mapper(componentModel = "jsr330")

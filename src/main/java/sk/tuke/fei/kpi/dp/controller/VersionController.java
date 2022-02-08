@@ -10,7 +10,7 @@ import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.rules.SecurityRule;
 import sk.tuke.fei.kpi.dp.dto.VersionDto;
-import sk.tuke.fei.kpi.dp.dto.VersionViewDto;
+import sk.tuke.fei.kpi.dp.dto.view.VersionViewDto;
 import sk.tuke.fei.kpi.dp.service.VersionService;
 
 @Controller("version")

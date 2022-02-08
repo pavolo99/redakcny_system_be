@@ -1,4 +1,4 @@
-package sk.tuke.fei.kpi.dp.dto;
+package sk.tuke.fei.kpi.dp.dto.error;
 
 import sk.tuke.fei.kpi.dp.exception.FaultType;
 

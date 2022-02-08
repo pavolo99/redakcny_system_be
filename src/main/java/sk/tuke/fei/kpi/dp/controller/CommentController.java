@@ -12,8 +12,8 @@ import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.rules.SecurityRule;
 import java.util.List;
 import javax.validation.Valid;
-import sk.tuke.fei.kpi.dp.dto.CommentCreateDto;
 import sk.tuke.fei.kpi.dp.dto.CommentDto;
+import sk.tuke.fei.kpi.dp.dto.create.CommentCreateDto;
 import sk.tuke.fei.kpi.dp.service.CommentService;
 
 @Controller("comment")

@@ -5,7 +5,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import sk.tuke.fei.kpi.dp.dto.ArticleCollaboratorDto;
-import sk.tuke.fei.kpi.dp.dto.UpdateArticleCollaboratorDto;
+import sk.tuke.fei.kpi.dp.dto.update.UpdateArticleCollaboratorDto;
 import sk.tuke.fei.kpi.dp.model.entity.ArticleCollaborator;
 
 @Mapper(componentModel = "jsr330")

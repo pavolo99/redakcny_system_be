@@ -4,6 +4,7 @@ import io.micronaut.core.annotation.Introspected;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import sk.tuke.fei.kpi.dp.dto.simple.SimpleUserDto;
 
 @Introspected
 public class CommentDto {

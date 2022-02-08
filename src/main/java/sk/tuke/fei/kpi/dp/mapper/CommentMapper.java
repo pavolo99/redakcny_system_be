@@ -3,9 +3,9 @@ package sk.tuke.fei.kpi.dp.mapper;
 import java.util.List;
 import javax.inject.Singleton;
 import org.mapstruct.Mapper;
-import sk.tuke.fei.kpi.dp.dto.CommentCreateDto;
 import sk.tuke.fei.kpi.dp.dto.CommentDto;
 import sk.tuke.fei.kpi.dp.dto.CommentReplyDto;
+import sk.tuke.fei.kpi.dp.dto.create.CommentCreateDto;
 import sk.tuke.fei.kpi.dp.model.entity.Comment;
 import sk.tuke.fei.kpi.dp.model.entity.CommentReply;
 

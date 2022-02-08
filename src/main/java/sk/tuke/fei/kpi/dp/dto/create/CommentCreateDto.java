@@ -1,4 +1,4 @@
-package sk.tuke.fei.kpi.dp.dto;
+package sk.tuke.fei.kpi.dp.dto.create;
 
 import io.micronaut.core.annotation.Introspected;
 import javax.validation.constraints.NotBlank;
