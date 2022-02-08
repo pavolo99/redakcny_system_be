@@ -6,6 +6,8 @@ import java.util.Optional;
 import sk.tuke.fei.kpi.dp.common.AuthProvider;
 import sk.tuke.fei.kpi.dp.dto.LoggedUserDto;
 import sk.tuke.fei.kpi.dp.dto.UserDto;
+import sk.tuke.fei.kpi.dp.dto.UserForAdminDto;
+import sk.tuke.fei.kpi.dp.dto.update.UpdateUserPrivilegesDto;
 import sk.tuke.fei.kpi.dp.model.entity.User;
 
 public interface UserService {
@@ -19,4 +21,9 @@ public interface UserService {
   LoggedUserDto getLoggedUser(Authentication authentication);
 
   User findUserById(Long userId);
+
+  List<UserForAdminDto> getAllUsersForAdmin(Authentication authentication);
+
+  List<UserForAdminDto> updateUserPrivileges(Authentication authentication, Long userId,
+      UpdateUserPrivilegesDto updateUserPrivilegesDto);
 }

@@ -1,5 +1,6 @@
 package sk.tuke.fei.kpi.dp.service.impl;
 
+import static sk.tuke.fei.kpi.dp.exception.FaultType.INVALID_PARAMS;
 import static sk.tuke.fei.kpi.dp.exception.FaultType.RECORD_NOT_FOUND;
 
 import io.micronaut.security.authentication.Authentication;
@@ -11,6 +12,8 @@ import javax.inject.Singleton;
 import sk.tuke.fei.kpi.dp.common.AuthProvider;
 import sk.tuke.fei.kpi.dp.dto.LoggedUserDto;
 import sk.tuke.fei.kpi.dp.dto.UserDto;
+import sk.tuke.fei.kpi.dp.dto.UserForAdminDto;
+import sk.tuke.fei.kpi.dp.dto.update.UpdateUserPrivilegesDto;
 import sk.tuke.fei.kpi.dp.exception.ApiException;
 import sk.tuke.fei.kpi.dp.exception.FaultType;
 import sk.tuke.fei.kpi.dp.mapper.UserMapper;
@@ -83,5 +86,28 @@ public class UserServiceImpl implements UserService {
     return userRepository.findById(userId).orElseThrow(
         () -> new ApiException(RECORD_NOT_FOUND, "User was not found"));
 
+  }
+
+  @Override
+  public List<UserForAdminDto> getAllUsersForAdmin(Authentication authentication) {
+    return userRepository.getAllUsers()
+        .stream()
+        // sets true or false in string format to enable boolean parsing in user mapper
+        .peek(user -> user.setRole(String.valueOf("EDITOR".equals(user.getRole()))))
+        .map(userMapper::userToUserForAdminDto)
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<UserForAdminDto> updateUserPrivileges(Authentication authentication, Long userId,
+      UpdateUserPrivilegesDto updateUserPrivilegesDto) {
+    if (!updateUserPrivilegesDto.getId().equals(userId)) {
+      throw new ApiException(INVALID_PARAMS, "Id in path variable is not the same as in dto");
+    }
+    User user = findUserById(userId);
+    user.setRole(updateUserPrivilegesDto.isEditor() ? "EDITOR" : "AUTHOR");
+    user.setAdministrator(updateUserPrivilegesDto.isAdministrator());
+    userRepository.update(user);
+    return getAllUsersForAdmin(authentication);
   }
 }

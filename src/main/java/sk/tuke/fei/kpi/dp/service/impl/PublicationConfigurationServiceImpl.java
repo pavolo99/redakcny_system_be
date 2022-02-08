@@ -1,6 +1,5 @@
 package sk.tuke.fei.kpi.dp.service.impl;
 
-import static sk.tuke.fei.kpi.dp.exception.FaultType.FORBIDDEN;
 import static sk.tuke.fei.kpi.dp.exception.FaultType.INVALID_PARAMS;
 
 import io.micronaut.security.authentication.Authentication;
@@ -22,7 +21,6 @@ public class PublicationConfigurationServiceImpl implements PublicationConfigura
 
   @Override
   public PublicationConfiguration getPublicationConfigurationForAdmin(Authentication authentication) {
-    validateLoggedUserAdministrator(authentication);
     return getPublicationConfiguration();
   }
 
@@ -46,7 +44,6 @@ public class PublicationConfigurationServiceImpl implements PublicationConfigura
   @Override
   public void updatePublicationConfig(Long id, Authentication authentication,
       PublicationConfiguration publicationConfiguration) {
-    validateLoggedUserAdministrator(authentication);
     if (!id.equals(publicationConfiguration.getId())) {
       throw new ApiException(INVALID_PARAMS, "Id in path variable is not same as in dto");
     }
@@ -55,12 +52,6 @@ public class PublicationConfigurationServiceImpl implements PublicationConfigura
 
   private PublicationConfiguration getPublicationConfiguration() {
     return configurationRepository.findAll().iterator().next();
-  }
-
-  private void validateLoggedUserAdministrator(Authentication authentication) {
-    if (authentication.getAttributes().get("administrator").equals(false)) {
-      throw new ApiException(FORBIDDEN, "Publication configuration is available only for admin");
-    }
   }
 
   private boolean isEmpty(String string) {

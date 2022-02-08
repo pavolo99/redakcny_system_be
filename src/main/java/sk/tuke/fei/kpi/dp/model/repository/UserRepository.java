@@ -22,4 +22,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
       + "and u.id != :loggedUserId")
   List<User> getPotentialCollaboratorsForArticle(String searchValue, Long loggedUserId);
 
+  @Query("select u from User u order by u.lastName asc, u.username asc")
+  List<User> getAllUsers();
+
 }
