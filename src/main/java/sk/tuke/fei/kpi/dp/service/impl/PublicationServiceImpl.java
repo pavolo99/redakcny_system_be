@@ -5,6 +5,7 @@ import static sk.tuke.fei.kpi.dp.exception.FaultType.INVALID_PARAMS;
 import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import io.micronaut.security.authentication.Authentication;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -44,8 +45,7 @@ public class PublicationServiceImpl implements PublicationService {
 
     GitlabCommitActionDto articleCommitAction = new GitlabCommitActionDto();
     articleCommitAction.setFile_path(pathToArticle);
-    // TODO handle image url replacement properly
-    articleCommitAction.setContent(article.getText().replace("http://192.168.0.59:8080/image/content/", ""));
+    articleCommitAction.setContent(buildArticleContentWithMetaData(article));
     List<GitlabCommitActionDto> commitActions = article.getImages()
         .stream()
         .map(image -> createGitlabImageCommitAction(pathToImage, image))
@@ -103,5 +103,33 @@ public class PublicationServiceImpl implements PublicationService {
     gitlabCommitDto.setAuthor_name(loggedUser.get("firstName") + " " + loggedUser.get("lastName"));
     gitlabCommitDto.setBranch(configuration.getBranch());
     return gitlabCommitDto;
+  }
+
+  private String buildArticleContentWithMetaData(Article article) {
+    LocalDateTime now = LocalDateTime.now();
+    StringBuilder sb = new StringBuilder();
+    sb.append("---\n");
+    sb.append("názov: ").append(article.getName()).append("\n");
+    sb.append("abstrakt: ").append(article.getName()).append("\n");
+    sb.append("publikované: ").append(formatDateTime(now)).append("\n");
+    sb.append("kľúčové slová: ").append(article.getKeyWords()).append("\n");
+    sb.append("autori:\n");
+    article.getArticleCollaborators()
+        .stream()
+        .filter(articleCollaborator -> Boolean.TRUE.equals(articleCollaborator.getAuthor()))
+        .forEach(collaborator -> sb.append("  - ")
+            .append(collaborator.getUser().getFirstName()).append(" ")
+            .append(collaborator.getUser().getLastName()).append("\n"));
+    sb.append("---\n");
+    // TODO handle image url replacement properly
+    String removedBackendUrlsArticle = article.getText()
+        .replace("http://192.168.0.59:8080/image/content/", "");
+    sb.append(removedBackendUrlsArticle);
+    return sb.toString();
+  }
+
+  private String formatDateTime(LocalDateTime localDateTime) {
+    return localDateTime.getDayOfMonth() + "." + localDateTime.getMonth().getValue() + "."
+        + localDateTime.getYear() + " " + localDateTime.getHour() + ":" + localDateTime.getMinute();
   }
 }
