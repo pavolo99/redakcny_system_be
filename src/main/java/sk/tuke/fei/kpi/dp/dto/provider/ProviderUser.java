@@ -1,4 +1,4 @@
-package sk.tuke.fei.kpi.dp.auth;
+package sk.tuke.fei.kpi.dp.dto.provider;
 
 public interface ProviderUser {
 

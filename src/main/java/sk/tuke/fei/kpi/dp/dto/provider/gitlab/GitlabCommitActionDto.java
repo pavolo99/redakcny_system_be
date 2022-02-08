@@ -1,4 +1,4 @@
-package sk.tuke.fei.kpi.dp.dto;
+package sk.tuke.fei.kpi.dp.dto.provider.gitlab;
 
 import io.micronaut.core.annotation.Introspected;
 

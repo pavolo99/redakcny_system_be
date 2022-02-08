@@ -10,7 +10,8 @@ import jakarta.inject.Singleton;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import sk.tuke.fei.kpi.dp.common.AuthProvider;
-import sk.tuke.fei.kpi.dp.dto.GitlabUserDto;
+import sk.tuke.fei.kpi.dp.dto.provider.gitlab.GitlabUserDto;
+import sk.tuke.fei.kpi.dp.provider.GitlabApiClient;
 import sk.tuke.fei.kpi.dp.service.AuthenticationService;
 
 @Named("gitlab")

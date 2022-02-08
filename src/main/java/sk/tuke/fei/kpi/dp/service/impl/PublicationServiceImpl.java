@@ -10,13 +10,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.inject.Singleton;
-import sk.tuke.fei.kpi.dp.auth.gitlab.GitlabApiClient;
-import sk.tuke.fei.kpi.dp.dto.GitlabCommitActionDto;
-import sk.tuke.fei.kpi.dp.dto.GitlabCommitDto;
+import sk.tuke.fei.kpi.dp.dto.provider.gitlab.GitlabCommitActionDto;
+import sk.tuke.fei.kpi.dp.dto.provider.gitlab.GitlabCommitDto;
 import sk.tuke.fei.kpi.dp.exception.ApiException;
 import sk.tuke.fei.kpi.dp.model.entity.Article;
 import sk.tuke.fei.kpi.dp.model.entity.Image;
 import sk.tuke.fei.kpi.dp.model.entity.PublicationConfiguration;
+import sk.tuke.fei.kpi.dp.provider.GitlabApiClient;
 import sk.tuke.fei.kpi.dp.service.PublicationConfigurationService;
 import sk.tuke.fei.kpi.dp.service.PublicationService;
 

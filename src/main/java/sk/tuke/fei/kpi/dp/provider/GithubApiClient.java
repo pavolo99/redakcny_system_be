@@ -1,4 +1,4 @@
-package sk.tuke.fei.kpi.dp.auth.github;
+package sk.tuke.fei.kpi.dp.provider;
 
 import static io.micronaut.http.HttpHeaders.ACCEPT;
 import static io.micronaut.http.HttpHeaders.USER_AGENT;
@@ -8,7 +8,7 @@ import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Header;
 import io.micronaut.http.client.annotation.Client;
 import org.reactivestreams.Publisher;
-import sk.tuke.fei.kpi.dp.dto.GithubUserDto;
+import sk.tuke.fei.kpi.dp.dto.provider.github.GithubUserDto;
 
 @Header(name = USER_AGENT, value = "Github HTTP Client")
 @Header(name = ACCEPT, value = "application/vnd.github.v3+json, application/json")

@@ -1,7 +1,7 @@
-package sk.tuke.fei.kpi.dp.dto;
+package sk.tuke.fei.kpi.dp.dto.provider.github;
 
 import io.micronaut.core.annotation.Introspected;
-import sk.tuke.fei.kpi.dp.auth.ProviderUser;
+import sk.tuke.fei.kpi.dp.dto.provider.ProviderUser;
 
 @Introspected
 public class GithubUserDto implements ProviderUser {

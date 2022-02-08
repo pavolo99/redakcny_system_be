@@ -9,7 +9,7 @@ import io.micronaut.http.annotation.Put;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.rules.SecurityRule;
-import sk.tuke.fei.kpi.dp.dto.GitlabProjectRepoDto;
+import sk.tuke.fei.kpi.dp.dto.provider.gitlab.GitlabProjectRepoDto;
 import sk.tuke.fei.kpi.dp.model.entity.PublicationConfiguration;
 import sk.tuke.fei.kpi.dp.service.AdministrationService;
 import sk.tuke.fei.kpi.dp.service.PublicationConfigurationService;

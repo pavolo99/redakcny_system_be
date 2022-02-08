@@ -2,11 +2,11 @@ package sk.tuke.fei.kpi.dp.service.impl;
 
 import io.micronaut.security.authentication.Authentication;
 import javax.inject.Singleton;
-import sk.tuke.fei.kpi.dp.auth.gitlab.GitlabApiClient;
-import sk.tuke.fei.kpi.dp.dto.GitlabProjectRepoDto;
+import sk.tuke.fei.kpi.dp.dto.provider.gitlab.GitlabProjectRepoDto;
 import sk.tuke.fei.kpi.dp.exception.ApiException;
 import sk.tuke.fei.kpi.dp.exception.FaultType;
 import sk.tuke.fei.kpi.dp.model.entity.PublicationConfiguration;
+import sk.tuke.fei.kpi.dp.provider.GitlabApiClient;
 import sk.tuke.fei.kpi.dp.service.AdministrationService;
 
 @Singleton
