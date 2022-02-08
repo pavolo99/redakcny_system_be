@@ -31,6 +31,7 @@ import sk.tuke.fei.kpi.dp.model.entity.Version;
 import sk.tuke.fei.kpi.dp.model.repository.ArticleRepository;
 import sk.tuke.fei.kpi.dp.model.repository.VersionRepository;
 import sk.tuke.fei.kpi.dp.service.ArticleService;
+import sk.tuke.fei.kpi.dp.service.PublicationService;
 import sk.tuke.fei.kpi.dp.service.UserService;
 
 @Singleton
@@ -40,13 +41,15 @@ public class ArticleServiceImpl implements ArticleService {
   private final ArticleMapper articleMapper;
   private final UserService userService;
   private final VersionRepository versionRepository;
+  private final PublicationService publicationService;
 
   public ArticleServiceImpl(ArticleRepository articleRepository, ArticleMapper articleMapper,
-      UserService userService, VersionRepository versionRepository) {
+      UserService userService, VersionRepository versionRepository, PublicationService publicationService) {
     this.articleRepository = articleRepository;
     this.articleMapper = articleMapper;
     this.userService = userService;
     this.versionRepository = versionRepository;
+    this.publicationService = publicationService;
   }
 
   @Override
@@ -180,13 +183,15 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
+  @Transactional
   public ArticleEditDto publishArticle(Authentication authentication, Long id) {
     Article article = findArticleById(id);
     if (!APPROVED.equals(article.getArticleStatus())) {
       throw new ApiException(INVALID_PARAMS, "Article must be approved");
     }
+    publicationService.publishArticleToProjectRepository(authentication, article);
+
     article.setArticleStatus(ARCHIVED);
-    // TODO implement article publishing business logic
     Article updatedArticle = articleRepository.update(article);
     return articleMapper.articleToArticleDto(updatedArticle);
   }

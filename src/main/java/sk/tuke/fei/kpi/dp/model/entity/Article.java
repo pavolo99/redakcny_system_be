@@ -64,6 +64,9 @@ public class Article {
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "article")
   List<ArticleCollaborator> articleCollaborators = new ArrayList<>();
 
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "article")
+  List<Image> images = new ArrayList<>();
+
   public Article() {}
 
   public Article(String name, String text, Integer reviewNumber, ArticleStatus articleStatus, User createdBy) {
@@ -190,5 +193,13 @@ public class Article {
   public void setArticleCollaborators(
       List<ArticleCollaborator> articleCollaborators) {
     this.articleCollaborators = articleCollaborators;
+  }
+
+  public List<Image> getImages() {
+    return images;
+  }
+
+  public void setImages(List<Image> images) {
+    this.images = images;
   }
 }

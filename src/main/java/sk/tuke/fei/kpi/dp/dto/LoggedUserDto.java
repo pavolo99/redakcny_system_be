@@ -10,6 +10,7 @@ public class LoggedUserDto {
   private String username;
   private String firstName;
   private String lastName;
+  private String administrator;
   private String role;
   private String email;
   private AuthProvider authProvider;
@@ -47,6 +48,14 @@ public class LoggedUserDto {
 
   public void setLastName(String lastName) {
     this.lastName = lastName;
+  }
+
+  public String getAdministrator() {
+    return administrator;
+  }
+
+  public void setAdministrator(String administrator) {
+    this.administrator = administrator;
   }
 
   public String getRole() {

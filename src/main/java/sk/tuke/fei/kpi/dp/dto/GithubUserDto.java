@@ -16,10 +16,6 @@ public class GithubUserDto implements ProviderUser {
     this.email = email;
   }
 
-  public String getLogin() {
-    return login;
-  }
-
   public String getName() {
     return name;
   }

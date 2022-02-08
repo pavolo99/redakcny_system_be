@@ -6,9 +6,9 @@ import sk.tuke.fei.kpi.dp.dto.ImageInfoDto;
 
 public interface ImageService {
 
-  Long uploadImage(Long articleId, CompletedFileUpload file);
+  String uploadImage(Long articleId, CompletedFileUpload file);
 
-  byte[] getImageContent(Long imageId);
+  byte[] getImageContent(String imageName);
 
   List<ImageInfoDto> getArticleImagesInfo(Long articleId);
 

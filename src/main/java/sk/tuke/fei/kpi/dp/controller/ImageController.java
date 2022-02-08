@@ -26,14 +26,14 @@ public class ImageController {
   }
 
   @Post(uri = "/uploaded/{articleId}", consumes = MediaType.MULTIPART_FORM_DATA)
-  public HttpResponse<Long> uploadImage(@PathVariable Long articleId, @Part CompletedFileUpload file) {
+  public HttpResponse<String> uploadImage(@PathVariable Long articleId, @Part CompletedFileUpload file) {
     return HttpResponse.created(imageService.uploadImage(articleId, file));
   }
 
-  @Get(uri = "/content/{imageId}", produces = MediaType.MULTIPART_FORM_DATA)
+  @Get(uri = "/content/{imageName}", produces = MediaType.MULTIPART_FORM_DATA)
   @Secured(SecurityRule.IS_ANONYMOUS)
-  public HttpResponse<byte[]> getImageContent(@PathVariable Long imageId) {
-    return HttpResponse.ok(imageService.getImageContent(imageId));
+  public HttpResponse<byte[]> getImageContent(@PathVariable String imageName) {
+    return HttpResponse.ok(imageService.getImageContent(imageName));
   }
 
   @Get(uri = "/info/{articleId}", produces = MediaType.APPLICATION_JSON)

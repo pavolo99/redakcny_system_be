@@ -57,6 +57,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     loggedUserDataDtoMap.put("email", loggedSystemUser.getEmail());
     loggedUserDataDtoMap.put("firstName", loggedSystemUser.getFirstName());
     loggedUserDataDtoMap.put("lastName", loggedSystemUser.getLastName());
+    loggedUserDataDtoMap.put("administrator", loggedSystemUser.isAdministrator());
     loggedUserDataDtoMap.put("authProvider", loggedSystemUser.getAuthProvider().toString());
     loggedUserDataDtoMap.put("accessToken", jwtAccessToken);
     // unique username is generated ID - name field in authentication class
@@ -72,6 +73,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     tokenPayloadData.put("email", loggedSystemUser.getEmail());
     tokenPayloadData.put("firstName", loggedSystemUser.getFirstName());
     tokenPayloadData.put("lastName", loggedSystemUser.getLastName());
+    tokenPayloadData.put("administrator", loggedSystemUser.isAdministrator());
     tokenPayloadData.put("authProvider", loggedSystemUser.getAuthProvider().toString());
     tokenPayloadData.put("sub", String.valueOf(loggedSystemUser.getId())); // subject - user unique ID
     tokenPayloadData.put("nbf", currentUnixTime + (60 * 10)); // not valid before - 10 minutes

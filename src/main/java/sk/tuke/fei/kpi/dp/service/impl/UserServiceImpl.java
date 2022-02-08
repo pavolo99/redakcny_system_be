@@ -71,6 +71,7 @@ public class UserServiceImpl implements UserService {
     loggedUserDto.setUsername((String) attributes.get("username"));
     loggedUserDto.setFirstName((String) attributes.get("firstName"));
     loggedUserDto.setLastName((String) attributes.get("lastName"));
+    loggedUserDto.setAdministrator(String.valueOf(attributes.get("administrator")));
     loggedUserDto.setAuthProvider(AuthProvider.valueOf((String) attributes.get("authProvider")));
     loggedUserDto.setEmail((String) attributes.get("email"));
 
