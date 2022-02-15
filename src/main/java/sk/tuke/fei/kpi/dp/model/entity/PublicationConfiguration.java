@@ -5,16 +5,17 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import sk.tuke.fei.kpi.dp.common.Provider;
 
 @Entity
-@Table(name = "PUBLICATION_CONFIGURATION")
+@Table(name = "PUBLICATION_CONFIGURATION", schema = "redakcny_system")
 public class PublicationConfiguration {
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "ID")
   private Long id;
 

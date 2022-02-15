@@ -4,6 +4,7 @@ import static sk.tuke.fei.kpi.dp.exception.FaultType.INVALID_PARAMS;
 
 import io.micronaut.security.authentication.Authentication;
 import javax.inject.Singleton;
+import sk.tuke.fei.kpi.dp.common.Utils;
 import sk.tuke.fei.kpi.dp.exception.ApiException;
 import sk.tuke.fei.kpi.dp.exception.FaultType;
 import sk.tuke.fei.kpi.dp.model.entity.PublicationConfiguration;
@@ -30,11 +31,11 @@ public class PublicationConfigurationServiceImpl implements PublicationConfigura
       throw new ApiException(INVALID_PARAMS, "Article publication file name cannot be empty");
     }
     PublicationConfiguration publicationConfiguration = getPublicationConfiguration();
-    if (publicationConfiguration == null || isEmpty(publicationConfiguration.getBranch())
-        || isEmpty(publicationConfiguration.getCommitMessage())
-        || isEmpty(publicationConfiguration.getPathToArticle())
-        || isEmpty(publicationConfiguration.getPrivateToken())
-        || isEmpty(publicationConfiguration.getRepositoryPath())
+    if (publicationConfiguration == null || Utils.isStringEmpty(publicationConfiguration.getBranch())
+        || Utils.isStringEmpty(publicationConfiguration.getCommitMessage())
+        || Utils.isStringEmpty(publicationConfiguration.getPathToArticle())
+        || Utils.isStringEmpty(publicationConfiguration.getPrivateToken())
+        || Utils.isStringEmpty(publicationConfiguration.getRepositoryPath())
         || publicationConfiguration.getProvider() == null) {
       throw new ApiException(FaultType.INVALID_PARAMS, "Publication configuration is not complete");
     }
@@ -52,9 +53,5 @@ public class PublicationConfigurationServiceImpl implements PublicationConfigura
 
   private PublicationConfiguration getPublicationConfiguration() {
     return configurationRepository.findAll().iterator().next();
-  }
-
-  private boolean isEmpty(String string) {
-    return string == null || string.isEmpty();
   }
 }

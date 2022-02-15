@@ -5,6 +5,7 @@ import static sk.tuke.fei.kpi.dp.exception.FaultType.FORBIDDEN;
 import io.micronaut.security.authentication.Authentication;
 import java.util.List;
 import javax.inject.Singleton;
+import sk.tuke.fei.kpi.dp.common.Utils;
 import sk.tuke.fei.kpi.dp.dto.UserForAdminDto;
 import sk.tuke.fei.kpi.dp.dto.provider.gitlab.GitlabProjectRepoDto;
 import sk.tuke.fei.kpi.dp.dto.update.UpdateUserPrivilegesDto;
@@ -44,12 +45,21 @@ public class AdministrationServiceImpl implements AdministrationService {
     if (publicationConfiguration == null) {
       throw new ApiException(FaultType.INVALID_PARAMS, "Publication configuration cannot be null");
     }
-    GitlabProjectRepoDto gitlabProjectRepoDto = gitlabApiClient.getGitlabProjectByPublicationConfig(
-            publicationConfiguration.getRepositoryPath(), publicationConfiguration.getPrivateToken());
-    if (gitlabProjectRepoDto == null) {
-      throw new ApiException(FaultType.INVALID_PARAMS, "Gitlab project repo is null");
+    if (Utils.isStringEmpty(publicationConfiguration.getRepositoryPath())
+        || Utils.isStringEmpty(publicationConfiguration.getPrivateToken())) {
+      throw new ApiException(FaultType.INVALID_PARAMS, "Private token and repository path cannot be null");
     }
-    return gitlabProjectRepoDto;
+    try {
+      GitlabProjectRepoDto gitlabProjectRepoDto = gitlabApiClient.getGitlabProjectByPublicationConfig(
+          publicationConfiguration.getRepositoryPath(), publicationConfiguration.getPrivateToken());
+      if (gitlabProjectRepoDto == null) {
+        throw new ApiException(FaultType.INVALID_PARAMS, "Spojenie neprebehlo úspešné");
+      }
+      return gitlabProjectRepoDto;
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new ApiException(FaultType.INVALID_PARAMS, "Spojenie neprebehlo úspešné");
+    }
   }
 
   @Override
