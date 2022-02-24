@@ -9,4 +9,4 @@ FROM openjdk:11-jre-slim
 EXPOSE 8080
 RUN mkdir /app
 COPY --from=build /home/gradle/src/build/libs/redakcny_system_be-0.1-all.jar redakcny_system_be.jar
-CMD ["java", "-jar", "redakcny_system_be.jar"]
+ENTRYPOINT ["java", "-jar", "redakcny_system_be.jar"]

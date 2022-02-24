@@ -17,7 +17,8 @@ import sk.tuke.fei.kpi.dp.dto.update.UpdateArticleCollaboratorDto;
 import sk.tuke.fei.kpi.dp.service.ArticleCollaboratorService;
 
 @Secured(SecurityRule.IS_AUTHENTICATED)
-@Controller("collaborator")
+//@Controller("collaborator")
+@Controller("api/collaborator")
 public class ArticleCollaboratorController {
 
   private final ArticleCollaboratorService collaboratorService;

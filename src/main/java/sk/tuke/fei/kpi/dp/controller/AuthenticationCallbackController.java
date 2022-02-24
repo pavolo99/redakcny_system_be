@@ -9,7 +9,8 @@ import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.rules.SecurityRule;
 import sk.tuke.fei.kpi.dp.service.AuthenticationCallbackService;
 
-@Controller("login-callback")
+//@Controller("login-callback")
+@Controller("api/login-callback")
 @Secured(SecurityRule.IS_AUTHENTICATED)
 public class AuthenticationCallbackController {
 

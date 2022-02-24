@@ -13,7 +13,8 @@ import sk.tuke.fei.kpi.dp.dto.VersionDto;
 import sk.tuke.fei.kpi.dp.dto.view.VersionViewDto;
 import sk.tuke.fei.kpi.dp.service.VersionService;
 
-@Controller("version")
+//@Controller("version")
+@Controller("api/version")
 @Secured(SecurityRule.IS_AUTHENTICATED)
 public class VersionController {
 

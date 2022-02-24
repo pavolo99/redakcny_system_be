@@ -16,7 +16,8 @@ import sk.tuke.fei.kpi.dp.dto.CommentDto;
 import sk.tuke.fei.kpi.dp.dto.create.CommentCreateDto;
 import sk.tuke.fei.kpi.dp.service.CommentService;
 
-@Controller("comment")
+//@Controller("comment")
+@Controller("api/comment")
 @Secured(SecurityRule.IS_AUTHENTICATED)
 public class CommentController {
 
