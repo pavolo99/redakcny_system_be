@@ -5,5 +5,5 @@ build:
     - docker:dind
   script:
     - docker login -u image-registry -p BbyB8HzkuysvipmJwFbT $CI_REGISTRY
-    - docker build -t $CI_REGISTRY/redakcny_system_be:latest .
-    - docker push $CI_REGISTRY/redakcny_system_be:latest
+    - docker build -t $CI_REGISTRY/kpi-zp/2022/dp.pavol.dlugos/redakcny_system_be:latest .
+    - docker push $CI_REGISTRY/kpi-zp/2022/dp.pavol.dlugos/redakcny_system_be:latest
