@@ -6,4 +6,4 @@ build:
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $CI_REGISTRY/redakcny_system_be:latest .
-    - docker push $CI_REGISTRY/redakcny_system_be:lates
+    - docker push $CI_REGISTRY/redakcny_system_be:latest
