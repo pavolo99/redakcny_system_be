@@ -4,6 +4,6 @@ build:
   services:
     - docker:dind
   script:
-    - docker login -u image-registry -p $CI_IMAGE_REGISTRY_TOKEN $CI_REGISTRY
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $CI_REGISTRY/kpi-zp/2022/dp.pavol.dlugos/redakcny_system_be:latest .
     - docker push $CI_REGISTRY/kpi-zp/2022/dp.pavol.dlugos/redakcny_system_be:latest
