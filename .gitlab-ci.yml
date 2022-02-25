@@ -1,0 +1,11 @@
+build:
+  image: docker:latest
+  stage: build
+  only:
+    - deploy
+  services:
+    - docker:dind
+  script:
+    - docker login git.kpi.fei.tuke.sk:4567
+    - docker build -t git.kpi.fei.tuke.sk:4567/kpi-zp/2022/dp.pavol.dlugos/redakcny_system_be .
+    - docker push git.kpi.fei.tuke.sk:4567/kpi-zp/2022/dp.pavol.dlugos/redakcny_system_be
