@@ -2,11 +2,13 @@ package sk.tuke.fei.kpi.dp.dto.create;
 
 import io.micronaut.core.annotation.Introspected;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Introspected
 public class CommentCreateDto {
 
   @NotBlank
+  @Size(max = 1000)
   String text;
 
   @NotBlank
@@ -15,6 +17,7 @@ public class CommentCreateDto {
   @NotBlank
   String rangeTo;
 
+  @Size(max = 100000)
   String commentedText;
 
   public CommentCreateDto() {

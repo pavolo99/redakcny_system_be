@@ -24,9 +24,9 @@ CREATE TABLE IF NOT EXISTS redakcny_system.ARTICLE
 (
     ID                   SERIAL         NOT NULL,
     NAME                 VARCHAR(50)    NOT NULL,
-    TEXT                 VARCHAR(10000) NOT NULL,
-    KEY_WORDS            VARCHAR(100),
-    ABSTRACT             VARCHAR(200),
+    TEXT                 VARCHAR(100000) NOT NULL,
+    KEY_WORDS            VARCHAR(50),
+    ABSTRACT             VARCHAR(1000),
     PUBLIC_FILE_NAME     VARCHAR(50),
     PUBLICATION_DECISION VARCHAR(50),
     REVIEW_NUMBER        INT            NOT NULL,
@@ -56,11 +56,11 @@ CREATE TABLE IF NOT EXISTS redakcny_system.COMMENT
 (
     ID             SERIAL       NOT NULL,
     IS_RESOLVED    BOOLEAN      NOT NULL,
-    TEXT           VARCHAR(200) NOT NULL,
+    TEXT           VARCHAR(1000) NOT NULL,
     UPDATED_AT     TIMESTAMP    NOT NULL,
     RANGE_FROM     INT          NOT NULL,
     RANGE_TO       INT          NOT NULL,
-    COMMENTED_TEXT VARCHAR(10000),
+    COMMENTED_TEXT VARCHAR(100000),
     ARTICLE_ID     INT          NOT NULL,
     CREATED_BY_ID  INT          NOT NULL,
     PRIMARY KEY (ID),
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS redakcny_system.COMMENT
 CREATE TABLE IF NOT EXISTS redakcny_system.COMMENT_REPLY
 (
     ID            SERIAL       NOT NULL,
-    TEXT          VARCHAR(200) NOT NULL,
+    TEXT          VARCHAR(1000) NOT NULL,
     UPDATED_AT    TIMESTAMP    NOT NULL,
     COMMENT_ID    INT          NOT NULL,
     CREATED_BY_ID INT          NOT NULL,
@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS redakcny_system.COMMENT_REPLY
 CREATE TABLE IF NOT EXISTS redakcny_system.VERSION
 (
     ID            SERIAL         NOT NULL,
-    TEXT          VARCHAR(10000) NOT NULL,
+    TEXT          VARCHAR(100000) NOT NULL,
     CREATED_AT    TIMESTAMP      NOT NULL,
     ARTICLE_ID    INT            NOT NULL,
     CREATED_BY_ID INT            NOT NULL,
@@ -133,3 +133,10 @@ INSERT INTO redakcny_system.PUBLICATION_CONFIGURATION(provider, path_to_article,
                                                       private_token, commit_message)
 VALUES ('GITLAB', 'content/clanky/{year}/{month}/{slug}/index.md', 'main', '', '',
         'Publish article {articleName}');
+
+-- init SYSTEM_USER data
+INSERT INTO redakcny_system.SYSTEM_USER(username, first_name, last_name, email, auth_provider, role,
+                                        is_administrator)
+VALUES ('sergej.chodarev', 'Sergej', 'Chodarev', 'sergej.chodarev@tuke.sk', 'GITLAB', 'EDITOR',
+        true),
+       ('pd565js', 'Pavol', 'Dlugoš', 'pavol.dlugos@student.tuke.sk', 'GITLAB', 'AUTHOR', true);

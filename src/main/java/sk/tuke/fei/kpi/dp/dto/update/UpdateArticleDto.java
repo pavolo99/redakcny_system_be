@@ -2,6 +2,7 @@ package sk.tuke.fei.kpi.dp.dto.update;
 
 import io.micronaut.core.annotation.Introspected;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Introspected
 public class UpdateArticleDto {
@@ -10,17 +11,23 @@ public class UpdateArticleDto {
   private Long id;
 
   @NotBlank
+  @Size(max = 50)
   private String name;
 
   @NotBlank
+  @Size(max = 100000)
   private String text;
 
+  @Size(max = 50)
   private String keyWords;
 
+  @Size(max = 1000)
   private String articleAbstract;
 
+  @Size(max = 50)
   private String publicFileName;
 
+  @Size(max = 50)
   private String publicationDecision;
 
   public UpdateArticleDto(Long id, String name, String text) {

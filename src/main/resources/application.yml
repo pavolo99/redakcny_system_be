@@ -43,6 +43,8 @@ micronaut:
     name: redakcny_system_be
     front-end-url: 'http://localhost:3000'
 #    front-end-url: 'http://192.168.0.59:3000'
+    back-end-url: 'http://localhost:8080'
+#    front-end-url: 'http://192.168.0.59:8080'
   router:
     static-resources:
       swagger:

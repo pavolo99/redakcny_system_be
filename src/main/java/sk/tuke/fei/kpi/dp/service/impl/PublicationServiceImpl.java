@@ -2,6 +2,7 @@ package sk.tuke.fei.kpi.dp.service.impl;
 
 import static sk.tuke.fei.kpi.dp.exception.FaultType.INVALID_PARAMS;
 
+import io.micronaut.context.annotation.Value;
 import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import io.micronaut.security.authentication.Authentication;
 import java.time.LocalDate;
@@ -26,6 +27,9 @@ public class PublicationServiceImpl implements PublicationService {
 
   private final GitlabApiClient gitlabApiClient;
   private final PublicationConfigurationService configurationService;
+
+  @Value("${micronaut.application.back-end-url}")
+  String backEndUrl;
 
   public PublicationServiceImpl(GitlabApiClient gitlabApiClient,
       PublicationConfigurationService publicationConfigurationService) {
@@ -109,11 +113,11 @@ public class PublicationServiceImpl implements PublicationService {
     LocalDateTime now = LocalDateTime.now();
     StringBuilder sb = new StringBuilder();
     sb.append("---\n");
-    sb.append("názov: ").append(article.getName()).append("\n");
-    sb.append("abstrakt: ").append(article.getName()).append("\n");
-    sb.append("publikované: ").append(formatDateTime(now)).append("\n");
-    sb.append("kľúčové slová: ").append(article.getKeyWords()).append("\n");
-    sb.append("autori:\n");
+    sb.append("Title: ").append(article.getName()).append("\n");
+    sb.append("Abstract: ").append(article.getArticleAbstract()).append("\n");
+    sb.append("Published at: ").append(formatDateTime(now)).append("\n");
+    sb.append("Key words: ").append(article.getKeyWords()).append("\n");
+    sb.append("Authors:\n");
     article.getArticleCollaborators()
         .stream()
         .filter(articleCollaborator -> Boolean.TRUE.equals(articleCollaborator.getAuthor()))
@@ -121,15 +125,14 @@ public class PublicationServiceImpl implements PublicationService {
             .append(collaborator.getUser().getFirstName()).append(" ")
             .append(collaborator.getUser().getLastName()).append("\n"));
     sb.append("---\n");
-    // TODO handle image url replacement properly
-    String removedBackendUrlsArticle = article.getText()
-        .replace("http://192.168.0.59:8080/image/content/", "");
+    String removedBackendUrlsArticle = article.getText().replace(backEndUrl + "/image/content/", "");
     sb.append(removedBackendUrlsArticle);
     return sb.toString();
   }
 
   private String formatDateTime(LocalDateTime localDateTime) {
     return localDateTime.getDayOfMonth() + "." + localDateTime.getMonth().getValue() + "."
-        + localDateTime.getYear() + " " + localDateTime.getHour() + ":" + localDateTime.getMinute();
+        + localDateTime.getYear() + " " + localDateTime.getHour() + ":"
+        + (localDateTime.getMinute() < 10 ? ('0' + localDateTime.getMinute()) : localDateTime.getMinute());
   }
 }

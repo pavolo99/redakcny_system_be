@@ -28,6 +28,7 @@ import sk.tuke.fei.kpi.dp.model.entity.ArticleCollaborator;
 import sk.tuke.fei.kpi.dp.model.entity.ArticleStatus;
 import sk.tuke.fei.kpi.dp.model.entity.User;
 import sk.tuke.fei.kpi.dp.model.entity.Version;
+import sk.tuke.fei.kpi.dp.model.repository.ArticleCollaboratorRepository;
 import sk.tuke.fei.kpi.dp.model.repository.ArticleRepository;
 import sk.tuke.fei.kpi.dp.model.repository.VersionRepository;
 import sk.tuke.fei.kpi.dp.service.ArticleService;
@@ -42,14 +43,18 @@ public class ArticleServiceImpl implements ArticleService {
   private final UserService userService;
   private final VersionRepository versionRepository;
   private final PublicationService publicationService;
+  private final ArticleCollaboratorRepository collaboratorRepository;
 
   public ArticleServiceImpl(ArticleRepository articleRepository, ArticleMapper articleMapper,
-      UserService userService, VersionRepository versionRepository, PublicationService publicationService) {
+      UserService userService, VersionRepository versionRepository,
+      PublicationService publicationService,
+      ArticleCollaboratorRepository collaboratorRepository) {
     this.articleRepository = articleRepository;
     this.articleMapper = articleMapper;
     this.userService = userService;
     this.versionRepository = versionRepository;
     this.publicationService = publicationService;
+    this.collaboratorRepository = collaboratorRepository;
   }
 
   @Override
@@ -110,21 +115,24 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public ArticleEditDto updateArticle(Authentication authentication, Long id, UpdateArticleDto updateArticleDto) {
-    if (!id.equals(updateArticleDto.getId())) {
-      throw new ApiException(INVALID_PARAMS, "Id is not equal with update article dto id");
+  @Transactional
+  public ArticleEditDto updateArticle(Authentication authentication, Long articleId, UpdateArticleDto updateArticleDto) {
+    if (!articleId.equals(updateArticleDto.getId())) {
+      throw new ApiException(INVALID_PARAMS, "Id is not equal with update article dto articleId");
     }
-    Article article = findArticleById(id);
-    // TODO resolve users which are allowed to update article
-//    if (loggedUserId != article.getCreatedBy().getId() && !authentication.getRoles().contains("Editor")) {
-//      throw new ApiException(FORBIDDEN, "You are not allowed to update this article");
-//    }
+    Article article = findArticleById(articleId);
+    ArticleCollaborator loggedArticleCollaborator = collaboratorRepository
+        .findByArticleAndLoggedUser(article.getId(), Long.parseLong(authentication.getName()));
+
+    if (loggedArticleCollaborator == null || !loggedArticleCollaborator.getCanEdit()) {
+      throw new ApiException(FORBIDDEN, "You are not allowed to update this article");
+    }
     articleMapper.updateArticleFromArticleUpdateDto(updateArticleDto, article);
     article.setUpdatedAt(new Date());
-    User updatedBy = userService.findUserById(Long.parseLong(authentication.getName()));
-    article.setUpdatedBy(updatedBy);
+    User loggedUser = loggedArticleCollaborator.getUser();
+    article.setUpdatedBy(loggedUser);
     Article updatedArticle = articleRepository.update(article);
-    Version newVersion = new Version(article.getText(), updatedBy, article);
+    Version newVersion = new Version(article.getText(), loggedUser, article);
     versionRepository.save(newVersion);
     return articleMapper.articleToArticleDto(updatedArticle);
   }
@@ -149,7 +157,6 @@ public class ArticleServiceImpl implements ArticleService {
   @Override
   public ArticleEditDto archiveArticle(Authentication authentication, Long id) {
     Article article = findArticleById(id);
-    // TODO append condition for denied and published articles
     if (!IN_REVIEW.equals(article.getArticleStatus()) && !APPROVED.equals(
         article.getArticleStatus())) {
       throw new ApiException(INVALID_PARAMS, "Article must be first reviewed or approved");
@@ -203,7 +210,6 @@ public class ArticleServiceImpl implements ArticleService {
       throw new ApiException(INVALID_PARAMS, "Article must be after review");
     }
     article.setArticleStatus(ARCHIVED);
-    // TODO implement article denying business logic
     Article updatedArticle = articleRepository.update(article);
     return articleMapper.articleToArticleDto(updatedArticle);
   }

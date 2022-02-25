@@ -33,9 +33,9 @@ public class CommentController {
     return HttpResponse.ok();
   }
 
-  @Put(uri = "/resolved/{commentId}")
-  public HttpResponse<Void> resolveComment(Authentication authentication, @PathVariable Long commentId) {
-    commentService.resolveComment(authentication, commentId);
+  @Put(uri = "/resolved/{commentId}/toggle")
+  public HttpResponse<Void> toggleCommentResolved(Authentication authentication, @PathVariable Long commentId) {
+    commentService.toggleCommentResolved(authentication, commentId);
     return HttpResponse.ok();
   }
 

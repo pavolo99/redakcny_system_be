@@ -54,12 +54,9 @@ public class CommentServiceImpl implements CommentService {
   }
 
   @Override
-  public void resolveComment(Authentication authentication, Long commentId) {
+  public void toggleCommentResolved(Authentication authentication, Long commentId) {
     Comment comment = findByCommentId(commentId);
-    if (comment.getResolved()) {
-      throw new ApiException(FaultType.INVALID_PARAMS, "Comment is already resolved");
-    }
-    comment.setResolved(true);
+    comment.setResolved(!comment.getResolved());
     comment.setUpdatedAt(new Date());
     commentRepository.update(comment);
   }

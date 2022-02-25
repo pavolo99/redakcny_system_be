@@ -12,4 +12,6 @@ public interface ArticleCollaboratorRepository extends CrudRepository<ArticleCol
   @Query("select o from ArticleCollaborator o left join fetch o.user u where o.article.id = :articleId order by o.isOwner desc, u.lastName asc")
   List<ArticleCollaborator> getArticleCollaboratorsByArticle(long articleId);
 
+  @Query("select o from ArticleCollaborator o left join fetch o.user u where o.article.id = :articleId and u.id = :userId")
+  ArticleCollaborator findByArticleAndLoggedUser(Long articleId, Long userId);
 }

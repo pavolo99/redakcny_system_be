@@ -10,7 +10,7 @@ public interface CommentService {
 
   void createComment(Authentication authentication, CommentCreateDto commentCreateUpdateDto, Long articleId);
 
-  void resolveComment(Authentication authentication, Long commentId);
+  void toggleCommentResolved(Authentication authentication, Long commentId);
 
   void deleteComment(Authentication authentication, Long commentId);
 
