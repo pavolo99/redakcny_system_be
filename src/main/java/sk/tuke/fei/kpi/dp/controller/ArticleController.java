@@ -22,9 +22,8 @@ import sk.tuke.fei.kpi.dp.dto.update.UpdateArticleDto;
 import sk.tuke.fei.kpi.dp.dto.view.ArticleViewDto;
 import sk.tuke.fei.kpi.dp.service.ArticleService;
 
-//@Controller("article")
-@Controller("api/article")
 @Secured(SecurityRule.IS_AUTHENTICATED)
+@Controller("api/article")
 public class ArticleController {
 
   private final ArticleService articleService;

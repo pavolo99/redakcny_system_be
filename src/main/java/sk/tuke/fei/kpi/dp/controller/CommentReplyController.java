@@ -12,9 +12,8 @@ import javax.validation.Valid;
 import sk.tuke.fei.kpi.dp.dto.create.CommentReplyCreateDto;
 import sk.tuke.fei.kpi.dp.service.CommentReplyService;
 
-//@Controller("comment-reply")
-@Controller("api/comment-reply")
 @Secured(SecurityRule.IS_AUTHENTICATED)
+@Controller("api/comment-reply")
 public class CommentReplyController {
 
   private final CommentReplyService commentReplyService;
