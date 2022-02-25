@@ -1,8 +1,6 @@
 build:
   image: docker:latest
   stage: build
-  only:
-    - deploy
   services:
     - docker:dind
   script:
