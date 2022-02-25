@@ -5,5 +5,5 @@ build:
     - docker:dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY/redakcny_system_be:latest .
-    - docker push $CI_REGISTRY/redakcny_system_be:latest
+    - docker build -t $CI_REGISTRY/group/project/image:latest .
+    - docker push $CI_REGISTRY/group/project/image:latest
