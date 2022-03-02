@@ -6,7 +6,7 @@ import jakarta.inject.Singleton;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import sk.tuke.fei.kpi.dp.common.AuthProvider;
+import sk.tuke.fei.kpi.dp.common.Provider;
 import sk.tuke.fei.kpi.dp.dto.provider.ProviderUser;
 import sk.tuke.fei.kpi.dp.exception.ApiException;
 import sk.tuke.fei.kpi.dp.exception.FaultType;
@@ -37,7 +37,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
    * */
   @Override
   public AuthenticationResponse handleAuthenticationResponse(ProviderUser loggedProviderUserDto,
-      AuthProvider authProvider) {
+      Provider authProvider) {
     String[] loggedUserFullName = loggedProviderUserDto.getName().split(" ");
     String firstName = loggedUserFullName[0];
     String lastName = loggedUserFullName[1];

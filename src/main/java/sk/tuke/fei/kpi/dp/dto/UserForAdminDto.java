@@ -1,7 +1,7 @@
 package sk.tuke.fei.kpi.dp.dto;
 
 import io.micronaut.core.annotation.Introspected;
-import sk.tuke.fei.kpi.dp.common.AuthProvider;
+import sk.tuke.fei.kpi.dp.common.Provider;
 
 @Introspected
 public class UserForAdminDto {
@@ -13,7 +13,7 @@ public class UserForAdminDto {
   private boolean administrator;
   private boolean editor;
   private String email;
-  private AuthProvider authProvider;
+  private Provider authProvider;
 
   public UserForAdminDto() {
   }
@@ -74,11 +74,11 @@ public class UserForAdminDto {
     this.email = email;
   }
 
-  public AuthProvider getAuthProvider() {
+  public Provider getAuthProvider() {
     return authProvider;
   }
 
-  public void setAuthProvider(AuthProvider authProvider) {
+  public void setAuthProvider(Provider authProvider) {
     this.authProvider = authProvider;
   }
 }

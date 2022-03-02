@@ -9,7 +9,7 @@ import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
-import sk.tuke.fei.kpi.dp.common.AuthProvider;
+import sk.tuke.fei.kpi.dp.common.Provider;
 import sk.tuke.fei.kpi.dp.dto.provider.gitlab.GitlabUserDto;
 import sk.tuke.fei.kpi.dp.provider.GitlabApiClient;
 import sk.tuke.fei.kpi.dp.service.AuthenticationService;
@@ -42,6 +42,6 @@ public class GitlabAuthenticationMapper implements OauthAuthenticationMapper {
 
     return Flux.from(gitlabUserDtoPublisher).map(
         gitlabUserDto -> authenticationService.handleAuthenticationResponse(gitlabUserDto,
-            AuthProvider.GITLAB));
+            Provider.GITLAB));
   }
 }

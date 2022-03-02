@@ -5,13 +5,13 @@ import io.micronaut.data.annotation.Repository;
 import io.micronaut.data.repository.CrudRepository;
 import java.util.List;
 import java.util.Optional;
-import sk.tuke.fei.kpi.dp.common.AuthProvider;
+import sk.tuke.fei.kpi.dp.common.Provider;
 import sk.tuke.fei.kpi.dp.model.entity.User;
 
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
 
-  Optional<User> findByUsernameAndAuthProvider(String username, AuthProvider authProvider);
+  Optional<User> findByUsernameAndAuthProvider(String username, Provider authProvider);
 
   @Query("select u "
       + "from User u "

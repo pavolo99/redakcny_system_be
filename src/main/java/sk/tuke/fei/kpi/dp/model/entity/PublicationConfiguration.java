@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import sk.tuke.fei.kpi.dp.common.Provider;
+import sk.tuke.fei.kpi.dp.common.Domain;
 
 @Entity
 @Table(name = "PUBLICATION_CONFIGURATION", schema = "redakcny_system")
@@ -19,9 +19,10 @@ public class PublicationConfiguration {
   @Column(name = "ID")
   private Long id;
 
-  @Column(name = "PROVIDER")
+  // TODO extend publication config to other domains as well
+  @Column(name = "DOMAIN")
   @Enumerated(EnumType.STRING)
-  private Provider provider;
+  private Domain domain;
 
   @Column(name = "REPOSITORY_PATH")
   private String repositoryPath;
@@ -49,12 +50,12 @@ public class PublicationConfiguration {
     this.id = id;
   }
 
-  public Provider getProvider() {
-    return provider;
+  public Domain getDomain() {
+    return domain;
   }
 
-  public void setProvider(Provider provider) {
-    this.provider = provider;
+  public void setDomain(Domain domain) {
+    this.domain = domain;
   }
 
   public String getRepositoryPath() {

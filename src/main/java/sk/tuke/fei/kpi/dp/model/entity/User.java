@@ -9,7 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import sk.tuke.fei.kpi.dp.common.AuthProvider;
+import sk.tuke.fei.kpi.dp.common.Provider;
 
 @Entity
 @Table(name = "SYSTEM_USER", schema = "redakcny_system")
@@ -34,7 +34,7 @@ public class User {
 
   @Column(name = "AUTH_PROVIDER")
   @Enumerated(EnumType.STRING)
-  private AuthProvider authProvider;
+  private Provider authProvider;
 
   @Column(name = "IS_ADMINISTRATOR")
   private boolean isAdministrator;
@@ -49,7 +49,7 @@ public class User {
   }
 
   public User(String username, String firstName, String lastName, String email,
-      AuthProvider authProvider, String role) {
+      Provider authProvider, String role) {
     this.username = username;
     this.firstName = firstName;
     this.lastName = lastName;
@@ -98,11 +98,11 @@ public class User {
     this.email = email;
   }
 
-  public AuthProvider getAuthProvider() {
+  public Provider getAuthProvider() {
     return authProvider;
   }
 
-  public void setAuthProvider(AuthProvider authProvider) {
+  public void setAuthProvider(Provider authProvider) {
     this.authProvider = authProvider;
   }
 

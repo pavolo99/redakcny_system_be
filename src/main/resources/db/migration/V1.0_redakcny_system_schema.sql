@@ -109,7 +109,7 @@ CREATE TABLE IF NOT EXISTS redakcny_system.ARTICLE_COLLABORATOR
 CREATE TABLE IF NOT EXISTS redakcny_system.PUBLICATION_CONFIGURATION
 (
     ID              SERIAL NOT NULL,
-    PROVIDER        VARCHAR(15),
+    DOMAIN          VARCHAR(30),
     PATH_TO_ARTICLE VARCHAR(70),
     BRANCH          VARCHAR(70),
     REPOSITORY_PATH VARCHAR(70),
@@ -129,9 +129,9 @@ INSERT INTO redakcny_system.ARTICLE_STATUS(STATE)
 VALUES ('ARCHIVED');
 
 -- init PUBLICATION_CONFIGURATION data
-INSERT INTO redakcny_system.PUBLICATION_CONFIGURATION(provider, path_to_article, branch, repository_path,
+INSERT INTO redakcny_system.PUBLICATION_CONFIGURATION(domain, path_to_article, branch, repository_path,
                                                       private_token, commit_message)
-VALUES ('GITLAB', 'content/clanky/{year}/{month}/{slug}/index.md', 'main', '', '',
+VALUES ('GIT_KPI_FEI_TUKE_SK', 'content/clanky/{year}/{month}/{slug}/index.md', 'main', '', '',
         'Publish article {articleName}');
 
 -- init SYSTEM_USER data

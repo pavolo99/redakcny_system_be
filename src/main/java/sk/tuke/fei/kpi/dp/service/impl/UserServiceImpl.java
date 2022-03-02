@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.inject.Singleton;
-import sk.tuke.fei.kpi.dp.common.AuthProvider;
+import sk.tuke.fei.kpi.dp.common.Provider;
 import sk.tuke.fei.kpi.dp.dto.LoggedUserDto;
 import sk.tuke.fei.kpi.dp.dto.UserDto;
 import sk.tuke.fei.kpi.dp.dto.UserForAdminDto;
@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public Optional<User> findByUsernameAndAuthProvider(String username, AuthProvider authProvider) {
+  public Optional<User> findByUsernameAndAuthProvider(String username, Provider authProvider) {
     return userRepository.findByUsernameAndAuthProvider(username, authProvider);
   }
 
@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
     loggedUserDto.setFirstName((String) attributes.get("firstName"));
     loggedUserDto.setLastName((String) attributes.get("lastName"));
     loggedUserDto.setAdministrator(String.valueOf(attributes.get("administrator")));
-    loggedUserDto.setAuthProvider(AuthProvider.valueOf((String) attributes.get("authProvider")));
+    loggedUserDto.setAuthProvider(Provider.valueOf((String) attributes.get("authProvider")));
     loggedUserDto.setEmail((String) attributes.get("email"));
 
     return loggedUserDto;

@@ -36,7 +36,7 @@ public class PublicationConfigurationServiceImpl implements PublicationConfigura
         || Utils.isStringEmpty(publicationConfiguration.getPathToArticle())
         || Utils.isStringEmpty(publicationConfiguration.getPrivateToken())
         || Utils.isStringEmpty(publicationConfiguration.getRepositoryPath())
-        || publicationConfiguration.getProvider() == null) {
+        || publicationConfiguration.getDomain() == null) {
       throw new ApiException(FaultType.INVALID_PARAMS, "Publication configuration is not complete");
     }
     return publicationConfiguration;
