@@ -11,25 +11,24 @@ services:
       GITHUB_OAUTH_CLIENT_SECRET: '02c2e04b9e24f1a65794db909597dfe67d165f53'
       JWT_GENERATOR_SIGNATURE_SECRET: 'E)H@McQfTjWnZr4u7x!z%C*F-JaNdRgU'
       FRONTEND_URL: 'http://localhost'
+      BACKEND_URL: 'api'
 #     DOCKER POSTGRES DATABASE
-#      DATABASE_URL: 'jdbc:postgresql://db/redakcny_system'
-#      DATABASE_USERNAME: 'redakcny_system'
-#      DATABASE_PASSWORD: 'some-password'
+      DATABASE_URL: 'jdbc:postgresql://db/redakcny_system'
+      DATABASE_USERNAME: 'redakcny_system'
+      DATABASE_PASSWORD: 'some-password'
 
 #     ELEPHANT SERVICE POSTGRES
-      DATABASE_URL: 'jdbc:postgresql://surus.db.elephantsql.com/nyukudxs'
-      DATABASE_USERNAME: 'nyukudxs'
-      DATABASE_PASSWORD: 'z7Ss2VLr1qZ3wnG9K300nuiXhpUYVVrE'
+#      DATABASE_URL: 'jdbc:postgresql://surus.db.elephantsql.com/nyukudxs'
+#      DATABASE_USERNAME: 'nyukudxs'
+#      DATABASE_PASSWORD: 'z7Ss2VLr1qZ3wnG9K300nuiXhpUYVVrE'
   frontend:
     build: ../redakcny-system-fe
-    environment:
-      BECKEND_API_URL: 'http://localhost:8080'
     ports:
       - "80:80"
-#  db:
-#    image: postgres:14
-#    environment:
-#      POSTGRES_PASSWORD: "some-password"
-#      POSTGRES_USER: "redakcny_system"
-#    volumes:
-#      - ./redakcny_system_be/src/main/resources/db/migration:/docker-entrypoint-initdb.d
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_PASSWORD: "some-password"
+      POSTGRES_USER: "redakcny_system"
+    volumes:
+      - ./src/main/resources/db/migration:/docker-entrypoint-initdb.d
