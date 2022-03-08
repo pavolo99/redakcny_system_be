@@ -13,6 +13,8 @@ deploy:
   image: git.kpi.fei.tuke.sk:4567/sergej.chodarev/ssh-client
   tags:
     - kpi
+  only:
+    - master@kpi-zp/2022/dp.pavol.dlugos/redakcny_system_be
   before_script:
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
