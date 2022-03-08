@@ -58,19 +58,6 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  @Transactional
-  public ArticleEditDto getArticle(Authentication authentication, Long id) {
-    Article article = findArticleById(id);
-    boolean canLoggedUserEdit = article.getArticleCollaborators()
-        .stream()
-        .anyMatch(collaborator -> collaborator.getCanEdit()
-            && collaborator.getUser().getId().equals(Long.parseLong(authentication.getName())));
-    ArticleEditDto articleEditDto = articleMapper.articleToArticleDto(article);
-    articleEditDto.setCanLoggedUserEdit(canLoggedUserEdit);
-    return articleEditDto;
-  }
-
-  @Override
   public List<ArticleViewDto> getAllArticles(Authentication authentication,
       QueryArticleType queryArticleType, QueryArticleStatus queryArticleStatus) {
     List<Article> articles = new ArrayList<>();

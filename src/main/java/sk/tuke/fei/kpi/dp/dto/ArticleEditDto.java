@@ -1,6 +1,8 @@
 package sk.tuke.fei.kpi.dp.dto;
 
 import io.micronaut.core.annotation.Introspected;
+import java.util.ArrayList;
+import java.util.List;
 import sk.tuke.fei.kpi.dp.model.entity.ArticleStatus;
 
 @Introspected
@@ -16,6 +18,7 @@ public class ArticleEditDto {
   private Integer reviewNumber;
   private ArticleStatus articleStatus;
   private boolean canLoggedUserEdit;
+  private List<UserDto> allConnectedUsers = new ArrayList<>();
 
   public Long getId() {
     return id;
@@ -95,5 +98,13 @@ public class ArticleEditDto {
 
   public void setCanLoggedUserEdit(boolean canLoggedUserEdit) {
     this.canLoggedUserEdit = canLoggedUserEdit;
+  }
+
+  public List<UserDto> getAllConnectedUsers() {
+    return allConnectedUsers;
+  }
+
+  public void setAllConnectedUsers(List<UserDto> allConnectedUsers) {
+    this.allConnectedUsers = allConnectedUsers;
   }
 }

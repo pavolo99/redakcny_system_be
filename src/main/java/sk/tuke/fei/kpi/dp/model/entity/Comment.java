@@ -46,12 +46,6 @@ public class Comment {
 
   public Comment() {}
 
-  public Comment(String text, Article article, User loggedUser) {
-    this.text = text;
-    this.article = article;
-    this.createdBy = loggedUser;
-  }
-
   public Long getId() {
     return id;
   }

@@ -32,11 +32,6 @@ public class ArticleController {
     this.articleService = articleService;
   }
 
-  @Get(uri = "/{articleId}", produces = MediaType.APPLICATION_JSON)
-  public HttpResponse<ArticleEditDto> getArticle(Authentication authentication, @PathVariable Long articleId) {
-    return HttpResponse.ok(articleService.getArticle(authentication, articleId));
-  }
-
   @Get(uri = "/list", produces = MediaType.APPLICATION_JSON)
   public HttpResponse<List<ArticleViewDto>> getAllArticles(Authentication authentication,
       @QueryValue QueryArticleType queryArticleType,
