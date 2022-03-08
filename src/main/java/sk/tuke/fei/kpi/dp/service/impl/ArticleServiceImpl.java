@@ -92,7 +92,7 @@ public class ArticleServiceImpl implements ArticleService {
   @Override
   public Long createArticle(Authentication authentication) {
     User createdBy = userService.findUserById(Long.parseLong(authentication.getName()));
-    Article article = new Article("Nazov članku", "Text članku", 0, WRITING, createdBy);
+    Article article = new Article("Názov článku", "Text článku", 0, WRITING, createdBy);
     ArticleCollaborator articleCollaborator = new ArticleCollaborator(true, true, true, article, createdBy);
     article.getArticleCollaborators().add(articleCollaborator);
     Version firstVersion = new Version(article.getText(), createdBy, article);

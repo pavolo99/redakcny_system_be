@@ -12,8 +12,8 @@ import sk.tuke.fei.kpi.dp.dto.LoggedUserDto;
 import sk.tuke.fei.kpi.dp.dto.UserDto;
 import sk.tuke.fei.kpi.dp.service.UserService;
 
+@Controller("api/user")
 @Secured(SecurityRule.IS_AUTHENTICATED)
-@Controller("user")
 public class UserController {
 
   private final UserService userService;

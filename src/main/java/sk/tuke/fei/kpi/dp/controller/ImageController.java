@@ -15,8 +15,8 @@ import java.util.List;
 import sk.tuke.fei.kpi.dp.dto.ImageInfoDto;
 import sk.tuke.fei.kpi.dp.service.ImageService;
 
-@Controller("image")
 @Secured(SecurityRule.IS_AUTHENTICATED)
+@Controller("api/image")
 public class ImageController {
 
   private final ImageService imageService;

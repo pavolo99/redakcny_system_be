@@ -6,14 +6,14 @@ micronaut:
         signatures:
           secret:
             generator:
-              secret: ${JWT_GENERATOR_SIGNATURE_SECRET}
+              secret: '${JWT_GENERATOR_SIGNATURE_SECRET:E)H@McQfTjWnZr4u7x!z%C*F-JaNdRgU}'
         claims-validators:
           issuer: 'redakcny-system-be'
     oauth2:
       clients:
         github:
-          client-id: ${GITHUB_OAUTH_CLIENT_ID}
-          client-secret: ${GITHUB_OAUTH_CLIENT_SECRET}
+          client-id: '${GITHUB_OAUTH_CLIENT_ID:Iv1.7f311c1dd843f6fb}'
+          client-secret: '${GITHUB_OAUTH_CLIENT_SECRET:02c2e04b9e24f1a65794db909597dfe67d165f53}'
           scopes:
             - read:user
           authorization:
@@ -23,8 +23,8 @@ micronaut:
             auth-method: CLIENT_SECRET_POST
 
         gitlab:
-          client-id: ${GITLAB_OAUTH_CLIENT_ID}
-          client-secret: ${GITLAB_OAUTH_CLIENT_SECRET}
+          client-id: '${GITLAB_OAUTH_CLIENT_ID:afef94df75f368edbb735303e7b8fa5c7141131aed8239126055dabba80acc8c}'
+          client-secret: '${GITLAB_OAUTH_CLIENT_SECRET:be993a6796915485219d444ad470d35cb3447463e4e8a57c9dc4979b1340bed3}'
           scopes:
             - read_user
           authorization:
@@ -36,11 +36,15 @@ micronaut:
       logout:
         get-allowed: true
     redirect:
-      login-success: ${LOGIN_SUCCESS_CALLBACK_URL}
+      login-success: 'http://localhost:8080/login-callback'
+  #      login-success: 'http://192.168.0.59:8080/login-callback'
+
   application:
     name: redakcny_system_be
-    front-end-url: ${FRONTEND_URL}
-    back-end-url: ${BACKEND_URL}
+    front-end-url: 'http://localhost:3000'
+    #    front-end-url: 'http://192.168.0.59:3000'
+    back-end-url: 'http://localhost:8080'
+  #    front-end-url: 'http://192.168.0.59:8080'
   router:
     static-resources:
       swagger:
@@ -65,10 +69,10 @@ micronaut:
 
 datasources:
   default:
-    url: ${DATABASE_URL}
+    url: jdbc:postgresql://localhost:5432/postgres
     driverClassName: org.postgresql.Driver
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
+    username: postgres
+    password: 'sa'
     schema-generate: CREATE_DROP
     dialect: POSTGRES
 
@@ -78,4 +82,4 @@ jpa:
       hibernate:
         hbm2ddl:
           auto: none
-        show_sql: false
+        show_sql: true

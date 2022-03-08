@@ -17,8 +17,8 @@ import sk.tuke.fei.kpi.dp.dto.update.UpdateUserPrivilegesDto;
 import sk.tuke.fei.kpi.dp.model.entity.PublicationConfiguration;
 import sk.tuke.fei.kpi.dp.service.AdministrationService;
 
-@Controller("administration")
 @Secured(SecurityRule.IS_AUTHENTICATED)
+@Controller("api/administration")
 public class AdministrationController {
 
   private final AdministrationService administrationService;
@@ -58,3 +58,4 @@ public class AdministrationController {
     return HttpResponse.ok(administrationService.updateUsersPrivileges(authentication, userId, updateUserPrivilegesDto));
   }
 }
+

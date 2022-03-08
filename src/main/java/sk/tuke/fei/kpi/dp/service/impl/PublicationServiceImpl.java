@@ -39,7 +39,7 @@ public class PublicationServiceImpl implements PublicationService {
 
   @Override
   public void publishArticleToProjectRepository(Authentication authentication, Article article) {
-    // TODO handle GITHUB provider
+    // TODO handle gitlab.com and github.com domains
     String articlePublicationName = article.getPublicFileName();
     PublicationConfiguration configuration = configurationService.getAndValidatePublicationConfiguration(
         articlePublicationName);
