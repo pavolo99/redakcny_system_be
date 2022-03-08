@@ -36,7 +36,7 @@ micronaut:
       logout:
         get-allowed: true
     redirect:
-      login-success: 'http://localhost:8080/login-callback'
+      login-success: 'http://localhost:8080/api/login-callback'
   #      login-success: 'http://192.168.0.59:8080/login-callback'
 
   application:
