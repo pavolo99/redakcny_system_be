@@ -18,7 +18,7 @@ import sk.tuke.fei.kpi.dp.dto.ArticleEditDto;
 import sk.tuke.fei.kpi.dp.dto.create.PreliminaryArticleTextDto;
 import sk.tuke.fei.kpi.dp.service.ArticleCollaborationSessionService;
 
-@Controller("collab-session")
+@Controller("api/collab-session")
 @Secured(SecurityRule.IS_AUTHENTICATED)
 public class ArticleCollaborationSessionController {
 
