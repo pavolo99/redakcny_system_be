@@ -53,6 +53,8 @@ micronaut:
         paths: classpath:META-INF/swagger/views/swagger-ui
         mapping: /swagger-ui/**
   server:
+    host-resolution:
+      protocol-header: 'X-Forwarded-Proto'
     cors:
       enabled: true
       configurations:
