@@ -54,6 +54,7 @@ micronaut:
         mapping: /swagger-ui/**
   server:
     host-resolution:
+      host-header: 'Host'
       protocol-header: 'X-Forwarded-Proto'
     cors:
       enabled: true
