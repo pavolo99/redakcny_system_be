@@ -4,6 +4,8 @@ import io.micronaut.security.authentication.Authentication;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.inject.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sk.tuke.fei.kpi.dp.dto.ArticleCollaboratorDto;
 import sk.tuke.fei.kpi.dp.dto.update.UpdateArticleCollaboratorDto;
 import sk.tuke.fei.kpi.dp.exception.ApiException;
@@ -24,6 +26,7 @@ public class ArticleCollaboratorServiceImpl implements ArticleCollaboratorServic
   private final ArticleCollaboratorMapper collaboratorMapper;
   private final ArticleService articleService;
   private final UserService userService;
+  private final Logger logger = LoggerFactory.getLogger(ArticleCollaboratorServiceImpl.class);
 
   public ArticleCollaboratorServiceImpl(
       ArticleCollaboratorRepository collaboratorRepository,
@@ -37,6 +40,7 @@ public class ArticleCollaboratorServiceImpl implements ArticleCollaboratorServic
 
   @Override
   public List<ArticleCollaboratorDto> getArticleCollaborators(Authentication authentication, Long articleId) {
+    logger.info("About to get article collaborators for article " + articleId);
     List<ArticleCollaborator> articleCollaborators = collaboratorRepository.getArticleCollaboratorsByArticle(articleId);
     return articleCollaborators
         .stream()
@@ -46,12 +50,14 @@ public class ArticleCollaboratorServiceImpl implements ArticleCollaboratorServic
 
   @Override
   public void addArticleCollaborator(Authentication authentication, Long articleId, Long userId) {
+    logger.info("About to add article collaborator " + articleId + " " + userId);
     Article article = articleService.findArticleById(articleId);
     User collaborator = userService.findUserById(userId);
     ArticleCollaborator articleCollaborator = new ArticleCollaborator(false, false, false, article, collaborator);
     try {
       collaboratorRepository.save(articleCollaborator);
     } catch (Exception e) {
+      logger.error("User" + userId + " is already collaborator for the article" + articleId);
       throw new ApiException(FaultType.INVALID_PARAMS, "User is already collaborator for the article");
     }
   }
@@ -59,7 +65,9 @@ public class ArticleCollaboratorServiceImpl implements ArticleCollaboratorServic
   @Override
   public void updateArticleCollaborator(Authentication authentication,
       Long collaboratorId, UpdateArticleCollaboratorDto updateArticleCollaboratorDto) {
+    logger.info("About to update article collaborator " + collaboratorId);
     if (!collaboratorId.equals(updateArticleCollaboratorDto.getId())) {
+      logger.error("Collaborator id " + collaboratorId + " id is not the same as in dto");
       throw new ApiException(FaultType.INVALID_PARAMS, "Collaborator id is not the same as in dto");
     }
     ArticleCollaborator articleCollaborator = getCollaboratorById(collaboratorId);
@@ -69,13 +77,16 @@ public class ArticleCollaboratorServiceImpl implements ArticleCollaboratorServic
 
   @Override
   public void deleteArticleCollaborator(Authentication authentication, Long collaboratorId) {
+    logger.info("About to delete article collaborator " + collaboratorId);
     ArticleCollaborator articleCollaborator = getCollaboratorById(collaboratorId);
     collaboratorRepository.delete(articleCollaborator);
   }
 
   private ArticleCollaborator getCollaboratorById(Long collaboratorId) {
     return collaboratorRepository.findById(collaboratorId)
-        .orElseThrow(
-            () -> new ApiException(FaultType.RECORD_NOT_FOUND, "Collaborator was not found"));
+        .orElseThrow(() -> {
+          logger.error("Collaborator " + collaboratorId + " was not found");
+          return new ApiException(FaultType.RECORD_NOT_FOUND, "Collaborator was not found");
+        });
   }
 }

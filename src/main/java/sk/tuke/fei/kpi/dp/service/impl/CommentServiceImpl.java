@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.inject.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sk.tuke.fei.kpi.dp.dto.CommentDto;
 import sk.tuke.fei.kpi.dp.dto.CommentReplyDto;
 import sk.tuke.fei.kpi.dp.dto.create.CommentCreateDto;
@@ -29,6 +31,7 @@ public class CommentServiceImpl implements CommentService {
   private final CommentRepository commentRepository;
   private final CommentMapper commentMapper;
   private final CommentReplyRepository commentReplyRepository;
+  private final Logger logger = LoggerFactory.getLogger(CommentServiceImpl.class);
 
   public CommentServiceImpl(ArticleService articleService,
       UserService userService, CommentRepository commentRepository,
@@ -44,6 +47,7 @@ public class CommentServiceImpl implements CommentService {
   @Override
   public void createComment(Authentication authentication,
       CommentCreateDto commentCreateDto, Long articleId) {
+    logger.info("About to create comment for article " + articleId);
     Article article = articleService.findArticleById(articleId);
     User loggedUser = userService.findUserById(Long.parseLong(authentication.getName()));
     Comment comment = commentMapper.commentCreateDtoToComment(commentCreateDto);
@@ -55,6 +59,7 @@ public class CommentServiceImpl implements CommentService {
 
   @Override
   public void toggleCommentResolved(Authentication authentication, Long commentId) {
+    logger.info("About to toggle comment resolved " + commentId);
     Comment comment = findByCommentId(commentId);
     comment.setResolved(!comment.getResolved());
     comment.setUpdatedAt(new Date());
@@ -63,23 +68,25 @@ public class CommentServiceImpl implements CommentService {
 
   @Override
   public void deleteComment(Authentication authentication, Long commentId) {
+    logger.info("About to delete comment " + commentId);
     Comment comment = findByCommentId(commentId);
     if (!comment.getCreatedBy().getId()
         .equals(userService.findUserById(Long.parseLong(authentication.getName())).getId())) {
+      logger.error("Comment " + commentId + " cannot be deleted by other then creator himself");
       throw new ApiException(FaultType.FORBIDDEN, "Comment cannot be deleted by other then creator himself");
     }
 
     try {
       commentRepository.delete(comment);
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.error("Comment " + commentId + " cannot be deleted");
     }
   }
 
   @Override
   public List<CommentDto> getComments(Authentication authentication, Long articleId,
       boolean allComments) {
-
+    logger.info("About to get all comments for article " + articleId);
     List<Comment> comments = allComments ? commentRepository.getAllCommentsByArticleId(articleId)
         : commentRepository.getUnResolvedCommentsByArticleId(articleId);
 
@@ -104,8 +111,11 @@ public class CommentServiceImpl implements CommentService {
   }
 
   @Override
-  public Comment findByCommentId(Long id) {
-    return commentRepository.findById(id)
-        .orElseThrow(() -> new ApiException(FaultType.RECORD_NOT_FOUND, "Comment was not found"));
+  public Comment findByCommentId(Long commentId) {
+    return commentRepository.findById(commentId)
+        .orElseThrow(() -> {
+          logger.error("Comment " + commentId + " was not found");
+          return new ApiException(FaultType.RECORD_NOT_FOUND, "Comment was not found");
+        });
   }
 }

@@ -4,6 +4,8 @@ import io.micronaut.security.authentication.Authentication;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sk.tuke.fei.kpi.dp.dto.VersionDto;
 import sk.tuke.fei.kpi.dp.dto.simple.VersionSimpleDto;
 import sk.tuke.fei.kpi.dp.dto.update.UpdateArticleDto;
@@ -26,6 +28,7 @@ public class VersionServiceImpl implements VersionService {
   private final VersionMapper versionMapper;
   private final UserService userService;
   private final ArticleService articleService;
+  private final Logger logger = LoggerFactory.getLogger(VersionServiceImpl.class);
 
   public VersionServiceImpl(VersionRepository versionRepository,
       VersionMapper versionMapper, UserService userService, ArticleService articleService) {
@@ -37,6 +40,7 @@ public class VersionServiceImpl implements VersionService {
 
   @Override
   public VersionViewDto getVersions(Authentication authentication, Long articleId) {
+    logger.info("About to get versions for article " + articleId);
     List<Version> versions = versionRepository.getVersionsByArticle(articleId);
     VersionViewDto versionViewDto = new VersionViewDto();
     if (versions.size() <  1) {
@@ -58,8 +62,10 @@ public class VersionServiceImpl implements VersionService {
 
   @Override
   public VersionDto getVersionDetail(Authentication authentication, Long versionId) {
+    logger.info("About to get version detail " + versionId);
     Version version = versionRepository.getVersionByIdFetchCreatedBy(versionId);
     if (version == null) {
+      logger.error("Version " + versionId + " was not found");
       throw new ApiException(FaultType.RECORD_NOT_FOUND, "Version was not found");
     }
     return versionMapper.versionToVersionDto(version);
@@ -68,9 +74,10 @@ public class VersionServiceImpl implements VersionService {
   @Override
   public VersionViewDto createCurrentVersionFromExisting(Authentication authentication,
       Long versionId) {
-
+    logger.info("About to create current version from existing version " + versionId);
     Version existingVersion = versionRepository.getVersionByIdFetchArticle(versionId);
     if (existingVersion == null) {
+      logger.error("Version " + versionId + " was not found");
       throw new ApiException(FaultType.RECORD_NOT_FOUND, "Version was not found");
     }
     Article article = existingVersion.getArticle();

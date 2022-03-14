@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.inject.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sk.tuke.fei.kpi.dp.common.Provider;
 import sk.tuke.fei.kpi.dp.dto.LoggedUserDto;
 import sk.tuke.fei.kpi.dp.dto.UserDto;
@@ -26,6 +28,7 @@ public class UserServiceImpl implements UserService {
 
   private final UserRepository userRepository;
   private final UserMapper userMapper;
+  private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
   public UserServiceImpl(UserRepository userRepository,
       UserMapper userMapper) {
@@ -35,16 +38,19 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public Optional<User> findByUsernameAndAuthProvider(String username, Provider authProvider) {
+    logger.info("About to find by username " + username + " and auth provider " + authProvider.toString());
     return userRepository.findByUsernameAndAuthProvider(username, authProvider);
   }
 
   @Override
   public User saveUser(User loggedUser) {
+    logger.info("About to save user");
     return userRepository.save(loggedUser);
   }
 
   @Override
   public List<UserDto> getPotentialCollaborators(Authentication authentication, String searchValue) {
+    logger.info("About to get potential collaborators for value " + searchValue);
     StringBuilder generalSearchValue = new StringBuilder().append("%");
     if (searchValue != null) {
       generalSearchValue.append(searchValue.trim().toLowerCase());
@@ -61,12 +67,15 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public LoggedUserDto getLoggedUser(Authentication authentication) {
+    logger.info("About to get logged user " + authentication.getName());
     String role = authentication
         .getRoles()
         .stream()
         .findAny()
-        .orElseThrow(
-            () -> new ApiException(FaultType.FORBIDDEN, "User does not have any role assigned"));
+        .orElseThrow(() -> {
+          logger.error("User " + authentication.getName() + " does not have any role assigned");
+          return new ApiException(FaultType.FORBIDDEN, "User does not have any role assigned");
+        });
     Map<String, Object> attributes = authentication.getAttributes();
     LoggedUserDto loggedUserDto = new LoggedUserDto();
     loggedUserDto.setId(Long.valueOf(authentication.getName()));
@@ -83,13 +92,17 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public User findUserById(Long userId) {
-    return userRepository.findById(userId).orElseThrow(
-        () -> new ApiException(RECORD_NOT_FOUND, "User was not found"));
+    return userRepository.findById(userId)
+        .orElseThrow(() -> {
+          logger.error("User " + userId + " was not found");
+          return new ApiException(RECORD_NOT_FOUND, "User was not found");
+        });
 
   }
 
   @Override
   public List<UserForAdminDto> getAllUsersForAdmin(Authentication authentication) {
+    logger.info("About to get all users for admin " + authentication.getName());
     return userRepository.getAllUsers()
         .stream()
         // sets true or false in string format to enable boolean parsing in user mapper
@@ -101,7 +114,9 @@ public class UserServiceImpl implements UserService {
   @Override
   public List<UserForAdminDto> updateUserPrivileges(Authentication authentication, Long userId,
       UpdateUserPrivilegesDto updateUserPrivilegesDto) {
+    logger.info("About to update user privileges " + userId);
     if (!updateUserPrivilegesDto.getId().equals(userId)) {
+      logger.error("User " + userId + " in path variable is not the same as in dto");
       throw new ApiException(INVALID_PARAMS, "Id in path variable is not the same as in dto");
     }
     User user = findUserById(userId);

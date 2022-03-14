@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.inject.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sk.tuke.fei.kpi.dp.dto.provider.gitlab.GitlabCommitActionDto;
 import sk.tuke.fei.kpi.dp.dto.provider.gitlab.GitlabCommitDto;
 import sk.tuke.fei.kpi.dp.exception.ApiException;
@@ -27,6 +29,7 @@ public class PublicationServiceImpl implements PublicationService {
 
   private final GitlabApiClient gitlabApiClient;
   private final PublicationConfigurationService configurationService;
+  private final Logger logger = LoggerFactory.getLogger(PublicationServiceImpl.class);
 
   @Value("${micronaut.application.back-end-url}")
   String backEndUrl;
@@ -39,6 +42,7 @@ public class PublicationServiceImpl implements PublicationService {
 
   @Override
   public void publishArticleToProjectRepository(Authentication authentication, Article article) {
+    logger.info("About to publish article to project repository " + article.getId());
     // TODO handle gitlab.com and github.com domains
     String articlePublicationName = article.getPublicFileName();
     PublicationConfiguration configuration = configurationService.getAndValidatePublicationConfiguration(
@@ -67,14 +71,19 @@ public class PublicationServiceImpl implements PublicationService {
 
   private void handleHttpClientResponseException(HttpClientResponseException e) {
     if ("A file with this name already exists".equals(e.getMessage())) {
+      logger.error("A file with this name already exists");
       throw new ApiException(INVALID_PARAMS, "A file with this name already exists");
     } else if (e.getMessage().contains("invalid pathToArticle")) {
+      logger.error("Invalid path to article");
       throw new ApiException(INVALID_PARAMS, "Invalid path to article");
     } else if ("You can only create or edit files when you are on a branch".equals(e.getMessage())) {
+      logger.error("Branch does not exist");
       throw new ApiException(INVALID_PARAMS, "Branch does not exist");
     } else if ("401 Unauthorized".equals(e.getMessage())) {
+      logger.error("Unauthorized, make sure that private token is correct");
       throw new ApiException(INVALID_PARAMS, "Unauthorized, make sure that private token is correct");
     } else {
+      logger.error("Unexpected http client response error exception occurred");
       throw new ApiException(INVALID_PARAMS, "Unexpected http client response error exception occurred");
     }
   }

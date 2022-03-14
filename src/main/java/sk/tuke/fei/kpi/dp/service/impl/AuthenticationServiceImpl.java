@@ -6,6 +6,8 @@ import jakarta.inject.Singleton;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sk.tuke.fei.kpi.dp.common.Provider;
 import sk.tuke.fei.kpi.dp.dto.provider.ProviderUser;
 import sk.tuke.fei.kpi.dp.exception.ApiException;
@@ -21,6 +23,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
   private final UserService userService;
   private final JwtTokenGenerator jwtTokenGenerator;
+  private final Logger logger = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
 
   public AuthenticationServiceImpl(UserService userService, JwtTokenGenerator jwtTokenGenerator) {
     this.userService = userService;
@@ -38,6 +41,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   @Override
   public AuthenticationResponse handleAuthenticationResponse(ProviderUser loggedProviderUserDto,
       Provider authProvider) {
+    logger.info("About to handle authentication response " + loggedProviderUserDto.getUsername() + " " + authProvider.toString());
     String[] loggedUserFullName = loggedProviderUserDto.getName().split(" ");
     String firstName = loggedUserFullName[0];
     String lastName = loggedUserFullName[1];
@@ -52,29 +56,28 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     String jwtAccessToken = generateJwtToken(loggedSystemUser);
 
-    HashMap<String, Object> loggedUserDataDtoMap = new HashMap<>();
-    loggedUserDataDtoMap.put("username", loggedSystemUser.getUsername());
-    loggedUserDataDtoMap.put("email", loggedSystemUser.getEmail());
-    loggedUserDataDtoMap.put("firstName", loggedSystemUser.getFirstName());
-    loggedUserDataDtoMap.put("lastName", loggedSystemUser.getLastName());
-    loggedUserDataDtoMap.put("administrator", loggedSystemUser.isAdministrator());
-    loggedUserDataDtoMap.put("authProvider", loggedSystemUser.getAuthProvider().toString());
+    Map<String, Object> loggedUserDataDtoMap = new HashMap<>();
+    saveBasicUserInfoToMap(loggedSystemUser, loggedUserDataDtoMap);
     loggedUserDataDtoMap.put("accessToken", jwtAccessToken);
     // unique username is generated ID - name field in authentication class
     return AuthenticationResponse.success(String.valueOf(loggedSystemUser.getId()),
         Collections.singletonList(loggedSystemUser.getRole()), loggedUserDataDtoMap);
   }
 
+  private void saveBasicUserInfoToMap(User loggedSystemUser, Map<String, Object> loggedUserDataDtoMap) {
+    loggedUserDataDtoMap.put("username", loggedSystemUser.getUsername());
+    loggedUserDataDtoMap.put("email", loggedSystemUser.getEmail());
+    loggedUserDataDtoMap.put("firstName", loggedSystemUser.getFirstName());
+    loggedUserDataDtoMap.put("lastName", loggedSystemUser.getLastName());
+    loggedUserDataDtoMap.put("administrator", loggedSystemUser.isAdministrator());
+    loggedUserDataDtoMap.put("authProvider", loggedSystemUser.getAuthProvider().toString());
+  }
+
   private String generateJwtToken(User loggedSystemUser) {
     long currentUnixTime = System.currentTimeMillis() / 1000L;
 
     Map<String, Object> tokenPayloadData = new HashMap<>();
-    tokenPayloadData.put("username", loggedSystemUser.getUsername());
-    tokenPayloadData.put("email", loggedSystemUser.getEmail());
-    tokenPayloadData.put("firstName", loggedSystemUser.getFirstName());
-    tokenPayloadData.put("lastName", loggedSystemUser.getLastName());
-    tokenPayloadData.put("administrator", loggedSystemUser.isAdministrator());
-    tokenPayloadData.put("authProvider", loggedSystemUser.getAuthProvider().toString());
+    saveBasicUserInfoToMap(loggedSystemUser, tokenPayloadData);
     tokenPayloadData.put("sub", String.valueOf(loggedSystemUser.getId())); // subject - user unique ID
     tokenPayloadData.put("nbf", currentUnixTime + (60 * 10)); // not valid before - 10 minutes
     tokenPayloadData.put("roles", Collections.singletonList(loggedSystemUser.getRole())); // user role
@@ -83,6 +86,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     tokenPayloadData.put("iat", currentUnixTime); // issued at
     return jwtTokenGenerator
         .generateToken(tokenPayloadData)
-        .orElseThrow(() -> new ApiException(FaultType.GENERAL_ERROR, "JWT cannot be generated"));
+        .orElseThrow(() -> {
+          logger.error("JWT cannot be generated");
+          return new ApiException(FaultType.GENERAL_ERROR, "JWT cannot be generated");
+        });
   }
 }

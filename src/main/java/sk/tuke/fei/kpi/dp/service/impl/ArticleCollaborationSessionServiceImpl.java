@@ -8,6 +8,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.inject.Singleton;
 import javax.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sk.tuke.fei.kpi.dp.dto.ArticleConnectedCollaboratorDto;
 import sk.tuke.fei.kpi.dp.dto.ArticleEditDto;
 import sk.tuke.fei.kpi.dp.dto.UserDto;
@@ -32,6 +34,7 @@ public class ArticleCollaborationSessionServiceImpl implements ArticleCollaborat
   private final UserMapper userMapper;
   private final UserService userService;
   private final ArticleCollaboratorMapper collaboratorMapper;
+  private final Logger logger = LoggerFactory.getLogger(ArticleCollaborationSessionServiceImpl.class);
 
   public ArticleCollaborationSessionServiceImpl(
       ArticleCollaborationSessionRepository sessionRepository,
@@ -57,8 +60,8 @@ public class ArticleCollaborationSessionServiceImpl implements ArticleCollaborat
         .map(session -> userMapper.userToUserDto(session.getUser()))
         .collect(Collectors.toSet());
     if (existingLoggedUsersSession != null) {
-      article.setText(existingLoggedUsersSession.getText());
       ArticleEditDto articleEditDto = articleMapper.articleToArticleDto(article);
+      articleEditDto.setText(existingLoggedUsersSession.getText());
       addAllConnectedUsersToArticle(articleEditDto, loggedUser, connectedUsers);
 
       boolean canLoggedUserEdit = getIfUserCanEditArticle(loggedUser, article)
@@ -74,6 +77,7 @@ public class ArticleCollaborationSessionServiceImpl implements ArticleCollaborat
     }
 
     boolean canLoggedUserEdit = getIfUserCanEditArticle(loggedUser, article);
+    ArticleEditDto articleEditDto = articleMapper.articleToArticleDto(article);
     if (articleSessions.isEmpty()) {
       ArticleCollaborationSession articleCollaborationSession = new ArticleCollaborationSession(
           article.getText(), canLoggedUserEdit, loggedUser, article);
@@ -88,16 +92,15 @@ public class ArticleCollaborationSessionServiceImpl implements ArticleCollaborat
       if (existingEditableSession == null) {
         ArticleCollaborationSession randomArticleSession = articleSessions.stream().findAny().orElse(null);
         articleCollaborationSession.setText(randomArticleSession == null ? article.getText() : randomArticleSession.getText());
-        article.setText(articleCollaborationSession.getText());
+        articleEditDto.setText(articleCollaborationSession.getText());
       } else {
         articleCollaborationSession.setText(existingEditableSession.getText());
-        article.setText(articleCollaborationSession.getText());
+        articleEditDto.setText(articleCollaborationSession.getText());
         canLoggedUserEdit = false;
         articleCollaborationSession.setCanUserEdit(false);
       }
       createSession(articleCollaborationSession);
     }
-    ArticleEditDto articleEditDto = articleMapper.articleToArticleDto(article);
     addAllConnectedUsersToArticle(articleEditDto, loggedUser, connectedUsers);
     articleEditDto.setCanLoggedUserEdit(canLoggedUserEdit);
     return articleEditDto;
@@ -120,7 +123,7 @@ public class ArticleCollaborationSessionServiceImpl implements ArticleCollaborat
       try {
         sessionRepository.delete(sessionToDelete);
       } catch (Exception e) {
-        System.out.println("e.getMessage() = " + e.getMessage());
+        logger.error("Error occurred when removing session " + sessionToDelete.getId());
       }
     }
   }
@@ -164,7 +167,7 @@ public class ArticleCollaborationSessionServiceImpl implements ArticleCollaborat
     try {
       sessionRepository.updateAll(articleSessions);
     } catch (Exception e) {
-      System.out.println("e.getMessage() = " + e.getMessage());
+      logger.error("Error occurred when saving article sessions");
     }
   }
 
@@ -199,7 +202,7 @@ public class ArticleCollaborationSessionServiceImpl implements ArticleCollaborat
     try {
       sessionRepository.save(articleCollaborationSession);
     } catch (Exception e) {
-      System.out.println("e.getMessage() = " + e.getMessage());
+      logger.error("Error occurred when creating article sessions");
     }
   }
 
@@ -207,7 +210,7 @@ public class ArticleCollaborationSessionServiceImpl implements ArticleCollaborat
     try {
       sessionRepository.update(articleCollaborationSession);
     } catch (Exception e) {
-      System.out.println("e.getMessage() = " + e.getMessage());
+      logger.error("Error occurred when updating article sessions " + articleCollaborationSession.getId());
     }
   }
 

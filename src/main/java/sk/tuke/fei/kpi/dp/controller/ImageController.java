@@ -10,6 +10,7 @@ import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.http.multipart.CompletedFileUpload;
 import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.rules.SecurityRule;
 import java.util.List;
 import sk.tuke.fei.kpi.dp.dto.ImageInfoDto;
@@ -26,8 +27,9 @@ public class ImageController {
   }
 
   @Post(uri = "/uploaded/{articleId}", consumes = MediaType.MULTIPART_FORM_DATA)
-  public HttpResponse<String> uploadImage(@PathVariable Long articleId, @Part CompletedFileUpload file) {
-    return HttpResponse.created(imageService.uploadImage(articleId, file));
+  public HttpResponse<String> uploadImage(Authentication authentication,
+      @PathVariable Long articleId, @Part CompletedFileUpload file) {
+    return HttpResponse.created(imageService.uploadImage(authentication, articleId, file));
   }
 
   @Get(uri = "/content/{imageName}", produces = MediaType.MULTIPART_FORM_DATA)
@@ -37,13 +39,14 @@ public class ImageController {
   }
 
   @Get(uri = "/info/{articleId}", produces = MediaType.APPLICATION_JSON)
-  public HttpResponse<List<ImageInfoDto>> getArticleImagesInfo(@PathVariable Long articleId) {
-    return HttpResponse.ok(imageService.getArticleImagesInfo(articleId));
+  public HttpResponse<List<ImageInfoDto>> getArticleImagesInfo(Authentication authentication,
+      @PathVariable Long articleId) {
+    return HttpResponse.ok(imageService.getArticleImagesInfo(authentication, articleId));
   }
 
   @Delete(uri = "/{imageId}")
-  public HttpResponse<Void> removeImage(@PathVariable Long imageId) {
-    imageService.removeImage(imageId);
+  public HttpResponse<Void> removeImage(Authentication authentication, @PathVariable Long imageId) {
+    imageService.removeImage(authentication, imageId);
     return HttpResponse.ok();
   }
 }

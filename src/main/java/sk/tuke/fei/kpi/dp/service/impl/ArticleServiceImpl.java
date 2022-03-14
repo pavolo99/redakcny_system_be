@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.inject.Singleton;
 import javax.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sk.tuke.fei.kpi.dp.common.QueryArticleStatus;
 import sk.tuke.fei.kpi.dp.common.QueryArticleType;
 import sk.tuke.fei.kpi.dp.dto.ArchivedArticleDto;
@@ -44,6 +46,7 @@ public class ArticleServiceImpl implements ArticleService {
   private final VersionRepository versionRepository;
   private final PublicationService publicationService;
   private final ArticleCollaboratorRepository collaboratorRepository;
+  private final Logger logger = LoggerFactory.getLogger(ArticleServiceImpl.class);
 
   public ArticleServiceImpl(ArticleRepository articleRepository, ArticleMapper articleMapper,
       UserService userService, VersionRepository versionRepository,
@@ -60,6 +63,7 @@ public class ArticleServiceImpl implements ArticleService {
   @Override
   public List<ArticleViewDto> getAllArticles(Authentication authentication,
       QueryArticleType queryArticleType, QueryArticleStatus queryArticleStatus) {
+    logger.info("About to get all articles");
     List<Article> articles = new ArrayList<>();
     long loggedUserId = Long.parseLong(authentication.getName());
     if (QueryArticleType.MINE.equals(queryArticleType)) {
@@ -72,6 +76,7 @@ public class ArticleServiceImpl implements ArticleService {
       articles = articleRepository.getSharedArticlesOfLoggedUser(loggedUserId);
     } else if (QueryArticleType.REVIEWED_BY_ME.equals(queryArticleType)) {
       if (!authentication.getRoles().contains("EDITOR")) {
+        logger.error("Articles are determined only for editor");
         throw new ApiException(FORBIDDEN, "Articles are determined only for editor");
       }
       articles = articleRepository.getReviewedArticlesForEditor(loggedUserId);
@@ -91,6 +96,7 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   public Long createArticle(Authentication authentication) {
+    logger.info("About to create article");
     User createdBy = userService.findUserById(Long.parseLong(authentication.getName()));
     Article article = new Article("Názov článku", "Text článku", 0, WRITING, createdBy);
     ArticleCollaborator articleCollaborator = new ArticleCollaborator(true, true, true, article, createdBy);
@@ -104,7 +110,9 @@ public class ArticleServiceImpl implements ArticleService {
   @Override
   @Transactional
   public ArticleEditDto updateArticle(Authentication authentication, Long articleId, UpdateArticleDto updateArticleDto) {
+    logger.info("About to update article " + articleId);
     if (!articleId.equals(updateArticleDto.getId())) {
+      logger.error("Article id " + articleId + " is not equal with update article dto");
       throw new ApiException(INVALID_PARAMS, "Id is not equal with update article dto articleId");
     }
     Article article = findArticleById(articleId);
@@ -112,6 +120,7 @@ public class ArticleServiceImpl implements ArticleService {
         .findByArticleAndLoggedUser(article.getId(), Long.parseLong(authentication.getName()));
 
     if (loggedArticleCollaborator == null || !loggedArticleCollaborator.getCanEdit()) {
+      logger.error("Logged user collaborator is not allowed to update this article" + articleId);
       throw new ApiException(FORBIDDEN, "You are not allowed to update this article");
     }
     articleMapper.updateArticleFromArticleUpdateDto(updateArticleDto, article);
@@ -125,12 +134,15 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public ArticleEditDto approveArticle(Authentication authentication, Long id) {
-    Article article = findArticleById(id);
+  public ArticleEditDto approveArticle(Authentication authentication, Long articleId) {
+    logger.info("About to approve article " + articleId);
+    Article article = findArticleById(articleId);
     if (!IN_REVIEW.equals(article.getArticleStatus())) {
+      logger.error("Article " + articleId + " must be first reviewed");
       throw new ApiException(INVALID_PARAMS, "Article must be first reviewed");
     }
     if (!authentication.getRoles().contains("EDITOR")) {
+      logger.error("Article " + articleId + " can be approved only by editor");
       throw new ApiException(FORBIDDEN, "Article can be approved only by editor");
     }
     long loggedUserId = Long.parseLong(authentication.getName());
@@ -142,10 +154,12 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public ArticleEditDto archiveArticle(Authentication authentication, Long id) {
-    Article article = findArticleById(id);
+  public ArticleEditDto archiveArticle(Authentication authentication, Long articleId) {
+    logger.info("About to archive article " + articleId);
+    Article article = findArticleById(articleId);
     if (!IN_REVIEW.equals(article.getArticleStatus()) && !APPROVED.equals(
         article.getArticleStatus())) {
+      logger.error("Article " + articleId + " must be first reviewed or approved");
       throw new ApiException(INVALID_PARAMS, "Article must be first reviewed or approved");
     }
     article.setArticleStatus(ArticleStatus.ARCHIVED);
@@ -154,9 +168,11 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public ArticleEditDto sendArticleToReview(Authentication authentication, Long id) {
-    Article article = findArticleById(id);
+  public ArticleEditDto sendArticleToReview(Authentication authentication, Long articleId) {
+    logger.info("About to send article to review " + articleId);
+    Article article = findArticleById(articleId);
     if (!ArticleStatus.WRITING.equals(article.getArticleStatus())) {
+      logger.error("Article " + articleId + " must be in the writing process");
       throw new ApiException(INVALID_PARAMS, "Article must be in the writing process");
     }
     article.setArticleStatus(IN_REVIEW);
@@ -166,9 +182,11 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public ArticleEditDto sendArticleReview(Authentication authentication, Long id) {
-    Article article = findArticleById(id);
+  public ArticleEditDto sendArticleReview(Authentication authentication, Long articleId) {
+    logger.info("About to send article review " + articleId);
+    Article article = findArticleById(articleId);
     if (!IN_REVIEW.equals(article.getArticleStatus())) {
+      logger.error("Article " + articleId + " must be in the review");
       throw new ApiException(INVALID_PARAMS, "Article must be in the review");
     }
     article.setArticleStatus(ArticleStatus.WRITING);
@@ -178,9 +196,11 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   @Transactional
-  public ArticleEditDto publishArticle(Authentication authentication, Long id) {
-    Article article = findArticleById(id);
+  public ArticleEditDto publishArticle(Authentication authentication, Long articleId) {
+    logger.info("About to publish article " + articleId);
+    Article article = findArticleById(articleId);
     if (!APPROVED.equals(article.getArticleStatus())) {
+      logger.error("Article " + articleId + " must be approved");
       throw new ApiException(INVALID_PARAMS, "Article must be approved");
     }
     publicationService.publishArticleToProjectRepository(authentication, article);
@@ -191,9 +211,11 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public ArticleEditDto denyArticle(Authentication authentication, Long id) {
-    Article article = findArticleById(id);
+  public ArticleEditDto denyArticle(Authentication authentication, Long articleId) {
+    logger.info("About to deny article " + articleId);
+    Article article = findArticleById(articleId);
     if (!IN_REVIEW.equals(article.getArticleStatus())) {
+      logger.error("Article " + articleId + " must be after review");
       throw new ApiException(INVALID_PARAMS, "Article must be after review");
     }
     article.setArticleStatus(ARCHIVED);
@@ -202,42 +224,50 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public void removeArticle(Authentication authentication, Long id) {
-    Article article = findArticleById(id);
+  public void removeArticle(Authentication authentication, Long articleId) {
+    logger.info("About to remove article " + articleId);
+    Article article = findArticleById(articleId);
     if (!ArticleStatus.WRITING.equals(article.getArticleStatus())
         || article.getReviewNumber() > 0) {
-      throw new ApiException(INVALID_PARAMS,
-          "Article must be in writing state and cannot be after any review");
+      logger.error("Article " + articleId + " must be in writing state and cannot be after any review");
+      throw new ApiException(INVALID_PARAMS, "Article must be in writing state and cannot be after any review");
     }
     try {
       articleRepository.delete(article);
     } catch (Exception e) {
-      System.out.println("Error while saving article " + article.getId() + " " + e.getMessage());
+      logger.error("Article " + articleId + " cannot be deleted");
+      throw new ApiException(INVALID_PARAMS, "Article cannot be deleted");
     }
   }
 
   @Override
-  public Article findArticleById(Long id) {
-    return articleRepository.findById(id).orElseThrow(
-        () -> new ApiException(RECORD_NOT_FOUND, "Article was not found"));
+  public Article findArticleById(Long articleId) {
+    return articleRepository.findById(articleId)
+        .orElseThrow(() -> {
+          logger.error("Article " + articleId + " was not found");
+          return new ApiException(RECORD_NOT_FOUND, "Article was not found");
+        });
   }
 
   @Override
-  public ArchivedArticleDto getArchivedArticle(Authentication authentication, Long id) {
-    Article archivedArticle = getArchivedArticle(id);
+  public ArchivedArticleDto getArchivedArticle(Authentication authentication, Long articleId) {
+    logger.info("About to get archive article " + articleId);
+    Article archivedArticle = getArchivedArticle(articleId);
     return articleMapper.articleToArchivedArticleDto(archivedArticle);
   }
 
   @Override
-  public void restoreArticle(Authentication authentication, Long id) {
-    Article archivedArticle = getArchivedArticle(id);
+  public void restoreArticle(Authentication authentication, Long articleId) {
+    logger.info("About to restore article " + articleId);
+    Article archivedArticle = getArchivedArticle(articleId);
     archivedArticle.setArticleStatus(WRITING);
     articleRepository.update(archivedArticle);
   }
 
-  private Article getArchivedArticle(Long id) {
-    Article article = findArticleById(id);
+  private Article getArchivedArticle(Long articleId) {
+    Article article = findArticleById(articleId);
     if (!article.getArticleStatus().equals(ARCHIVED)) {
+      logger.error("Article " + articleId + " must be archived");
       throw new ApiException(INVALID_PARAMS, "Article must be archived");
     }
     return article;
