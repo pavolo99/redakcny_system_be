@@ -7,6 +7,7 @@ import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import io.micronaut.security.authentication.Authentication;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -119,7 +120,7 @@ public class PublicationServiceImpl implements PublicationService {
   }
 
   private String buildArticleContentWithMetaData(Article article) {
-    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Paris"));
     StringBuilder sb = new StringBuilder();
     sb.append("---\n");
     sb.append("Title: ").append(article.getName()).append("\n");
