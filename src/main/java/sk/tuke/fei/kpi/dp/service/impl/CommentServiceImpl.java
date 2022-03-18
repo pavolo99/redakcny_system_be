@@ -80,6 +80,7 @@ public class CommentServiceImpl implements CommentService {
       commentRepository.delete(comment);
     } catch (Exception e) {
       logger.error("Comment " + commentId + " cannot be deleted");
+      throw new ApiException(FaultType.INVALID_PARAMS, "Comment cannot be removed");
     }
   }
 
