@@ -38,10 +38,8 @@ micronaut:
       login-success: ${LOGIN_SUCCESS_CALLBACK_URL}
   application:
     name: redakcny_system_be
-    front-end-url: 'http://localhost:3000'
-    #    front-end-url: 'http://192.168.0.59:3000'
-    back-end-url: 'http://localhost:8080'
-  #    front-end-url: 'http://192.168.0.59:8080'
+      front-end-url: ${FRONTEND_URL}
+      back-end-url: ${BACKEND_URL}
   server:
     host-resolution:
       host-header: 'Host'
@@ -71,7 +69,7 @@ jpa:
       hibernate:
         hbm2ddl:
           auto: none
-        show_sql: true
+        show_sql: false
 
 flyway:
   datasources:
