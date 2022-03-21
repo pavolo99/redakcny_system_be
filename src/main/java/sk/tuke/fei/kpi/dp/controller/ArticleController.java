@@ -47,7 +47,7 @@ public class ArticleController {
   @Put(uri = "/{id}", produces = MediaType.APPLICATION_JSON)
   public HttpResponse<ArticleEditDto> updateArticle(Authentication authentication, @PathVariable Long id,
       @Valid UpdateArticleDto updateArticleDto) {
-    return HttpResponse.ok(articleService.updateArticle(authentication, id, updateArticleDto));
+    return HttpResponse.ok(articleService.updateArticle(authentication, id, updateArticleDto, true));
   }
 
   @Put(uri = "/approved/{id}", produces = MediaType.APPLICATION_JSON)

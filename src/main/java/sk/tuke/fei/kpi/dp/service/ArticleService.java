@@ -17,7 +17,8 @@ public interface ArticleService {
 
   Long createArticle(Authentication authentication);
 
-  ArticleEditDto updateArticle(Authentication authentication, Long id, UpdateArticleDto updateArticleDto);
+  ArticleEditDto updateArticle(Authentication authentication, Long id,
+      UpdateArticleDto updateArticleDto, boolean createNewVersion);
 
   ArticleEditDto approveArticle(Authentication authentication, Long id);
 

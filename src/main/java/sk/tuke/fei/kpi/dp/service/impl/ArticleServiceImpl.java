@@ -109,7 +109,8 @@ public class ArticleServiceImpl implements ArticleService {
 
   @Override
   @Transactional
-  public ArticleEditDto updateArticle(Authentication authentication, Long articleId, UpdateArticleDto updateArticleDto) {
+  public ArticleEditDto updateArticle(Authentication authentication, Long articleId,
+      UpdateArticleDto updateArticleDto, boolean createNewVersion) {
     logger.info("About to update article " + articleId);
     if (!articleId.equals(updateArticleDto.getId())) {
       logger.error("Article id " + articleId + " is not equal with update article dto");
@@ -128,8 +129,10 @@ public class ArticleServiceImpl implements ArticleService {
     User loggedUser = loggedArticleCollaborator.getUser();
     article.setUpdatedBy(loggedUser);
     Article updatedArticle = articleRepository.update(article);
-    Version newVersion = new Version(article.getText(), loggedUser, article);
-    versionRepository.save(newVersion);
+    if (createNewVersion) {
+      Version newVersion = new Version(article.getText(), loggedUser, article);
+      versionRepository.save(newVersion);
+    }
     return articleMapper.articleToArticleDto(updatedArticle);
   }
 
@@ -229,8 +232,8 @@ public class ArticleServiceImpl implements ArticleService {
     Article article = findArticleById(articleId);
     if (!ArticleStatus.WRITING.equals(article.getArticleStatus())
         || article.getReviewNumber() > 0) {
-      logger.error("Article " + articleId + " must be in writing state and cannot be after any review");
-      throw new ApiException(INVALID_PARAMS, "Article must be in writing state and cannot be after any review");
+      logger.error("Article " + articleId + " cannot be deleted");
+      throw new ApiException(INVALID_PARAMS, "Article cannot be deleted");
     }
     try {
       articleRepository.delete(article);

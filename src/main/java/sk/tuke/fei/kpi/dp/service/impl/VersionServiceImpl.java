@@ -83,7 +83,7 @@ public class VersionServiceImpl implements VersionService {
     Article article = existingVersion.getArticle();
     User loggedUser = userService.findUserById(Long.parseLong(authentication.getName()));
     UpdateArticleDto updateArticleDto = new UpdateArticleDto(article.getId(), article.getName(), existingVersion.getText());
-    articleService.updateArticle(authentication, article.getId(), updateArticleDto);
+    articleService.updateArticle(authentication, article.getId(), updateArticleDto, false);
 
     Version newCurrentVersion = new Version(existingVersion.getText(), loggedUser, article);
     Version savedVersion = versionRepository.save(newCurrentVersion);
