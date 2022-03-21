@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "VERSION", schema = "redakcny_system")
+@Table(name = "VERSION")
 public class Version {
 
   @Id

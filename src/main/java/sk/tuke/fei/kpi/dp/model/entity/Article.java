@@ -17,7 +17,7 @@ import javax.persistence.Table;
 import sk.tuke.fei.kpi.dp.common.ArticleStatusConverter;
 
 @Entity
-@Table(name = "ARTICLE", schema = "redakcny_system")
+@Table(name = "ARTICLE")
 public class Article {
 
   @Id

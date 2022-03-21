@@ -11,10 +11,8 @@ public class CommentCreateDto {
   @Size(max = 1000)
   String text;
 
-  @NotBlank
   Integer rangeFrom;
 
-  @NotBlank
   String rangeTo;
 
   @Size(max = 100000)

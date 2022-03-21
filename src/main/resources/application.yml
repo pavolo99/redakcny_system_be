@@ -21,7 +21,6 @@ micronaut:
           token:
             url: 'https://github.com/login/oauth/access_token'
             auth-method: CLIENT_SECRET_POST
-
         gitlab:
           client-id: ${GITLAB_OAUTH_CLIENT_ID}
           client-secret: ${GITLAB_OAUTH_CLIENT_SECRET}
@@ -39,19 +38,10 @@ micronaut:
       login-success: ${LOGIN_SUCCESS_CALLBACK_URL}
   application:
     name: redakcny_system_be
-    front-end-url: ${FRONTEND_URL}
-    back-end-url: ${BACKEND_URL}
-  router:
-    static-resources:
-      swagger:
-        paths: classpath:META-INF/swagger
-        mapping: /swagger/**
-      rapidoc:
-        paths: classpath:META-INF/swagger/views/rapidoc
-        mapping: /rapidoc/**
-      swagger-ui:
-        paths: classpath:META-INF/swagger/views/swagger-ui
-        mapping: /swagger-ui/**
+    front-end-url: 'http://localhost:3000'
+    #    front-end-url: 'http://192.168.0.59:3000'
+    back-end-url: 'http://localhost:8080'
+  #    front-end-url: 'http://192.168.0.59:8080'
   server:
     host-resolution:
       host-header: 'Host'
@@ -81,4 +71,9 @@ jpa:
       hibernate:
         hbm2ddl:
           auto: none
-        show_sql: false
+        show_sql: true
+
+flyway:
+  datasources:
+    default:
+      enabled: true

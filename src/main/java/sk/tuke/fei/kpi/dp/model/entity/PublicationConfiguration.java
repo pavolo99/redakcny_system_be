@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import sk.tuke.fei.kpi.dp.common.Domain;
 
 @Entity
-@Table(name = "PUBLICATION_CONFIGURATION", schema = "redakcny_system")
+@Table(name = "PUBLICATION_CONFIGURATION")
 public class PublicationConfiguration {
 
   @Id

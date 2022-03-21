@@ -21,7 +21,6 @@ micronaut:
           token:
             url: 'https://github.com/login/oauth/access_token'
             auth-method: CLIENT_SECRET_POST
-
         gitlab:
           client-id: '${GITLAB_OAUTH_CLIENT_ID:afef94df75f368edbb735303e7b8fa5c7141131aed8239126055dabba80acc8c}'
           client-secret: '${GITLAB_OAUTH_CLIENT_SECRET:be993a6796915485219d444ad470d35cb3447463e4e8a57c9dc4979b1340bed3}'
@@ -45,17 +44,6 @@ micronaut:
     #    front-end-url: 'http://192.168.0.59:3000'
     back-end-url: 'http://localhost:8080'
   #    front-end-url: 'http://192.168.0.59:8080'
-  router:
-    static-resources:
-      swagger:
-        paths: classpath:META-INF/swagger
-        mapping: /swagger/**
-      rapidoc:
-        paths: classpath:META-INF/swagger/views/rapidoc
-        mapping: /rapidoc/**
-      swagger-ui:
-        paths: classpath:META-INF/swagger/views/swagger-ui
-        mapping: /swagger-ui/**
   server:
     host-resolution:
       host-header: 'Host'
@@ -86,3 +74,8 @@ jpa:
         hbm2ddl:
           auto: none
         show_sql: true
+
+flyway:
+  datasources:
+    default:
+      enabled: true

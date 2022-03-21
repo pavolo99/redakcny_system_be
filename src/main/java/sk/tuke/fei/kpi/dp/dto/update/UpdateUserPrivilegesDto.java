@@ -1,18 +1,18 @@
 package sk.tuke.fei.kpi.dp.dto.update;
 
 import io.micronaut.core.annotation.Introspected;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Introspected
 public class UpdateUserPrivilegesDto {
 
-  @NotBlank
+  @NotNull
   private Long id;
 
-  @NotBlank
+  @NotNull
   private boolean editor;
 
-  @NotBlank
+  @NotNull
   private boolean administrator;
 
   public Long getId() {

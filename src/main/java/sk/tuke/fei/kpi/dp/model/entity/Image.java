@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "IMAGE", schema = "redakcny_system")
+@Table(name = "IMAGE")
 public class Image {
 
   @Id

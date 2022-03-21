@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "COMMENT_REPLY", schema = "redakcny_system")
+@Table(name = "COMMENT_REPLY")
 public class CommentReply {
 
   @Id

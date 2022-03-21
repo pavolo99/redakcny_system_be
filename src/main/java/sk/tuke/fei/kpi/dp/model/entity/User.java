@@ -12,7 +12,7 @@ import javax.persistence.Table;
 import sk.tuke.fei.kpi.dp.common.Provider;
 
 @Entity
-@Table(name = "SYSTEM_USER", schema = "redakcny_system")
+@Table(name = "SYSTEM_USER")
 public class User {
 
   @Id

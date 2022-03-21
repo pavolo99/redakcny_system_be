@@ -1,16 +1,18 @@
 package sk.tuke.fei.kpi.dp.dto.update;
 
 import io.micronaut.core.annotation.Introspected;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Introspected
 public class UpdateArticleCollaboratorDto {
 
-  @NotBlank
+  @NotNull
   private Long id;
-  @NotBlank
+
+  @NotNull
   private boolean canEdit;
-  @NotBlank
+
+  @NotNull
   private boolean isAuthor;
 
   public UpdateArticleCollaboratorDto() {
