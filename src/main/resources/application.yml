@@ -38,8 +38,8 @@ micronaut:
       login-success: ${LOGIN_SUCCESS_CALLBACK_URL}
   application:
     name: redakcny_system_be
-      front-end-url: ${FRONTEND_URL}
-      back-end-url: ${BACKEND_URL}
+    front-end-url: ${FRONTEND_URL}
+    back-end-url: ${BACKEND_URL}
   server:
     host-resolution:
       host-header: 'Host'
