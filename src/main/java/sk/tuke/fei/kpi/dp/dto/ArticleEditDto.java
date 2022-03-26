@@ -19,6 +19,7 @@ public class ArticleEditDto {
   private ArticleStatus articleStatus;
   private boolean canLoggedUserEdit;
   private List<UserDto> allConnectedUsers = new ArrayList<>();
+  private List<UserDto> allCollaborators = new ArrayList<>();
 
   public Long getId() {
     return id;
@@ -106,5 +107,13 @@ public class ArticleEditDto {
 
   public void setAllConnectedUsers(List<UserDto> allConnectedUsers) {
     this.allConnectedUsers = allConnectedUsers;
+  }
+
+  public List<UserDto> getAllCollaborators() {
+    return allCollaborators;
+  }
+
+  public void setAllCollaborators(List<UserDto> allCollaborators) {
+    this.allCollaborators = allCollaborators;
   }
 }

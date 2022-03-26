@@ -68,6 +68,12 @@ public class Article {
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "article")
   List<Image> images = new ArrayList<>();
 
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "article")
+  List<Version> versions = new ArrayList<>();
+
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "article")
+  List<ArticleCollaborationSession> sessions = new ArrayList<>();
+
   public Article() {}
 
   public Article(String name, String text, Integer reviewNumber, ArticleStatus articleStatus, User createdBy) {
@@ -202,5 +208,22 @@ public class Article {
 
   public void setImages(List<Image> images) {
     this.images = images;
+  }
+
+  public List<Version> getVersions() {
+    return versions;
+  }
+
+  public void setVersions(List<Version> versions) {
+    this.versions = versions;
+  }
+
+  public List<ArticleCollaborationSession> getSessions() {
+    return sessions;
+  }
+
+  public void setSessions(
+      List<ArticleCollaborationSession> sessions) {
+    this.sessions = sessions;
   }
 }

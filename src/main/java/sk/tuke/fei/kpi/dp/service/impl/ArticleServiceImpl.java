@@ -192,6 +192,10 @@ public class ArticleServiceImpl implements ArticleService {
       logger.error("Article " + articleId + " must be in the review");
       throw new ApiException(INVALID_PARAMS, "Article must be in the review");
     }
+    if (!authentication.getRoles().contains("EDITOR")) {
+      logger.error("Review must be send by editor");
+      throw new ApiException(INVALID_PARAMS, "Review must be send by editor");
+    }
     article.setArticleStatus(ArticleStatus.WRITING);
     Article updatedArticle = articleRepository.update(article);
     return articleMapper.articleToArticleDto(updatedArticle);
@@ -220,6 +224,10 @@ public class ArticleServiceImpl implements ArticleService {
     if (!IN_REVIEW.equals(article.getArticleStatus())) {
       logger.error("Article " + articleId + " must be after review");
       throw new ApiException(INVALID_PARAMS, "Article must be after review");
+    }
+    if (!authentication.getRoles().contains("EDITOR")) {
+      logger.error("Article " + articleId + " can be denied only by the editor");
+      throw new ApiException(INVALID_PARAMS, "Article can be denied only by the editor");
     }
     article.setArticleStatus(ARCHIVED);
     Article updatedArticle = articleRepository.update(article);

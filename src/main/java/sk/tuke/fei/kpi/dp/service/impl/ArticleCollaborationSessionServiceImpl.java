@@ -63,6 +63,7 @@ public class ArticleCollaborationSessionServiceImpl implements ArticleCollaborat
       ArticleEditDto articleEditDto = articleMapper.articleToArticleDto(article);
       articleEditDto.setText(existingLoggedUsersSession.getText());
       addAllConnectedUsersToArticle(articleEditDto, loggedUser, connectedUsers);
+      articleEditDto.setAllCollaborators(article.getArticleCollaborators().stream().map(userMapper::collaboratorToUserDto).collect(Collectors.toList()));
 
       boolean canLoggedUserEdit = getIfUserCanEditArticle(loggedUser, article)
           && articleSessions.stream()
@@ -102,6 +103,7 @@ public class ArticleCollaborationSessionServiceImpl implements ArticleCollaborat
       createSession(articleCollaborationSession);
     }
     addAllConnectedUsersToArticle(articleEditDto, loggedUser, connectedUsers);
+    articleEditDto.setAllCollaborators(article.getArticleCollaborators().stream().map(userMapper::collaboratorToUserDto).collect(Collectors.toList()));
     articleEditDto.setCanLoggedUserEdit(canLoggedUserEdit);
     return articleEditDto;
   }
@@ -149,6 +151,7 @@ public class ArticleCollaborationSessionServiceImpl implements ArticleCollaborat
     }
     ArticleEditDto articleEditDto = articleMapper.articleToArticleDto(article);
     addAllConnectedUsersToArticle(articleEditDto, loggedUser, allConnectedUsers);
+    articleEditDto.setAllCollaborators(article.getArticleCollaborators().stream().map(userMapper::collaboratorToUserDto).collect(Collectors.toList()));
     articleEditDto.setCanLoggedUserEdit(true);
     return articleEditDto;
   }
