@@ -69,7 +69,9 @@ public class ArticleCollaborationSessionServiceImpl implements ArticleCollaborat
           && articleSessions.stream()
           .filter(session -> !loggedUser.getId().equals(session.getUser().getId()))
           .noneMatch(ArticleCollaborationSession::getCanUserEdit);
-      articleEditDto.setCanLoggedUserEdit(canLoggedUserEdit);
+      Long userIdWhoCanEditArticle = canLoggedUserEdit ? loggedUser.getId() : articleSessions.stream()
+          .filter(ArticleCollaborationSession::getCanUserEdit).findFirst().get().getUser().getId();
+      articleEditDto.setUserIdWhoCanEdit(userIdWhoCanEditArticle);
       if (canLoggedUserEdit != existingLoggedUsersSession.getCanUserEdit()) {
         existingLoggedUsersSession.setCanUserEdit(canLoggedUserEdit);
         updateSession(existingLoggedUsersSession);
@@ -84,6 +86,7 @@ public class ArticleCollaborationSessionServiceImpl implements ArticleCollaborat
           article.getText(), canLoggedUserEdit, loggedUser, article);
 
       createSession(articleCollaborationSession);
+      articleEditDto.setUserIdWhoCanEdit(canLoggedUserEdit ? loggedUser.getId() : null);
     } else {
       ArticleCollaborationSession existingEditableSession = articleSessions.stream()
           .filter(session -> Boolean.TRUE.equals(session.getCanUserEdit().equals(Boolean.TRUE)))
@@ -101,10 +104,10 @@ public class ArticleCollaborationSessionServiceImpl implements ArticleCollaborat
         articleCollaborationSession.setCanUserEdit(false);
       }
       createSession(articleCollaborationSession);
+      articleEditDto.setUserIdWhoCanEdit(canLoggedUserEdit ? loggedUser.getId() : existingEditableSession.getUser().getId());
     }
     addAllConnectedUsersToArticle(articleEditDto, loggedUser, connectedUsers);
     articleEditDto.setAllCollaborators(article.getArticleCollaborators().stream().map(userMapper::collaboratorToUserDto).collect(Collectors.toList()));
-    articleEditDto.setCanLoggedUserEdit(canLoggedUserEdit);
     return articleEditDto;
   }
 
@@ -152,7 +155,7 @@ public class ArticleCollaborationSessionServiceImpl implements ArticleCollaborat
     ArticleEditDto articleEditDto = articleMapper.articleToArticleDto(article);
     addAllConnectedUsersToArticle(articleEditDto, loggedUser, allConnectedUsers);
     articleEditDto.setAllCollaborators(article.getArticleCollaborators().stream().map(userMapper::collaboratorToUserDto).collect(Collectors.toList()));
-    articleEditDto.setCanLoggedUserEdit(true);
+    articleEditDto.setUserIdWhoCanEdit(loggedUser.getId());
     return articleEditDto;
   }
 

@@ -17,7 +17,7 @@ public class ArticleEditDto {
   private String publicationDecision;
   private Integer reviewNumber;
   private ArticleStatus articleStatus;
-  private boolean canLoggedUserEdit;
+  private Long userIdWhoCanEdit;
   private List<UserDto> allConnectedUsers = new ArrayList<>();
   private List<UserDto> allCollaborators = new ArrayList<>();
 
@@ -93,14 +93,6 @@ public class ArticleEditDto {
     this.articleStatus = articleStatus;
   }
 
-  public boolean isCanLoggedUserEdit() {
-    return canLoggedUserEdit;
-  }
-
-  public void setCanLoggedUserEdit(boolean canLoggedUserEdit) {
-    this.canLoggedUserEdit = canLoggedUserEdit;
-  }
-
   public List<UserDto> getAllConnectedUsers() {
     return allConnectedUsers;
   }
@@ -115,5 +107,13 @@ public class ArticleEditDto {
 
   public void setAllCollaborators(List<UserDto> allCollaborators) {
     this.allCollaborators = allCollaborators;
+  }
+
+  public Long getUserIdWhoCanEdit() {
+    return userIdWhoCanEdit;
+  }
+
+  public void setUserIdWhoCanEdit(Long userIdWhoCanEdit) {
+    this.userIdWhoCanEdit = userIdWhoCanEdit;
   }
 }
