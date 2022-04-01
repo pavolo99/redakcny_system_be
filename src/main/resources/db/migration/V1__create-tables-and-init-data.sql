@@ -2,7 +2,8 @@ CREATE TABLE IF NOT EXISTS SYSTEM_USER
 (
     ID               SERIAL      NOT NULL,
     USERNAME         VARCHAR(50) NOT NULL,
-    FULL_NAME        VARCHAR(50),
+    FIRST_NAME       VARCHAR(50),
+    LAST_NAME        VARCHAR(50),
     EMAIL            VARCHAR(50),
     AUTH_PROVIDER    VARCHAR(50) NOT NULL,
     ROLE             VARCHAR(50) NOT NULL,
@@ -146,8 +147,8 @@ VALUES ('GIT_KPI_FEI_TUKE_SK', 'content/clanky/{year}/{month}/{slug}/index.md', 
         'Publish article {articleName}');
 
 -- init SYSTEM_USER data
-INSERT INTO SYSTEM_USER(username, full_name, email, auth_provider, role,
+INSERT INTO SYSTEM_USER(username, first_name, last_name, email, auth_provider, role,
                         is_administrator)
-VALUES ('sergej.chodarev', 'Sergej Chodarev', 'sergej.chodarev@tuke.sk', 'GITLAB', 'EDITOR',
+VALUES ('sergej.chodarev', 'Sergej', 'Chodarev', 'sergej.chodarev@tuke.sk', 'GITLAB', 'EDITOR',
         true),
-       ('pd565js', 'Pavol Dlugoš', 'pavol.dlugos@student.tuke.sk', 'GITLAB', 'AUTHOR', true);
+       ('pd565js', 'Pavol', 'Dlugoš', 'pavol.dlugos@student.tuke.sk', 'GITLAB', 'AUTHOR', true);
