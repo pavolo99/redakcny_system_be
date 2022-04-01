@@ -122,8 +122,7 @@ public class PublicationServiceImpl implements PublicationService {
   }
 
   private String buildArticleContentWithMetaData(Article article) {
-    // in production environment time zone adds one hour
-    LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Paris")).minusHours(1);
+    LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Paris"));
 
     StringBuilder sb = new StringBuilder();
     sb.append("---\n");
@@ -137,7 +136,7 @@ public class PublicationServiceImpl implements PublicationService {
         .filter(articleCollaborator -> Boolean.TRUE.equals(articleCollaborator.getAuthor()))
         .forEach(collaborator -> {
           User user = collaborator.getUser();
-          sb.append("  - ").append(Utils.isStringEmpty(user.getFullName()) ? user.getFullName() : user.getUsername()).append("\n");
+          sb.append("  - ").append(Utils.isStringEmpty(user.getFullName()) ? user.getUsername() : user.getFullName()).append("\n");
         });
     sb.append("---\n");
     String removedBackendUrlsArticle = article.getText().replace(backEndUrl + "/image/content/", "");
