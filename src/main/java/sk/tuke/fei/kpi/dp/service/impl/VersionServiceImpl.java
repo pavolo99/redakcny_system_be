@@ -17,6 +17,7 @@ import sk.tuke.fei.kpi.dp.model.entity.Article;
 import sk.tuke.fei.kpi.dp.model.entity.User;
 import sk.tuke.fei.kpi.dp.model.entity.Version;
 import sk.tuke.fei.kpi.dp.model.repository.VersionRepository;
+import sk.tuke.fei.kpi.dp.service.ArticleCollaborationSessionService;
 import sk.tuke.fei.kpi.dp.service.ArticleService;
 import sk.tuke.fei.kpi.dp.service.UserService;
 import sk.tuke.fei.kpi.dp.service.VersionService;
@@ -28,14 +29,17 @@ public class VersionServiceImpl implements VersionService {
   private final VersionMapper versionMapper;
   private final UserService userService;
   private final ArticleService articleService;
+  private final ArticleCollaborationSessionService sessionService;
   private final Logger logger = LoggerFactory.getLogger(VersionServiceImpl.class);
 
   public VersionServiceImpl(VersionRepository versionRepository,
-      VersionMapper versionMapper, UserService userService, ArticleService articleService) {
+      VersionMapper versionMapper, UserService userService, ArticleService articleService,
+      ArticleCollaborationSessionService sessionService) {
     this.versionRepository = versionRepository;
     this.versionMapper = versionMapper;
     this.userService = userService;
     this.articleService = articleService;
+    this.sessionService = sessionService;
   }
 
   @Override
@@ -87,6 +91,7 @@ public class VersionServiceImpl implements VersionService {
 
     Version newCurrentVersion = new Version(existingVersion.getText(), loggedUser, article);
     Version savedVersion = versionRepository.save(newCurrentVersion);
+    sessionService.updateArticleTextForEverySession(article.getId(), existingVersion.getText());
     return getVersions(authentication, savedVersion.getArticle().getId());
   }
 

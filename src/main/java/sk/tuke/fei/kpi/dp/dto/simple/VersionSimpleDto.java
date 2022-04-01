@@ -2,12 +2,13 @@ package sk.tuke.fei.kpi.dp.dto.simple;
 
 import io.micronaut.core.annotation.Introspected;
 import java.util.Date;
+import sk.tuke.fei.kpi.dp.dto.UserDto;
 
 @Introspected
 public class VersionSimpleDto {
 
   private Long id;
-  private SimpleUserDto createdBy;
+  private UserDto createdBy;
   private Date createdAt;
   private Integer order;
 
@@ -22,11 +23,11 @@ public class VersionSimpleDto {
     this.id = id;
   }
 
-  public SimpleUserDto getCreatedBy() {
+  public UserDto getCreatedBy() {
     return createdBy;
   }
 
-  public void setCreatedBy(SimpleUserDto createdBy) {
+  public void setCreatedBy(UserDto createdBy) {
     this.createdBy = createdBy;
   }
 

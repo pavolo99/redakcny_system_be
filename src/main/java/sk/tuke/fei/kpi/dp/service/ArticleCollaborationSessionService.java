@@ -17,4 +17,6 @@ public interface ArticleCollaborationSessionService {
   void leaveArticleEditingToOtherCollaborator(Authentication authentication, Long articleId, Long userId);
 
   List<ArticleConnectedCollaboratorDto> getAllConnectedCollaboratorsToArticle(Authentication authentication, Long articleId);
+
+  void updateArticleTextForEverySession(Long articleId, String articleText);
 }

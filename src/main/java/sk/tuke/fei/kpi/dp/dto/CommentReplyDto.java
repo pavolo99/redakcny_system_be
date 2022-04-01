@@ -2,7 +2,6 @@ package sk.tuke.fei.kpi.dp.dto;
 
 import io.micronaut.core.annotation.Introspected;
 import java.util.Date;
-import sk.tuke.fei.kpi.dp.dto.simple.SimpleUserDto;
 
 @Introspected
 public class CommentReplyDto {
@@ -10,7 +9,7 @@ public class CommentReplyDto {
   Long id;
   String text;
   Date updatedAt;
-  SimpleUserDto createdBy;
+  UserDto createdBy;
 
   public CommentReplyDto() {
   }
@@ -39,11 +38,11 @@ public class CommentReplyDto {
     this.updatedAt = updatedAt;
   }
 
-  public SimpleUserDto getCreatedBy() {
+  public UserDto getCreatedBy() {
     return createdBy;
   }
 
-  public void setCreatedBy(SimpleUserDto createdBy) {
+  public void setCreatedBy(UserDto createdBy) {
     this.createdBy = createdBy;
   }
 }

@@ -42,17 +42,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   public AuthenticationResponse handleAuthenticationResponse(ProviderUser loggedProviderUserDto,
       Provider authProvider) {
     logger.info("About to handle authentication response " + loggedProviderUserDto.getUsername() + " " + authProvider.toString());
-    String[] loggedUserFullName = loggedProviderUserDto.getName().split(" ");
-    String firstName = loggedUserFullName[0];
-    String lastName = loggedUserFullName[1];
 
     User loggedSystemUser = userService.findByUsernameAndAuthProvider(loggedProviderUserDto.getUsername(), authProvider)
-        .orElse(new User(loggedProviderUserDto.getUsername(), firstName, lastName,
-        loggedProviderUserDto.getEmail(), authProvider, "AUTHOR"));
-
-    if (loggedSystemUser.getId() == null) {
-      loggedSystemUser = userService.saveUser(loggedSystemUser);
+        .orElse(new User(loggedProviderUserDto.getUsername(), loggedProviderUserDto.getName(),
+        loggedProviderUserDto.getEmail(), authProvider));
+    // update saved system user for potential updated data in provider interface
+    if (loggedSystemUser.getId() != null) {
+      loggedSystemUser.setFullName(loggedProviderUserDto.getName());
+      loggedSystemUser.setEmail(loggedProviderUserDto.getEmail());
     }
+    loggedSystemUser = userService.saveLoggedUser(loggedSystemUser);
 
     String jwtAccessToken = generateJwtToken(loggedSystemUser);
 
@@ -67,8 +66,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   private void saveBasicUserInfoToMap(User loggedSystemUser, Map<String, Object> loggedUserDataDtoMap) {
     loggedUserDataDtoMap.put("username", loggedSystemUser.getUsername());
     loggedUserDataDtoMap.put("email", loggedSystemUser.getEmail());
-    loggedUserDataDtoMap.put("firstName", loggedSystemUser.getFirstName());
-    loggedUserDataDtoMap.put("lastName", loggedSystemUser.getLastName());
+    loggedUserDataDtoMap.put("fullName", loggedSystemUser.getFullName());
     loggedUserDataDtoMap.put("administrator", loggedSystemUser.isAdministrator());
     loggedUserDataDtoMap.put("authProvider", loggedSystemUser.getAuthProvider().toString());
   }

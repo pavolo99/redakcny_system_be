@@ -22,8 +22,7 @@ public interface UserMapper {
 
   @Mapping(source = "user.id", target = "id")
   @Mapping(source = "user.username", target = "username")
-  @Mapping(source = "user.firstName", target = "firstName")
-  @Mapping(source = "user.lastName", target = "lastName")
+  @Mapping(source = "user.fullName", target = "fullName")
   @Mapping(source = "user.email", target = "email")
   UserDto collaboratorToUserDto(ArticleCollaborator articleCollaborator);
 

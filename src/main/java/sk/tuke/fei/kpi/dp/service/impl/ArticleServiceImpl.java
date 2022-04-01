@@ -69,9 +69,9 @@ public class ArticleServiceImpl implements ArticleService {
     if (QueryArticleType.MINE.equals(queryArticleType)) {
       articles = articleRepository.getAllArticlesCreatedByLoggedUser(loggedUserId);
     } else if (QueryArticleType.APPROVED.equals(queryArticleType)) {
-      articles = articleRepository.getArticlesByStatus(List.of(APPROVED));
+      articles = articleRepository.getArticlesByStatusForLoggedUser(List.of(APPROVED), loggedUserId);
     } else if (QueryArticleType.ARCHIVED.equals(queryArticleType)) {
-      articles = articleRepository.getArticlesByStatus(List.of(ARCHIVED));
+      articles = articleRepository.getArticlesByStatusForLoggedUser(List.of(ARCHIVED), loggedUserId);
     } else if (QueryArticleType.SHARED_WITH_ME.equals(queryArticleType)) {
       articles = articleRepository.getSharedArticlesOfLoggedUser(loggedUserId);
     } else if (QueryArticleType.REVIEWED_BY_ME.equals(queryArticleType)) {
@@ -79,7 +79,7 @@ public class ArticleServiceImpl implements ArticleService {
         logger.error("Articles are determined only for editor");
         throw new ApiException(FORBIDDEN, "Articles are determined only for editor");
       }
-      articles = articleRepository.getReviewedArticlesForEditor(loggedUserId);
+      articles = articleRepository.getReviewedArticlesForEditor(List.of(IN_REVIEW), loggedUserId);
     }
     if (QueryArticleStatus.WRITING.equals(queryArticleStatus)) {
       articles = articles.stream().filter(article -> article.getArticleStatus().equals(WRITING)).collect(Collectors.toList());
@@ -160,8 +160,7 @@ public class ArticleServiceImpl implements ArticleService {
   public ArticleEditDto archiveArticle(Authentication authentication, Long articleId) {
     logger.info("About to archive article " + articleId);
     Article article = findArticleById(articleId);
-    if (!IN_REVIEW.equals(article.getArticleStatus()) && !APPROVED.equals(
-        article.getArticleStatus())) {
+    if (WRITING.equals(article.getArticleStatus()) || APPROVED.equals(article.getArticleStatus())) {
       logger.error("Article " + articleId + " must be first reviewed or approved");
       throw new ApiException(INVALID_PARAMS, "Article must be first reviewed or approved");
     }

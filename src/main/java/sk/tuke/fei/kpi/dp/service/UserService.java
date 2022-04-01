@@ -14,7 +14,7 @@ public interface UserService {
 
   Optional<User> findByUsernameAndAuthProvider(String username, Provider authProvider);
 
-  User saveUser(User loggedUser);
+  User saveLoggedUser(User loggedUser);
 
   List<UserDto> getPotentialCollaborators(Authentication authentication, String searchValue);
 

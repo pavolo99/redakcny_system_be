@@ -43,9 +43,9 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public User saveUser(User loggedUser) {
-    logger.info("About to save user");
-    return userRepository.save(loggedUser);
+  public User saveLoggedUser(User loggedUser) {
+    logger.info("About to save user " + loggedUser.getId());
+    return loggedUser.getId() == null ? userRepository.save(loggedUser) : userRepository.update(loggedUser);
   }
 
   @Override
@@ -81,8 +81,7 @@ public class UserServiceImpl implements UserService {
     loggedUserDto.setId(Long.valueOf(authentication.getName()));
     loggedUserDto.setRole(role);
     loggedUserDto.setUsername((String) attributes.get("username"));
-    loggedUserDto.setFirstName((String) attributes.get("firstName"));
-    loggedUserDto.setLastName((String) attributes.get("lastName"));
+    loggedUserDto.setFullName((String) attributes.get("fullName"));
     loggedUserDto.setAdministrator(String.valueOf(attributes.get("administrator")));
     loggedUserDto.setAuthProvider(Provider.valueOf((String) attributes.get("authProvider")));
     loggedUserDto.setEmail((String) attributes.get("email"));

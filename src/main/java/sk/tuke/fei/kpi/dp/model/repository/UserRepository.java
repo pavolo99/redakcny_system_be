@@ -15,13 +15,13 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
   @Query("select u "
       + "from User u "
-      + "where (lower(u.firstName) like :searchValue "
-      + "or lower(u.lastName) like :searchValue "
+      + "where (lower(u.fullName) like :searchValue "
       + "or lower(u.email) like :searchValue) "
-      + "and u.id != :loggedUserId")
+      + "and u.id != :loggedUserId "
+      + "order by u.fullName asc, u.email asc, u.username asc, u.authProvider")
   List<User> getPotentialCollaboratorsForArticle(String searchValue, Long loggedUserId);
 
-  @Query("select u from User u order by u.lastName asc, u.firstName asc")
+  @Query("select u from User u order by u.fullName asc, u.email asc, u.username, u.authProvider")
   List<User> getAllUsers();
 
 }

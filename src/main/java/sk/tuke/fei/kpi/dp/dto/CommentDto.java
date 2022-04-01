@@ -4,7 +4,6 @@ import io.micronaut.core.annotation.Introspected;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import sk.tuke.fei.kpi.dp.dto.simple.SimpleUserDto;
 
 @Introspected
 public class CommentDto {
@@ -16,7 +15,7 @@ public class CommentDto {
   Integer rangeFrom;
   Integer rangeTo;
   String commentedText;
-  SimpleUserDto createdBy;
+  UserDto createdBy;
   List<CommentReplyDto> commentReplyDtoList = new ArrayList<>();
 
   public CommentDto() {
@@ -70,11 +69,11 @@ public class CommentDto {
     this.rangeTo = rangeTo;
   }
 
-  public SimpleUserDto getCreatedBy() {
+  public UserDto getCreatedBy() {
     return createdBy;
   }
 
-  public void setCreatedBy(SimpleUserDto createdBy) {
+  public void setCreatedBy(UserDto createdBy) {
     this.createdBy = createdBy;
   }
 

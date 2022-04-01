@@ -11,8 +11,10 @@ import sk.tuke.fei.kpi.dp.model.entity.ArticleStatus;
 public interface ArticleRepository extends CrudRepository<Article, Long> {
 
   @Query("select a from Article a left join fetch a.updatedBy u "
-      + "where a.articleStatus in :articleStatuses order by a.updatedAt desc")
-  List<Article> getArticlesByStatus(List<ArticleStatus> articleStatuses);
+      + "where a.articleStatus in :articleStatuses and a.id in "
+      + "(select c.article.id from ArticleCollaborator c where c.user.id = :loggedUserId)"
+      + "order by a.updatedAt desc")
+  List<Article> getArticlesByStatusForLoggedUser(List<ArticleStatus> articleStatuses, Long loggedUserId);
 
   @Query("select a from Article a left join fetch a.updatedBy "
       + "where a.createdBy.id = :loggedUserId order by a.updatedAt desc")
@@ -23,8 +25,9 @@ public interface ArticleRepository extends CrudRepository<Article, Long> {
       + "order by a.updatedAt desc")
   List<Article> getSharedArticlesOfLoggedUser(long loggedUserId);
 
-  @Query(value = "select a from Article a left join fetch a.updatedBy u where a.id in "
+  @Query(value = "select a from Article a left join fetch a.updatedBy u "
+      + "where a.articleStatus in :articleStatuses and a.id in "
       + "(select c.article.id from ArticleCollaborator c where c.user.id = :loggedUserId) "
       + "order by a.updatedAt desc")
-  List<Article> getReviewedArticlesForEditor(long loggedUserId);
+  List<Article> getReviewedArticlesForEditor(List<ArticleStatus> articleStatuses, long loggedUserId);
 }

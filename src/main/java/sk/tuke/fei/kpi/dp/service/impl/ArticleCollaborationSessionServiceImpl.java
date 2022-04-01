@@ -10,6 +10,7 @@ import javax.inject.Singleton;
 import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sk.tuke.fei.kpi.dp.common.Utils;
 import sk.tuke.fei.kpi.dp.dto.ArticleConnectedCollaboratorDto;
 import sk.tuke.fei.kpi.dp.dto.ArticleEditDto;
 import sk.tuke.fei.kpi.dp.dto.UserDto;
@@ -69,8 +70,10 @@ public class ArticleCollaborationSessionServiceImpl implements ArticleCollaborat
           && articleSessions.stream()
           .filter(session -> !loggedUser.getId().equals(session.getUser().getId()))
           .noneMatch(ArticleCollaborationSession::getCanUserEdit);
-      Long userIdWhoCanEditArticle = canLoggedUserEdit ? loggedUser.getId() : articleSessions.stream()
-          .filter(ArticleCollaborationSession::getCanUserEdit).findFirst().get().getUser().getId();
+      ArticleCollaborationSession editableSession = articleSessions.stream()
+          .filter(ArticleCollaborationSession::getCanUserEdit).findFirst()
+          .orElse(null);
+      Long userIdWhoCanEditArticle = canLoggedUserEdit ? loggedUser.getId() : (editableSession == null ? null : editableSession.getUser().getId());
       articleEditDto.setUserIdWhoCanEdit(userIdWhoCanEditArticle);
       if (canLoggedUserEdit != existingLoggedUsersSession.getCanUserEdit()) {
         existingLoggedUsersSession.setCanUserEdit(canLoggedUserEdit);
@@ -104,7 +107,7 @@ public class ArticleCollaborationSessionServiceImpl implements ArticleCollaborat
         articleCollaborationSession.setCanUserEdit(false);
       }
       createSession(articleCollaborationSession);
-      articleEditDto.setUserIdWhoCanEdit(canLoggedUserEdit ? loggedUser.getId() : existingEditableSession.getUser().getId());
+      articleEditDto.setUserIdWhoCanEdit(canLoggedUserEdit ? loggedUser.getId() : (existingEditableSession == null ? null : existingEditableSession.getUser().getId()));
     }
     addAllConnectedUsersToArticle(articleEditDto, loggedUser, connectedUsers);
     articleEditDto.setAllCollaborators(article.getArticleCollaborators().stream().map(userMapper::collaboratorToUserDto).collect(Collectors.toList()));
@@ -193,8 +196,19 @@ public class ArticleCollaborationSessionServiceImpl implements ArticleCollaborat
           articleConnectedCollaboratorDto.setCanUserEdit(canUserPotentialyEditArticle);
           return articleConnectedCollaboratorDto;
         })
-        .sorted(Comparator.comparing(collaborator -> collaborator.getUserDto().getLastName()))
+        .sorted(Comparator.comparing(collaborator -> {
+          UserDto userDto = collaborator.getUserDto();
+          return Utils.isStringEmpty(userDto.getFullName()) ? userDto.getUsername() : userDto.getFullName();
+        }))
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public void updateArticleTextForEverySession(Long articleId, String articleText) {
+    sessionRepository.findByArticleId(articleId).forEach(articleCollaborationSession -> {
+      articleCollaborationSession.setText(articleText);
+      updateSession(articleCollaborationSession);
+    });
   }
 
   private boolean getIfUserCanEditArticle(User user, Article article) {
@@ -227,7 +241,8 @@ public class ArticleCollaborationSessionServiceImpl implements ArticleCollaborat
     if (connectedUsers.stream().noneMatch(userDto -> userDto.getId().equals(loggedUser.getId()))) {
       articleEditDto.getAllConnectedUsers().add(userMapper.userToUserDto(loggedUser));
     }
-    articleEditDto.getAllConnectedUsers().sort(Comparator.comparing(UserDto::getLastName));
+    articleEditDto.getAllConnectedUsers()
+        .sort(Comparator.comparing(u -> Utils.isStringEmpty(u.getFullName()) ? u.getUsername() : u.getFullName()));
   }
 
   private ArticleCollaborationSession getSessionByUserAndArticle(Long articleId, User user,

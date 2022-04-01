@@ -7,7 +7,6 @@ import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import io.micronaut.security.authentication.Authentication;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -114,13 +113,13 @@ public class PublicationServiceImpl implements PublicationService {
     String formattedCommitMessage = configuration.getCommitMessage().replace("{articleName}", articleName);
     gitlabCommitDto.setCommit_message(formattedCommitMessage);
     gitlabCommitDto.setAuthor_email((String) loggedUser.get("email"));
-    gitlabCommitDto.setAuthor_name(loggedUser.get("firstName") + " " + loggedUser.get("lastName"));
+    gitlabCommitDto.setAuthor_name((String) loggedUser.get("fullName"));
     gitlabCommitDto.setBranch(configuration.getBranch());
     return gitlabCommitDto;
   }
 
   private String buildArticleContentWithMetaData(Article article) {
-    LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Paris"));
+    LocalDateTime now = LocalDateTime.now().minusHours(1); // in production environment time zone adds one hour
     StringBuilder sb = new StringBuilder();
     sb.append("---\n");
     sb.append("Title: ").append(article.getName()).append("\n");
@@ -131,9 +130,7 @@ public class PublicationServiceImpl implements PublicationService {
     article.getArticleCollaborators()
         .stream()
         .filter(articleCollaborator -> Boolean.TRUE.equals(articleCollaborator.getAuthor()))
-        .forEach(collaborator -> sb.append("  - ")
-            .append(collaborator.getUser().getFirstName()).append(" ")
-            .append(collaborator.getUser().getLastName()).append("\n"));
+        .forEach(collaborator -> sb.append("  - ").append(collaborator.getUser().getFullName()).append("\n"));
     sb.append("---\n");
     String removedBackendUrlsArticle = article.getText().replace(backEndUrl + "/image/content/", "");
     sb.append(removedBackendUrlsArticle);

@@ -23,11 +23,8 @@ public class User {
   @Column(name = "USERNAME")
   private String username;
 
-  @Column(name = "FIRST_NAME")
-  private String firstName;
-
-  @Column(name = "LAST_NAME")
-  private String lastName;
+  @Column(name = "FULL_NAME")
+  private String fullName;
 
   @Column(name = "EMAIL")
   private String email;
@@ -37,10 +34,10 @@ public class User {
   private Provider authProvider;
 
   @Column(name = "IS_ADMINISTRATOR")
-  private boolean isAdministrator;
+  private boolean isAdministrator = false;
 
   @Column(name = "ROLE")
-  private String role;
+  private String role = "AUTHOR";
 
   public User() {}
 
@@ -48,14 +45,11 @@ public class User {
     this.id = id;
   }
 
-  public User(String username, String firstName, String lastName, String email,
-      Provider authProvider, String role) {
+  public User(String username, String fullName,  String email, Provider authProvider) {
     this.username = username;
-    this.firstName = firstName;
-    this.lastName = lastName;
+    this.fullName = fullName;
     this.email = email;
     this.authProvider = authProvider;
-    this.role = role;
   }
 
   public Long getId() {
@@ -74,20 +68,12 @@ public class User {
     this.username = username;
   }
 
-  public String getFirstName() {
-    return firstName;
+  public String getFullName() {
+    return fullName;
   }
 
-  public void setFirstName(String firstName) {
-    this.firstName = firstName;
-  }
-
-  public String getLastName() {
-    return lastName;
-  }
-
-  public void setLastName(String lastName) {
-    this.lastName = lastName;
+  public void setFullName(String fullName) {
+    this.fullName = fullName;
   }
 
   public String getEmail() {

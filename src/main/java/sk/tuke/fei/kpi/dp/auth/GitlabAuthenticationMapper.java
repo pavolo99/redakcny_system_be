@@ -1,4 +1,4 @@
-package sk.tuke.fei.kpi.dp.auth.gitlab;
+package sk.tuke.fei.kpi.dp.auth;
 
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.security.authentication.AuthenticationResponse;
@@ -40,8 +40,8 @@ public class GitlabAuthenticationMapper implements OauthAuthenticationMapper {
     String gitlabAccessToken = GITLAB_TOKEN_PREFIX + tokenResponse.getAccessToken();
     Publisher<GitlabUserDto> gitlabUserDtoPublisher = gitlabApiClient.getLoggedGitlabUser(gitlabAccessToken);
 
-    return Flux.from(gitlabUserDtoPublisher).map(
-        gitlabUserDto -> authenticationService.handleAuthenticationResponse(gitlabUserDto,
-            Provider.GITLAB));
+    return Flux
+        .from(gitlabUserDtoPublisher)
+        .map(gitlabUserDto -> authenticationService.handleAuthenticationResponse(gitlabUserDto, Provider.GITLAB));
   }
 }

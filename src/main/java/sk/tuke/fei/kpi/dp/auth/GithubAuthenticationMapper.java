@@ -1,4 +1,4 @@
-package sk.tuke.fei.kpi.dp.auth.github;
+package sk.tuke.fei.kpi.dp.auth;
 
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.security.authentication.AuthenticationResponse;
@@ -41,8 +41,8 @@ public class GithubAuthenticationMapper implements OauthAuthenticationMapper {
     String githubAccessToken = GITHUB_TOKEN_PREFIX + tokenResponse.getAccessToken();
     Publisher<GithubUserDto> githubUserDtoPublisher = githubApiClient.getLoggedGithubUser(githubAccessToken);
 
-    return Flux.from(githubUserDtoPublisher).map(
-        githubUserDto -> authenticationService.handleAuthenticationResponse(githubUserDto,
-            Provider.GITHUB));
+    return Flux
+        .from(githubUserDtoPublisher)
+        .map(githubUserDto -> authenticationService.handleAuthenticationResponse(githubUserDto, Provider.GITHUB));
   }
 }
