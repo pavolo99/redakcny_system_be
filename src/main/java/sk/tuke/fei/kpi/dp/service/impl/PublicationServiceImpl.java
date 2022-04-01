@@ -7,6 +7,7 @@ import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import io.micronaut.security.authentication.Authentication;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -14,12 +15,14 @@ import java.util.stream.Collectors;
 import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sk.tuke.fei.kpi.dp.common.Utils;
 import sk.tuke.fei.kpi.dp.dto.provider.gitlab.GitlabCommitActionDto;
 import sk.tuke.fei.kpi.dp.dto.provider.gitlab.GitlabCommitDto;
 import sk.tuke.fei.kpi.dp.exception.ApiException;
 import sk.tuke.fei.kpi.dp.model.entity.Article;
 import sk.tuke.fei.kpi.dp.model.entity.Image;
 import sk.tuke.fei.kpi.dp.model.entity.PublicationConfiguration;
+import sk.tuke.fei.kpi.dp.model.entity.User;
 import sk.tuke.fei.kpi.dp.provider.GitlabApiClient;
 import sk.tuke.fei.kpi.dp.service.PublicationConfigurationService;
 import sk.tuke.fei.kpi.dp.service.PublicationService;
@@ -119,7 +122,9 @@ public class PublicationServiceImpl implements PublicationService {
   }
 
   private String buildArticleContentWithMetaData(Article article) {
-    LocalDateTime now = LocalDateTime.now().minusHours(1); // in production environment time zone adds one hour
+    // in production environment time zone adds one hour
+    LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Paris")).minusHours(1);
+
     StringBuilder sb = new StringBuilder();
     sb.append("---\n");
     sb.append("Title: ").append(article.getName()).append("\n");
@@ -130,7 +135,10 @@ public class PublicationServiceImpl implements PublicationService {
     article.getArticleCollaborators()
         .stream()
         .filter(articleCollaborator -> Boolean.TRUE.equals(articleCollaborator.getAuthor()))
-        .forEach(collaborator -> sb.append("  - ").append(collaborator.getUser().getFullName()).append("\n"));
+        .forEach(collaborator -> {
+          User user = collaborator.getUser();
+          sb.append("  - ").append(Utils.isStringEmpty(user.getFullName()) ? user.getFullName() : user.getUsername()).append("\n");
+        });
     sb.append("---\n");
     String removedBackendUrlsArticle = article.getText().replace(backEndUrl + "/image/content/", "");
     sb.append(removedBackendUrlsArticle);
