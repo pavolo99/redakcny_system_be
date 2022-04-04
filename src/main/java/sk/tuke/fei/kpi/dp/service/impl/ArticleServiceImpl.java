@@ -125,8 +125,8 @@ public class ArticleServiceImpl implements ArticleService {
       throw new ApiException(FORBIDDEN, "You are not allowed to update this article");
     }
     articleMapper.updateArticleFromArticleUpdateDto(updateArticleDto, article);
-    article.setUpdatedAt(new Date());
     User loggedUser = loggedArticleCollaborator.getUser();
+    article.setUpdatedAt(new Date());
     article.setUpdatedBy(loggedUser);
     Article updatedArticle = articleRepository.update(article);
     if (createNewVersion) {
@@ -164,6 +164,8 @@ public class ArticleServiceImpl implements ArticleService {
       logger.error("Article " + articleId + " must be first reviewed or approved");
       throw new ApiException(INVALID_PARAMS, "Article must be first reviewed or approved");
     }
+    article.setUpdatedAt(new Date());
+    article.setUpdatedBy(new User(Long.parseLong(authentication.getName())));
     article.setArticleStatus(ArticleStatus.ARCHIVED);
     Article updatedArticle = articleRepository.update(article);
     return articleMapper.articleToArticleDto(updatedArticle);
@@ -177,6 +179,8 @@ public class ArticleServiceImpl implements ArticleService {
       logger.error("Article " + articleId + " must be in the writing process");
       throw new ApiException(INVALID_PARAMS, "Article must be in the writing process");
     }
+    article.setUpdatedAt(new Date());
+    article.setUpdatedBy(new User(Long.parseLong(authentication.getName())));
     article.setArticleStatus(IN_REVIEW);
     article.setReviewNumber(article.getReviewNumber() + 1);
     Article updatedArticle = articleRepository.update(article);
@@ -195,6 +199,8 @@ public class ArticleServiceImpl implements ArticleService {
       logger.error("Review must be send by editor");
       throw new ApiException(INVALID_PARAMS, "Review must be send by editor");
     }
+    article.setUpdatedAt(new Date());
+    article.setUpdatedBy(new User(Long.parseLong(authentication.getName())));
     article.setArticleStatus(ArticleStatus.WRITING);
     Article updatedArticle = articleRepository.update(article);
     return articleMapper.articleToArticleDto(updatedArticle);
@@ -211,6 +217,8 @@ public class ArticleServiceImpl implements ArticleService {
     }
     publicationService.publishArticleToProjectRepository(authentication, article);
 
+    article.setUpdatedAt(new Date());
+    article.setUpdatedBy(new User(Long.parseLong(authentication.getName())));
     article.setArticleStatus(ARCHIVED);
     Article updatedArticle = articleRepository.update(article);
     return articleMapper.articleToArticleDto(updatedArticle);
@@ -228,6 +236,8 @@ public class ArticleServiceImpl implements ArticleService {
       logger.error("Article " + articleId + " can be denied only by the editor");
       throw new ApiException(INVALID_PARAMS, "Article can be denied only by the editor");
     }
+    article.setUpdatedAt(new Date());
+    article.setUpdatedBy(new User(Long.parseLong(authentication.getName())));
     article.setArticleStatus(ARCHIVED);
     Article updatedArticle = articleRepository.update(article);
     return articleMapper.articleToArticleDto(updatedArticle);
@@ -271,6 +281,8 @@ public class ArticleServiceImpl implements ArticleService {
     logger.info("About to restore article " + articleId);
     Article archivedArticle = getArchivedArticle(articleId);
     archivedArticle.setArticleStatus(WRITING);
+    archivedArticle.setUpdatedAt(new Date());
+    archivedArticle.setUpdatedBy(new User(Long.parseLong(authentication.getName())));
     articleRepository.update(archivedArticle);
   }
 
