@@ -28,7 +28,9 @@ public class AuthenticationCallbackController {
    * @return http response of redirect URI
    * */
   @Get(produces = MediaType.APPLICATION_JSON)
-  public HttpResponse<MutableHttpResponse<URI>> redirectToFrontEndUrlCallbackRouteWithAccessToken(Authentication authentication) {
-    return HttpResponse.redirect(authenticationCallbackService.generateFrontEndCallbackURIWithAccessToken(authentication));
+  public HttpResponse<MutableHttpResponse<URI>> redirectToFrontEndUrlCallbackRouteWithAccessToken(
+      Authentication authentication) {
+    URI location = authenticationCallbackService.generateFrontEndCallbackURIWithAccessToken(authentication);
+    return HttpResponse.seeOther(location);
   }
 }
