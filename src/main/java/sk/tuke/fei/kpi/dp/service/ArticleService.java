@@ -20,15 +20,15 @@ public interface ArticleService {
   ArticleEditDto updateArticle(Authentication authentication, Long id,
       UpdateArticleDto updateArticleDto, boolean createNewVersion);
 
-  ArticleEditDto approveArticle(Authentication authentication, Long id);
+  ArticleEditDto approveArticle(Authentication authentication, Long id, UpdateArticleDto updateArticleDto);
 
   ArticleEditDto archiveArticle(Authentication authentication, Long id);
 
-  ArticleEditDto sendArticleToReview(Authentication authentication, Long id);
+  ArticleEditDto sendArticleToReview(Authentication authentication, Long id, UpdateArticleDto updateArticleDto);
 
-  ArticleEditDto sendArticleReview(Authentication authentication, Long id);
+  ArticleEditDto sendArticleReview(Authentication authentication, Long id, UpdateArticleDto updateArticleDto);
 
-  ArticleEditDto publishArticle(Authentication authentication, Long id);
+  ArticleEditDto publishArticle(Authentication authentication, Long id, UpdateArticleDto updateArticleDto);
 
   ArticleEditDto denyArticle(Authentication authentication, Long id);
 

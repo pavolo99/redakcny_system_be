@@ -124,20 +124,11 @@ public class ArticleServiceImpl implements ArticleService {
       logger.error("Logged user collaborator is not allowed to update this article" + articleId);
       throw new ApiException(FORBIDDEN, "You are not allowed to update this article");
     }
-    articleMapper.updateArticleFromArticleUpdateDto(updateArticleDto, article);
-    User loggedUser = loggedArticleCollaborator.getUser();
-    article.setUpdatedAt(new Date());
-    article.setUpdatedBy(loggedUser);
-    Article updatedArticle = articleRepository.update(article);
-    if (createNewVersion) {
-      Version newVersion = new Version(article.getText(), loggedUser, article);
-      versionRepository.save(newVersion);
-    }
-    return articleMapper.articleToArticleDto(updatedArticle);
+    return performArticleUpdate(updateArticleDto, article, loggedArticleCollaborator.getUser(), createNewVersion);
   }
 
   @Override
-  public ArticleEditDto approveArticle(Authentication authentication, Long articleId) {
+  public ArticleEditDto approveArticle(Authentication authentication, Long articleId, UpdateArticleDto updateArticleDto) {
     logger.info("About to approve article " + articleId);
     Article article = findArticleById(articleId);
     if (!IN_REVIEW.equals(article.getArticleStatus())) {
@@ -148,12 +139,9 @@ public class ArticleServiceImpl implements ArticleService {
       logger.error("Article " + articleId + " can be approved only by editor");
       throw new ApiException(FORBIDDEN, "Article can be approved only by editor");
     }
-    long loggedUserId = Long.parseLong(authentication.getName());
-    article.setUpdatedAt(new Date());
-    article.setUpdatedBy(new User(loggedUserId));
     article.setArticleStatus(APPROVED);
-    Article updatedArticle = articleRepository.update(article);
-    return articleMapper.articleToArticleDto(updatedArticle);
+    User loggedUser = new User(Long.parseLong(authentication.getName()));
+    return performArticleUpdate(updateArticleDto, article, loggedUser, true);
   }
 
   @Override
@@ -172,23 +160,21 @@ public class ArticleServiceImpl implements ArticleService {
   }
 
   @Override
-  public ArticleEditDto sendArticleToReview(Authentication authentication, Long articleId) {
+  public ArticleEditDto sendArticleToReview(Authentication authentication, Long articleId, UpdateArticleDto updateArticleDto) {
     logger.info("About to send article to review " + articleId);
     Article article = findArticleById(articleId);
     if (!ArticleStatus.WRITING.equals(article.getArticleStatus())) {
       logger.error("Article " + articleId + " must be in the writing process");
       throw new ApiException(INVALID_PARAMS, "Article must be in the writing process");
     }
-    article.setUpdatedAt(new Date());
-    article.setUpdatedBy(new User(Long.parseLong(authentication.getName())));
+    User loggedUser = new User(Long.parseLong(authentication.getName()));
     article.setArticleStatus(IN_REVIEW);
     article.setReviewNumber(article.getReviewNumber() + 1);
-    Article updatedArticle = articleRepository.update(article);
-    return articleMapper.articleToArticleDto(updatedArticle);
+    return performArticleUpdate(updateArticleDto, article, loggedUser, true);
   }
 
   @Override
-  public ArticleEditDto sendArticleReview(Authentication authentication, Long articleId) {
+  public ArticleEditDto sendArticleReview(Authentication authentication, Long articleId, UpdateArticleDto updateArticleDto) {
     logger.info("About to send article review " + articleId);
     Article article = findArticleById(articleId);
     if (!IN_REVIEW.equals(article.getArticleStatus())) {
@@ -199,29 +185,28 @@ public class ArticleServiceImpl implements ArticleService {
       logger.error("Review must be send by editor");
       throw new ApiException(INVALID_PARAMS, "Review must be send by editor");
     }
-    article.setUpdatedAt(new Date());
-    article.setUpdatedBy(new User(Long.parseLong(authentication.getName())));
+    User loggedUser = new User(Long.parseLong(authentication.getName()));
+    article.setUpdatedBy(loggedUser);
     article.setArticleStatus(ArticleStatus.WRITING);
-    Article updatedArticle = articleRepository.update(article);
-    return articleMapper.articleToArticleDto(updatedArticle);
+    return performArticleUpdate(updateArticleDto, article, loggedUser, true);
   }
 
   @Override
   @Transactional
-  public ArticleEditDto publishArticle(Authentication authentication, Long articleId) {
+  public ArticleEditDto publishArticle(Authentication authentication, Long articleId, UpdateArticleDto updateArticleDto) {
     logger.info("About to publish article " + articleId);
     Article article = findArticleById(articleId);
     if (!APPROVED.equals(article.getArticleStatus())) {
       logger.error("Article " + articleId + " must be approved");
       throw new ApiException(INVALID_PARAMS, "Article must be approved");
     }
-    publicationService.publishArticleToProjectRepository(authentication, article);
 
-    article.setUpdatedAt(new Date());
-    article.setUpdatedBy(new User(Long.parseLong(authentication.getName())));
+    User loggedUser = new User(Long.parseLong(authentication.getName()));
     article.setArticleStatus(ARCHIVED);
-    Article updatedArticle = articleRepository.update(article);
-    return articleMapper.articleToArticleDto(updatedArticle);
+    ArticleEditDto articleEditDto = performArticleUpdate(updateArticleDto, article, loggedUser, true);
+
+    publicationService.publishArticleToProjectRepository(authentication, article);
+    return articleEditDto;
   }
 
   @Override
@@ -293,5 +278,17 @@ public class ArticleServiceImpl implements ArticleService {
       throw new ApiException(INVALID_PARAMS, "Article must be archived");
     }
     return article;
+  }
+  private ArticleEditDto performArticleUpdate(UpdateArticleDto updateArticleDto, Article article,
+      User loggedUser, boolean createNewVersion) {
+    articleMapper.updateArticleFromArticleUpdateDto(updateArticleDto, article);
+    article.setUpdatedAt(new Date());
+    article.setUpdatedBy(loggedUser);
+    if (createNewVersion) {
+      Version newVersion = new Version(article.getText(), loggedUser, article);
+      versionRepository.save(newVersion);
+    }
+    Article updatedArticle = articleRepository.update(article);
+    return articleMapper.articleToArticleDto(updatedArticle);
   }
 }

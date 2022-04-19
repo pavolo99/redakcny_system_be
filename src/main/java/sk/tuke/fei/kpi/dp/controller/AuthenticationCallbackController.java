@@ -15,10 +15,10 @@ import sk.tuke.fei.kpi.dp.service.AuthenticationCallbackService;
 @Controller("api/login-callback")
 public class AuthenticationCallbackController {
 
-  private final AuthenticationCallbackService authenticationCallbackService;
+  private final AuthenticationCallbackService authCallbackService;
 
   public AuthenticationCallbackController(AuthenticationCallbackService authenticationCallbackService) {
-    this.authenticationCallbackService = authenticationCallbackService;
+    this.authCallbackService = authenticationCallbackService;
   }
 
   /**
@@ -30,7 +30,7 @@ public class AuthenticationCallbackController {
   @Get(produces = MediaType.APPLICATION_JSON)
   public HttpResponse<MutableHttpResponse<URI>> redirectToFrontEndUrlCallbackRouteWithAccessToken(
       Authentication authentication) {
-    URI location = authenticationCallbackService.generateFrontEndCallbackURIWithAccessToken(authentication);
-    return HttpResponse.seeOther(location);
+    URI redirectURILocation = authCallbackService.generateFrontEndCallbackURIWithAccessToken(authentication);
+    return HttpResponse.seeOther(redirectURILocation);
   }
 }
