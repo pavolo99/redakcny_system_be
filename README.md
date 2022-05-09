@@ -5,3 +5,7 @@ Backend part of thesis Collaborative markdown editor
 ``````dockerfile
 docker run -d --name local_postgres -v my_dbdata:/var/lib/postgresql/data -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=sa -e POSTGRES_DB=postgres -d postgres:latest
 ``````
+
+## Local development
+
+Paste content from file `application.dev.yml` to file `application.yml`
